@@ -47,7 +47,7 @@
 					<a href="#">Forgot Password?</a>
 				</div>
 
-				<button type="submit" class="btn">Login</button>
+				<button type="submit" class="btn" id="login-btn">Login</button>
 			</form>
 		</div>
 	</body>
@@ -76,7 +76,7 @@
 		const email = document.getElementById("email").value;
 		const password = document.getElementById("password").value;
 
-		const submit = document.querySelector("btn");
+		const submit = document.getElementById("login-btn");
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
 			signInWithEmailAndPassword(auth, email, password)
