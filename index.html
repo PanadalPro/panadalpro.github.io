@@ -77,12 +77,13 @@
 
 		const email = document.getElementById("email");
 		const password = document.getElementById("password");
+		console.log(email, password);
 
 		const submit = document.getElementById("login-btn");
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
-			console.log(email.value);
-			console.log(password.value);
+			alert(email.value);
+			alert(password.value);
 			signInWithEmailAndPassword(auth, email.value, password.value)
 				.then((userCredential) => {
 					const user = userCredential.user;
