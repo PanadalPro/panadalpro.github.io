@@ -75,13 +75,13 @@
 
 		const auth = getAuth(app);
 
-		const email = document.getElementById("email").value;
-		const password = document.getElementById("password").value;
+		const email = document.getElementById("email");
+		const password = document.getElementById("password");
 
 		const submit = document.getElementById("login-btn");
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
-			signInWithEmailAndPassword(auth, email, password)
+			signInWithEmailAndPassword(auth, email.value, password.value)
 				.then((userCredential) => {
 					const user = userCredential.user;
 					alert("Logged In!");
