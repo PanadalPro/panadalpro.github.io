@@ -14,12 +14,32 @@
 			<form action="">
 				<h1>Login</h1>
 				<div class="input-box">
-					<input type="text" placeholder="Email" required />
+					<input
+						type="text"
+						placeholder="Email"
+						class="input"
+						id="email"
+						required
+					/>
 					<i class="bx bxs-user"></i>
 				</div>
 				<div class="input-box">
-					<input type="password" placeholder="Password" required />
+					<input
+						type="password"
+						placeholder="Password"
+						class="input"
+						id="password"
+						required
+					/>
 					<i class="bx bxs-lock-alt"></i>
+					<label
+						><input
+							type="checkbox"
+							id="show-check"
+							onclick="togglePassword()"
+						/>
+						Show Password</label
+					>
 				</div>
 
 				<div class="remember-forgot">
@@ -31,6 +51,56 @@
 			</form>
 		</div>
 	</body>
+
+	<script type="module" defer>
+		// Import the functions you need from the SDKs you need
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+		import {
+			getAuth,
+			signInWithEmailAndPassword,
+		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+		// Your web app's Firebase configuration
+		const firebaseConfig = {
+			apiKey: "AIzaSyD0N4UJKBvCkmWmJdd0gMQI0I9by-qRUxI",
+			authDomain: "tecnothau1.firebaseapp.com",
+			projectId: "tecnothau1",
+			storageBucket: "tecnothau1.appspot.com",
+			messagingSenderId: "292144359028",
+			appId: "1:292144359028:web:673fb5332d1eddb5c01321",
+		};
+
+		// Initialize Firebase
+		const app = initializeApp(firebaseConfig);
+
+		const email = document.getElementById("email").value;
+		const password = document.getElementById("password").value;
+
+		const submit = document.querySelector(".btn");
+		submit.addEventListener("click", function (event) {
+			event.preventDefault();
+			signInWithEmailAndPassword(auth, email, password)
+				.then((userCredential) => {
+					const user = userCredential.user;
+					alert("Logged In!");
+				})
+				.catch((error) => {
+					const errorCode = error.code;
+					const errorMessage = error.message;
+					console.log(errorCode, errorMessage);
+					alert("Failed to log in. Please check your credentials.");
+				});
+		});
+	</script>
+	<script>
+		function togglePassword() {
+			document.getElementById("password").type = document.getElementById(
+				"show-check"
+			).checked
+				? "text"
+				: "password";
+		}
+	</script>
 
 	<style>
 		* {
@@ -74,7 +144,7 @@
 			margin: 30px 0;
 		}
 
-		.input-box input {
+		.input-box .input {
 			width: 100%;
 			height: 100%;
 			background: transparent;
@@ -99,11 +169,20 @@
 			font-size: 20px;
 		}
 
+		.input-box label {
+			padding-top: 10px;
+			position: absolute;
+			display: block;
+			text-align: center;
+			justify-content: center;
+			padding-left: 30%;
+		}
+
 		.login .remember-forgot {
 			display: flex;
 			justify-content: space-between;
 			font-size: 14.5px;
-			margin: -15px 0 15px;
+			margin: 5px 0 15px;
 		}
 
 		.remember-forgot label input {
