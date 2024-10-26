@@ -81,6 +81,7 @@
 		const submit = document.getElementById("login-btn");
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
+			console.log(email.value, password.value);
 			signInWithEmailAndPassword(auth, email.value, password.value)
 				.then((userCredential) => {
 					const user = userCredential.user;
