@@ -1,3 +1,5 @@
+<!-- dotWebdesign Bottom Navigation Bar 12:45 -->
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -134,6 +136,7 @@
 			border-radius: 40px;
 			box-shadow: rgb(50 50 93 / 25%) 0 50px 100px -20px,
 				rgb(0 0 0 / 30%) 0 30px 60px -30px;
+			overflow: hidden;
 		}
 
 		.menubar nav ul {
@@ -166,7 +169,6 @@
 		.menubar nav li::after {
 			content: "";
 			position: absolute;
-			top: 1px;
 			height: 100%;
 			width: 30px;
 		}
@@ -184,6 +186,7 @@
 		.menubar nav li.active::before,
 		.menubar nav li.active::after {
 			background-color: #f2d2a5;
+			top: 1px;
 		}
 
 		.menubar nav li.active a::before,
@@ -211,6 +214,24 @@
 
 		.menubar nav li.active a {
 			color: #f2d2a5;
+		}
+
+		.menubar section > div {
+			height: 100vh;
+			display: grid;
+			place-content: center;
+			font-size: 2.5em;
+			color: #f2d2a5;
+			text-transform: uppercase;
+			font-weight: 800;
+		}
+
+		.menubar section > div:nth-child(1) {
+			background-color: #2f3542;
+		}
+
+		.menubar section > div:nth-child(2) {
+			background-color: #ff7979;
 		}
 
 		.login {
