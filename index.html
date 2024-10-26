@@ -76,7 +76,7 @@
 		const email = document.getElementById("email").value;
 		const password = document.getElementById("password").value;
 
-		const submit = document.querySelector(".btn");
+		const submit = document.querySelector("btn");
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
 			signInWithEmailAndPassword(auth, email, password)
