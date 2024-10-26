@@ -58,89 +58,6 @@
 		</div>
 	</body>
 
-	<script type="module" defer>
-		// Import the functions you need from the SDKs you need
-		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-		import {
-			getAuth,
-			signInWithEmailAndPassword,
-		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-		// Your web app's Firebase configuration
-		const firebaseConfig = {
-			apiKey: "AIzaSyD0N4UJKBvCkmWmJdd0gMQI0I9by-qRUxI",
-			authDomain: "tecnothau1.firebaseapp.com",
-			projectId: "tecnothau1",
-			storageBucket: "tecnothau1.appspot.com",
-			messagingSenderId: "292144359028",
-			appId: "1:292144359028:web:673fb5332d1eddb5c01321",
-		};
-
-		// Initialize Firebase
-		const app = initializeApp(firebaseConfig);
-
-		const auth = getAuth(app);
-
-		const email = document.getElementById("email");
-		const password = document.getElementById("password");
-		const remember = document.getElementById("remember");
-
-		const submit = document.getElementById("login-btn");
-		submit.addEventListener("click", function (event) {
-			event.preventDefault();
-			const persistence = remember.checked
-				? firebase.auth.Auth.Persistence.LOCAL
-				: firebase.auth.Auth.Persistence.SESSION;
-
-			auth.setPersistence(persistence)
-				.then(() => {
-					// Sign in
-					return signInWithEmailAndPassword(
-						auth,
-						email.value,
-						password.value
-					);
-				})
-				.then((userCredential) => {
-					const user = userCredential.user;
-					alert("Logged In!");
-				})
-				.catch((error) => {
-					const errorCode = error.code;
-					const errorMessage = error.message;
-					console.log(errorCode, errorMessage);
-					alert("Failed to log in. Please check your credentials.");
-				});
-		});
-		// Listen for auth state changes
-		auth.onAuthStateChanged((user) => {
-			if (user) {
-				// User is signed in, show the main application
-				console.log("User is logged in:", user);
-				document.querySelector("login").style.display = "none";
-				document.querySelector("app").style.display = "initial";
-			} else {
-				// No user is signed in, show the login screen
-				console.log("No user is logged in.");
-				document.querySelector("login").style.display = "initial";
-				document.querySelector("app").style.display = "none";
-			}
-		});
-
-		document
-			.getElementById("log-out")
-			.addEventListener("click", auth.signOut);
-	</script>
-	<script>
-		function togglePassword() {
-			document.getElementById("password").type = document.getElementById(
-				"show-check"
-			).checked
-				? "text"
-				: "password";
-		}
-	</script>
-
 	<style>
 		* {
 			margin: 0;
@@ -257,4 +174,89 @@
 			font-weight: 600;
 		}
 	</style>
+
+	<script type="module">
+		// Import the functions you need from the SDKs you need
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+		import {
+			getAuth,
+			signInWithEmailAndPassword,
+		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+		// Your web app's Firebase configuration
+		const firebaseConfig = {
+			apiKey: "AIzaSyD0N4UJKBvCkmWmJdd0gMQI0I9by-qRUxI",
+			authDomain: "tecnothau1.firebaseapp.com",
+			projectId: "tecnothau1",
+			storageBucket: "tecnothau1.appspot.com",
+			messagingSenderId: "292144359028",
+			appId: "1:292144359028:web:673fb5332d1eddb5c01321",
+		};
+
+		// Initialize Firebase
+		const app = initializeApp(firebaseConfig);
+
+		const auth = getAuth(app);
+
+		const email = document.getElementById("email");
+		const password = document.getElementById("password");
+		const remember = document.getElementById("remember");
+		const login_win = document.querySelector("login");
+		const app_win = document.querySelector("app");
+
+		const submit = document.getElementById("login-btn");
+		submit.addEventListener("click", function (event) {
+			event.preventDefault();
+			const persistence = remember.checked
+				? firebase.auth.Auth.Persistence.LOCAL
+				: firebase.auth.Auth.Persistence.SESSION;
+
+			auth.setPersistence(persistence)
+				.then(() => {
+					// Sign in
+					return signInWithEmailAndPassword(
+						auth,
+						email.value,
+						password.value
+					);
+				})
+				.then((userCredential) => {
+					const user = userCredential.user;
+					alert("Logged In!");
+				})
+				.catch((error) => {
+					const errorCode = error.code;
+					const errorMessage = error.message;
+					console.log(errorCode, errorMessage);
+					alert("Failed to log in. Please check your credentials.");
+				});
+		});
+		// Listen for auth state changes
+		auth.onAuthStateChanged((user) => {
+			if (user) {
+				// User is signed in, show the main application
+				console.log("User is logged in:", user);
+				login_win.style.display = "none";
+				app_win.style.display = "initial";
+			} else {
+				// No user is signed in, show the login screen
+				console.log("No user is logged in.");
+				login_win.style.display = "initial";
+				app_win.style.display = "none";
+			}
+		});
+
+		document
+			.getElementById("log-out")
+			.addEventListener("click", auth.signOut);
+	</script>
+	<script>
+		function togglePassword() {
+			document.getElementById("password").type = document.getElementById(
+				"show-check"
+			).checked
+				? "text"
+				: "password";
+		}
+	</script>
 </html>
