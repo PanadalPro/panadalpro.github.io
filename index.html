@@ -180,6 +180,7 @@
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 		import {
 			getAuth,
+			signOut,
 			signInWithEmailAndPassword,
 		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
@@ -248,7 +249,9 @@
 
 		document
 			.getElementById("log-out")
-			.addEventListener("click", auth.signOut);
+			.addEventListener("click", function () {
+				signOut(auth);
+			});
 	</script>
 	<script>
 		function togglePassword() {
