@@ -210,25 +210,28 @@
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
 
-			setPersistence(auth, remember.checked ? "local" : "session")
-				.then(() => {
+			setPersistence(auth, remember.checked ? "local" : "session").then(
+				() => {
 					// Sign in
-					return signInWithEmailAndPassword(
+					signInWithEmailAndPassword(
 						auth,
 						email.value,
 						password.value
-					);
-				})
-				.then((userCredential) => {
-					const user = userCredential.user;
-					alert("Logged In!");
-				})
-				.catch((error) => {
-					const errorCode = error.code;
-					const errorMessage = error.message;
-					console.log(errorCode, errorMessage);
-					alert("Failed to log in. Please check your credentials.");
-				});
+					)
+						.then((userCredential) => {
+							const user = userCredential.user;
+							alert("Logged In!");
+						})
+						.catch((error) => {
+							const errorCode = error.code;
+							const errorMessage = error.message;
+							console.log(errorCode, errorMessage);
+							alert(
+								"Failed to log in. Please check your credentials."
+							);
+						});
+				}
+			);
 		});
 		// Listen for auth state changes
 		auth.onAuthStateChanged((user) => {
