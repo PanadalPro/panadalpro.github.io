@@ -209,8 +209,8 @@
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
 			const persistence = remember.checked
-				? firebase.auth.Auth.Persistence.LOCAL
-				: firebase.auth.Auth.Persistence.SESSION;
+				? auth.Auth.Persistence.LOCAL
+				: auth.Auth.Persistence.SESSION;
 
 			auth.setPersistence(persistence)
 				.then(() => {
