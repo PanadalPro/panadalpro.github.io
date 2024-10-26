@@ -21,7 +21,7 @@
 						id="email"
 						required
 					/>
-					<i class="bx bxs-user"></i>
+					<i class="bx bxs-envelope"></i>
 				</div>
 				<div class="input-box">
 					<input
@@ -44,8 +44,8 @@
 
 				<div class="remember-forgot">
 					<label
-						><input type="checkbox" id="remember" /> Remember
-						Me</label
+						><input type="checkbox" id="remember" checked />
+						Remember Me</label
 					>
 					<a href="#">Forgot Password?</a>
 				</div>
@@ -175,6 +175,7 @@
 		}
 	</style>
 
+	// Login Script
 	<script type="module">
 		// Import the functions you need from the SDKs you need
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -223,15 +224,12 @@
 				signInWithEmailAndPassword(auth, email.value, password.value)
 					.then((userCredential) => {
 						const user = userCredential.user;
-						alert("Logged In!");
 					})
 					.catch((error) => {
 						const errorCode = error.code;
 						const errorMessage = error.message;
 						console.log(errorCode, errorMessage);
-						alert(
-							"Failed to log in. Please check your credentials."
-						);
+						alert("Please check your email/password and try again");
 					});
 			});
 		});
@@ -239,24 +237,15 @@
 		auth.onAuthStateChanged((user) => {
 			if (user) {
 				// User is signed in, show the main application
-				console.log("User is logged in:", user);
 				login_win.style.display = "none";
 				app_win.style.display = "initial";
 			} else {
 				// No user is signed in, show the login screen
-				console.log("No user is logged in.");
 				login_win.style.display = "initial";
 				app_win.style.display = "none";
 			}
 		});
 
-		document
-			.getElementById("log-out")
-			.addEventListener("click", function () {
-				signOut(auth);
-			});
-	</script>
-	<script>
 		function togglePassword() {
 			document.getElementById("password").type = document.getElementById(
 				"show-check"
@@ -264,5 +253,11 @@
 				? "text"
 				: "password";
 		}
+
+		document
+			.getElementById("log-out")
+			.addEventListener("click", function () {
+				signOut(auth);
+			});
 	</script>
 </html>
