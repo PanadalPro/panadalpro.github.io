@@ -10,7 +10,7 @@
 		/>
 	</head>
 	<body>
-		<div class="login">
+		<div class="login" id="login">
 			<form action="">
 				<h1>Login</h1>
 				<div class="input-box">
@@ -53,7 +53,7 @@
 				<button type="submit" class="btn" id="login-btn">Login</button>
 			</form>
 		</div>
-		<div class="app">
+		<div class="app" id="app">
 			<button id="log-out">Log Out</button>
 		</div>
 	</body>
@@ -201,8 +201,8 @@
 		const email = document.getElementById("email");
 		const password = document.getElementById("password");
 		const remember = document.getElementById("remember");
-		const login_win = document.querySelector("login");
-		const app_win = document.querySelector("app");
+		const login_win = document.getElementById("login");
+		const app_win = document.getElementById("app");
 
 		const submit = document.getElementById("login-btn");
 		submit.addEventListener("click", function (event) {
