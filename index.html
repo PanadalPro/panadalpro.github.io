@@ -183,6 +183,8 @@
 			signOut,
 			signInWithEmailAndPassword,
 			setPersistence,
+			browserSessionPersistence,
+			inMemoryPersistence,
 		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 		// Your web app's Firebase configuration
@@ -210,28 +212,27 @@
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
 
-			setPersistence(auth, remember.checked ? "local" : "session").then(
-				() => {
-					// Sign in
-					signInWithEmailAndPassword(
-						auth,
-						email.value,
-						password.value
-					)
-						.then((userCredential) => {
-							const user = userCredential.user;
-							alert("Logged In!");
-						})
-						.catch((error) => {
-							const errorCode = error.code;
-							const errorMessage = error.message;
-							console.log(errorCode, errorMessage);
-							alert(
-								"Failed to log in. Please check your credentials."
-							);
-						});
-				}
-			);
+			setPersistence(
+				auth,
+				remember.checked
+					? inMemoryPersistence
+					: browserSessionPersistence
+			).then(() => {
+				// Sign in
+				signInWithEmailAndPassword(auth, email.value, password.value)
+					.then((userCredential) => {
+						const user = userCredential.user;
+						alert("Logged In!");
+					})
+					.catch((error) => {
+						const errorCode = error.code;
+						const errorMessage = error.message;
+						console.log(errorCode, errorMessage);
+						alert(
+							"Failed to log in. Please check your credentials."
+						);
+					});
+			});
 		});
 		// Listen for auth state changes
 		auth.onAuthStateChanged((user) => {
