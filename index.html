@@ -6,6 +6,49 @@
 		<title>TecnoThau</title>
 	</head>
 	<body>
-		<h1>TecnoThau</h1>
+		<div class="login">
+			<h1 class="login-title">Login</h1>
+			<div class="login-input">
+				<p>Username</p>
+				<input type="text" id="username" required />
+				<br />
+				<p>Password</p>
+				<input type="password" id="password" required />
+				<br />
+				<br />
+				<button class="login-btn">Login</button>
+			</div>
+		</div>
 	</body>
+
+	<style>
+		.login-title {
+			text-align: center;
+			margin: auto;
+			padding: 70px 0;
+		}
+
+		.login-input {
+			align-items: center;
+			align-content: center;
+			justify-content: center;
+			text-align: center;
+			padding: 10px 10px 10px 10px;
+			border-radius: 15px;
+			background-color: cyan;
+			width: 300px;
+			height: 200px;
+			margin: auto;
+			position: fixed;
+			inset: 0px;
+		}
+
+		.login-btn {
+			padding: 10px 20px;
+			border-radius: 5px;
+			background-color: blue;
+			color: white;
+			cursor: pointer;
+		}
+	</style>
 </html>
