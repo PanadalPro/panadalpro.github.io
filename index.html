@@ -73,13 +73,14 @@
 		// Initialize Firebase
 		const app = initializeApp(firebaseConfig);
 
+		const auth = getAuth(app);
+
 		const email = document.getElementById("email").value;
 		const password = document.getElementById("password").value;
 
 		const submit = document.getElementById("login-btn");
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
-			alert("Hello");
 			signInWithEmailAndPassword(auth, email, password)
 				.then((userCredential) => {
 					const user = userCredential.user;
