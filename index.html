@@ -182,6 +182,8 @@
 			getAuth,
 			signOut,
 			signInWithEmailAndPassword,
+			setPersistence,
+			browserSessionPersistence,
 		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 		// Your web app's Firebase configuration
@@ -208,11 +210,8 @@
 		const submit = document.getElementById("login-btn");
 		submit.addEventListener("click", function (event) {
 			event.preventDefault();
-			const persistence = remember.checked
-				? auth.Auth.Persistence.LOCAL
-				: auth.Auth.Persistence.SESSION;
 
-			auth.setPersistence(persistence)
+			setPersistence(auth, remember.checked ? "local" : "session")
 				.then(() => {
 					// Sign in
 					return signInWithEmailAndPassword(
