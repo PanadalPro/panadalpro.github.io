@@ -57,14 +57,20 @@
 		</div>
 		<div class="app" id="app">
 			<div class="menubar">
-				<div class="element">
+				<div class="element" id="reservations-element">
 					<i class='bx bxs-calendar' onclick="reservations()"></i>
 					<p>Reservations</p>
 				</div>
-				<div class="element">
+				<div class="element" id="screens-element">
 					<i class='bx bx-laptop' onclick="screens()"></i>
 					<p>View Screens</p>
 				</div>
+			</div>
+			<div class="reservations">
+				<p>Reservations :)</p>
+			</div>
+			<div class="screens">
+				<p>View Screens</p>
 			</div>
 		</div>
 	</body>
@@ -86,6 +92,10 @@
 				no-repeat;
 			background-size: cover;
 			background-position: center;
+		}
+
+		.reservations, .screens {
+			display: none;
 		}
 
 		.app {
@@ -125,6 +135,10 @@
 			margin-left: 60px;
 			margin-right: 60px;
 			padding: 60px -10px;
+		}
+
+		.menubar .element p {
+			cursor: default;
 		}
 
 		.login {
@@ -293,6 +307,11 @@
 		});
 	</script>
 	<script>
+		const reservations_win = document.querySelector("reservations")
+		const screens_win = document.querySelector("screens")
+		const reservations_element = document.getElementById("reservations_element")
+		const screens_element = document.getElementById("screens_element")
+
 		function togglePassword() {
 			document.getElementById("password").type = document.getElementById(
 				"show-check"
@@ -301,11 +320,19 @@
 				: "password";
 		}
 		function reservations() {
-			console.log('Reservations')
+			reservations_win.style.display = "initial"
+			screens_win.style.display = "none"
+			reservations_element.style.color = "green"
+			screens_element.style.color = "black"
+		}
+		
+		function screens() {
+			screens_win.style.display = "initial"
+			reservations_win.style.display = "none"
+			screens_element.style.color = "green"
+			reservations_element.style.color = "black"
 		}
 
-		function screens() {
-			console.log('View Screens')
-		}
+		reservations()
 	</script>
 </html>
