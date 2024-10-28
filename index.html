@@ -57,8 +57,14 @@
 		</div>
 		<div class="app" id="app">
 			<div class="menubar">
-				<i class='bx bxs-calendar'></i>
-				<i class='bx bx-laptop'></i>
+				<div class="element">
+					<i class='bx bxs-calendar'></i>
+					<p>Reservations</p>
+				</div>
+				<div class="element">
+					<i class='bx bx-laptop'></i>
+					<p>View Screens</p>
+				</div>
 			</div>
 		</div>
 	</body>
@@ -99,14 +105,22 @@
 			flex-direction: row;
 			text-align: center;
 			justify-content: center;
-			padding-left: auto;
-			padding-right: auto;
+			padding-left: 20%;
+			padding-right: 20%;
 			position: fixed;
 			bottom: 0;
 		}
 
-		.menubar i {
-			font-size: 40px;
+		.menubar .element {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+		}
+
+		.menubar .element i {
+			font-size: 50px;
 			padding: 20px 10px;
 		}
 
