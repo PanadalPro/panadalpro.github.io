@@ -58,11 +58,11 @@
 		<div class="app" id="app">
 			<div class="menubar">
 				<div class="element">
-					<i class='bx bxs-calendar'></i>
+					<i class='bx bxs-calendar' onclick="reservations()"></i>
 					<p>Reservations</p>
 				</div>
 				<div class="element">
-					<i class='bx bx-laptop'></i>
+					<i class='bx bx-laptop' onclick="screens()"></i>
 					<p>View Screens</p>
 				</div>
 			</div>
@@ -299,6 +299,13 @@
 			).checked
 				? "text"
 				: "password";
+		}
+		function reservations() {
+			console.log('Reservations')
+		}
+
+		function screens() {
+			console.log('View Screens')
 		}
 	</script>
 </html>
