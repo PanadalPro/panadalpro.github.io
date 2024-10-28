@@ -66,10 +66,10 @@
 					<p>View Screens</p>
 				</div>
 			</div>
-			<div class="reservations">
+			<div class="reservations" id="reservations">
 				<p>Reservations :)</p>
 			</div>
-			<div class="screens">
+			<div class="screens" id="screens">
 				<p>View Screens</p>
 			</div>
 		</div>
@@ -307,8 +307,8 @@
 		});
 	</script>
 	<script>
-		const reservations_win = document.querySelector("reservations")
-		const screens_win = document.querySelector("screens")
+		const reservations_win = document.getElementById("reservations")
+		const screens_win = document.getElementById("screens")
 		const reservations_element = document.getElementById("reservations_element")
 		const screens_element = document.getElementById("screens_element")
 
