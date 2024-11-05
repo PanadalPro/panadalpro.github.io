@@ -1,4 +1,4 @@
-<!-- dotWebdesign Bottom Navigation Bar 12:45 -->
+<!-- TODO: Forgot Password -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,11 +14,11 @@
 	<body>
 		<div class="login" id="login">
 			<form action="">
-				<h1>Login</h1>
+				<h1>Inicia la Sessió</h1>
 				<div class="input-box">
 					<input
 						type="text"
-						placeholder="Email"
+						placeholder="Correu"
 						class="input"
 						id="email"
 						required
@@ -28,7 +28,7 @@
 				<div class="input-box">
 					<input
 						type="password"
-						placeholder="Password"
+						placeholder="Contrasenya"
 						class="input"
 						id="password"
 						required
@@ -40,34 +40,65 @@
 							id="show-check"
 							onclick="togglePassword()"
 						/>
-						Show Password</label
+						Mostrar Contrasenya</label
 					>
 				</div>
 
 				<div class="remember-forgot">
 					<label
 						><input type="checkbox" id="remember" checked />
-						Remember Me</label
+						Recorda'm</label
 					>
-					<a href="#">Forgot Password?</a>
+					<a href="#">Has oblidat la contrasenya?</a>
 				</div>
 
-				<button type="submit" class="btn" id="login-btn">Login</button>
+				<button type="submit" class="btn" id="login-btn">Inicia la Sessió</button>
 			</form>
 		</div>
 		<div class="app" id="app">
 			<div class="menubar">
 				<div class="element" id="reservations-element">
 					<i class="bx bxs-calendar" onclick="reservations()"></i>
-					<p onclick="reservations()">Reservations</p>
+					<p onclick="reservations()">Reservar</p>
 				</div>
 				<div class="element" id="screens-element">
 					<i class="bx bx-laptop" onclick="screens()"></i>
-					<p onclick="screens()">View Screens</p>
+					<p onclick="screens()">Veure Pantalles</p>
 				</div>
 			</div>
 			<div class="reservations" id="reservations">
-				<p>Reservations TODO - Menubar orange</p>
+				<label for="class">Classe</label>
+				<select class="class" id="class">
+					<option value="" disabled selected>Selecciona</option>
+					<option value="4a">4t A</option>
+					<option value="4b">4t B</option>
+					<option value="4b">4t C</option>
+					<option value="4a">5è A</option>
+					<option value="4b">5è B</option>
+					<option value="4b">5è C</option>
+					<option value="4a">6è A</option>
+					<option value="4b">6è B</option>
+					<option value="4b">6è C</option>
+					<option value="other">Altres</option>
+				</select>
+
+				<label for="subject">Assignatura</label>
+				<select class="subject" id="subject" >
+					<option value="" disabled selected>Selecciona</option>
+					<option value="1">Català</option>
+					<option value="2">Castellà</option>
+					<option value="3">Anglès</option>
+					<option value="4">Medi</option>
+					<option value="5">Matemàtiques</option>
+					<option value="6">Valors / Tutoria</option>
+					<option value="7">Altres</option>
+				</select>
+
+				<table>
+					<tr>
+						<th>Hello</th>
+					</tr>
+				</table>
 			</div>
 			<div class="screens" id="screens">
 				<p>View Screens! Upcoming Feature...</p>
@@ -106,6 +137,20 @@
 			min-height: inherit;
 			height: 80%;
 			background: rgba(255, 255, 255, 0.92);
+		}
+
+		.app .reservations {
+			display: flex;
+			flex-direction: row;
+		}
+
+		.app .reservations select{
+			border-radius: 10px;
+			padding: 7px;
+		}
+
+		.app .reservations .class {
+			margin-top: 10px;
 		}
 
 		.menubar {
@@ -301,6 +346,7 @@
 				// User is signed in, show the main application
 				login_win.style.display = "none";
 				app_win.style.display = "initial";
+				// signOut(auth);
 			} else {
 				// No user is signed in, show the login screen
 				login_win.style.display = "initial";
