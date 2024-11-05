@@ -52,7 +52,9 @@
 					<a href="#">Has oblidat la contrasenya?</a>
 				</div>
 
-				<button type="submit" class="btn" id="login-btn">Inicia la Sessió</button>
+				<button type="submit" class="btn" id="login-btn">
+					Inicia la Sessió
+				</button>
 			</form>
 		</div>
 		<div class="app" id="app">
@@ -83,7 +85,7 @@
 				</select>
 
 				<label for="subject">Assignatura</label>
-				<select class="subject" id="subject" >
+				<select class="subject" id="subject">
 					<option value="" disabled selected>Selecciona</option>
 					<option value="1">Català</option>
 					<option value="2">Castellà</option>
@@ -94,8 +96,9 @@
 					<option value="7">Altres</option>
 				</select>
 
-				<table>
+				<table class="schedule">
 					<tr>
+						<th></th>
 						<th>Hello</th>
 					</tr>
 				</table>
@@ -144,13 +147,19 @@
 			flex-direction: row;
 		}
 
-		.app .reservations select{
+		.app .reservations select {
 			border-radius: 10px;
 			padding: 7px;
 		}
 
 		.app .reservations .class {
 			margin-top: 10px;
+		}
+
+		.app .reservations table tr,
+		.app .reservations table th {
+			border: 2px solid black;
+			padding: 10px;
 		}
 
 		.menubar {
