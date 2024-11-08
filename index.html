@@ -69,37 +69,120 @@
 				</div>
 			</div>
 			<div class="reservations" id="reservations">
-				<label for="class">Classe</label>
-				<select class="class" id="class">
-					<option value="" disabled selected>Selecciona</option>
-					<option value="4a">4t A</option>
-					<option value="4b">4t B</option>
-					<option value="4b">4t C</option>
-					<option value="4a">5è A</option>
-					<option value="4b">5è B</option>
-					<option value="4b">5è C</option>
-					<option value="4a">6è A</option>
-					<option value="4b">6è B</option>
-					<option value="4b">6è C</option>
-					<option value="other">Altres</option>
-				</select>
+				<div class="selects">
+					<div class="class-select">
+						<label for="class">Classe</label>
+						<br />
+						<select class="class" id="class">
+							<option value="" disabled selected>
+								Selecciona
+							</option>
+							<option value="4a">4t A</option>
+							<option value="4b">4t B</option>
+							<option value="4b">4t C</option>
+							<option value="4a">5è A</option>
+							<option value="4b">5è B</option>
+							<option value="4b">5è C</option>
+							<option value="4a">6è A</option>
+							<option value="4b">6è B</option>
+							<option value="4b">6è C</option>
+							<option value="other">Altres</option>
+						</select>
+					</div>
 
-				<label for="subject">Assignatura</label>
-				<select class="subject" id="subject">
-					<option value="" disabled selected>Selecciona</option>
-					<option value="1">Català</option>
-					<option value="2">Castellà</option>
-					<option value="3">Anglès</option>
-					<option value="4">Medi</option>
-					<option value="5">Matemàtiques</option>
-					<option value="6">Valors / Tutoria</option>
-					<option value="7">Altres</option>
-				</select>
+					<div class="subject-select">
+						<label for="subject">Assignatura</label>
+						<br />
+						<select class="subject" id="subject">
+							<option value="" disabled selected>
+								Selecciona
+							</option>
+							<option value="1">Català</option>
+							<option value="2">Castellà</option>
+							<option value="3">Anglès</option>
+							<option value="4">Medi</option>
+							<option value="5">Matemàtiques</option>
+							<option value="6">Valors / Tutoria</option>
+							<option value="7">Altres</option>
+						</select>
+					</div>
+
+					<div class="number-select">
+						<label for="number">Número</label>
+						<br />
+						<input
+							type="number"
+							class="number"
+							id="number"
+							min="0"
+						/>
+					</div>
+				</div>
 
 				<table class="schedule">
+					<th>Horari</th>
+					<th>8:30 - 9:30</th>
+					<th>9:30 - 10:30</th>
+					<th>10:30 - 11:00</th>
+					<th>11:00 - 12:00</th>
+					<th>12:00 - 13:00</th>
+					<th>13:00 - 14:30</th>
+					<th>14:30 - 15:30</th>
+					<th>15:30 - 16:30</th>
 					<tr>
+						<th>Dilluns</th>
 						<th></th>
-						<th>Hello</th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr>
+						<th>Dimarts</th>
+						<th></th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr>
+						<th>Dimecres</th>
+						<th></th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr>
+						<th>Dijous</th>
+						<th></th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr>
+						<th>Divendres</th>
+						<th></th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
 					</tr>
 				</table>
 			</div>
@@ -109,6 +192,7 @@
 		</div>
 	</body>
 
+	<!-- Style -->
 	<style>
 		* {
 			margin: 0;
@@ -142,26 +226,66 @@
 			background: rgba(255, 255, 255, 0.92);
 		}
 
-		.app .reservations {
-			display: flex;
-			flex-direction: row;
-		}
-
 		.app .reservations select {
 			border-radius: 10px;
 			padding: 7px;
+			margin: 10px;
+			border: 1px solid black;
 		}
 
-		.app .reservations .class {
+		.app .reservations input {
+			border-radius: 10px;
+			padding: 7px;
+			margin: 10px;
+			border: 1px solid black;
+			width: 70px;
+			text-align: center;
+		}
+
+		.app .reservations .selects {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.app .reservations .class-select,
+		.app .reservations .subject-select,
+		.app .reservations .number-select {
+			display: block;
 			margin-top: 10px;
+			margin: 10px;
 		}
 
-		.app .reservations table tr,
-		.app .reservations table th {
-			border: 2px solid black;
+		.app .reservations label {
+			font-size: 15px;
+			font-weight: bold;
+		}
+
+		.app .reservations {
+			text-align: center;
+			justify-content: center;
+			align-items: center;
 			padding: 10px;
 		}
 
+		.app .reservations table {
+			margin: 40px auto 0px auto;
+			border-collapse: collapse;
+			border: 2px solid black;
+			font-family: sans-serif;
+			font-size: 0.8rem;
+			letter-spacing: 1px;
+			width: 630px;
+		}
+
+		.app .reservations table th,
+		.app .reservations table td {
+			border: 1px solid black;
+			padding: 8px 10px;
+			min-width: 70px;
+		}
+		/* #region Menubar */
 		.menubar {
 			/* width: 60%; */
 			width: 400px;
@@ -196,6 +320,10 @@
 		.menubar .element p {
 			cursor: default;
 		}
+
+		/* #endregion */
+
+		/* #region Login */
 
 		.login {
 			display: none;
@@ -289,9 +417,11 @@
 			color: #333;
 			font-weight: 600;
 		}
+
+		/* #endregion */
 	</style>
 
-	<!-- Login Scripts -->
+	<!-- Scripts -->
 	<script type="module">
 		// Import the functions you need from the SDKs you need
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -318,8 +448,8 @@
 		// Initialize Firebase
 		const app = initializeApp(firebaseConfig);
 
+		//#region Login
 		const auth = getAuth(app);
-
 		const email = document.getElementById("email");
 		const password = document.getElementById("password");
 		const remember = document.getElementById("remember");
@@ -362,6 +492,11 @@
 				app_win.style.display = "none";
 			}
 		});
+		//#endregion
+
+		//#region Schedules
+		// TODO Add Schedule Functionality
+		//#endregion
 	</script>
 	<script>
 		const reservations_win = document.getElementById("reservations");
