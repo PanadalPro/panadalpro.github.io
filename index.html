@@ -527,7 +527,7 @@
 					const data = docSnap.data();
 					for (let day in data) {
 						for (let hour in data[day]) {
-							if (data[day][hour].includes(subject_val)) {
+							if (String(data[day][hour]).includes(subject_val)) {
 								console.log(day, hour);
 
 								let new_hour = parseInt(hour);
@@ -542,12 +542,15 @@
 								let new_day = parseInt(day);
 
 								console.log(new_day, new_hour);
-								let random = Math.random() * 100;
-								schedule_table.rows[new_day].cells[
-									new_hour
-								].style.background = `linear-gradient(to right, red ${random}%, green ${
+								let random = Math.floor(Math.random() * 100);
+								const cell =
+									schedule_table.rows[new_day].cells[
+										new_hour
+									];
+								cell.style.background = `linear-gradient(to right, red ${random}%, green ${
 									100 - random
 								}%)`;
+								cell.innerHTML = `${100 - random} lliures`;
 							}
 						}
 					}
