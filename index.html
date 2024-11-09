@@ -436,11 +436,10 @@
 		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 		import {
-			getDatabase,
-			ref,
-			child,
-			get,
-		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+			getFirestore,
+			doc,
+			getDoc,
+		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 		// Your web app's Firebase configuration
 		const firebaseConfig = {
@@ -503,7 +502,7 @@
 
 		//#region Schedules
 		// Init Database
-		const db = ref(getDatabase(app));
+		const db = getFirestore(app);
 
 		// Get Elements
 		const class_select = document.getElementById("class");
@@ -511,24 +510,22 @@
 		class_select.addEventListener("change", class_subject);
 		subject_select.addEventListener("change", class_subject);
 
-		function class_subject() {
+		async function class_subject() {
 			let class_val = class_select.value;
 			let subject_val = subject_select.value;
 
 			if (class_val != "" && subject_val != "") {
 				// class_select.value = "";
 				// subject_select.value = "";
-				get(child(db, `${class_val}`))
-					.then((snapshot) => {
-						if (snapshot.exists()) {
-							console.log(snapshot.val());
-						} else {
-							console.log("No data available");
-						}
-					})
-					.catch((error) => {
-						console.error(error);
-					});
+				const docRef = doc(db, "schedules", class_val);
+				const docSnap = await getDoc(docRef);
+
+				if (docSnap.exists()) {
+					console.log("Document data:", docSnap.data());
+				} else {
+					// docSnap.data() will be undefined in this case
+					console.log("No such document!");
+				}
 			}
 		}
 		//#endregion
