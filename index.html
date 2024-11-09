@@ -526,8 +526,8 @@
 					for (let day in data) {
 						console.log("DAY", data[day]);
 						for (let hour in data[day]) {
-							console.log("HOUR", hour);
-							if (hour == subject_val) {
+							console.log("HOUR", data[day][hour]);
+							if (data[day][hour] == subject_val) {
 								console.log("OK");
 							}
 						}
