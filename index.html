@@ -119,7 +119,7 @@
 					</div>
 				</div>
 
-				<table class="schedule">
+				<table class="schedule" id="schedule">
 					<th>Horari</th>
 					<th>8:30 - 9:30</th>
 					<th>9:30 - 10:30</th>
@@ -505,6 +505,7 @@
 		const db = getFirestore(app);
 
 		// Get Elements
+		const schedule_table = document.getElementById("schedule");
 		const class_select = document.getElementById("class");
 		const subject_select = document.getElementById("subject");
 		class_select.addEventListener("change", class_subject);
@@ -522,13 +523,16 @@
 
 				if (docSnap.exists()) {
 					const data = docSnap.data();
-					console.log("Document data:", data);
 					for (let day in data) {
-						console.log("DAY", data[day]);
 						for (let hour in data[day]) {
-							console.log("HOUR", data[day][hour]);
 							if (data[day][hour] == subject_val) {
-								console.log("OK");
+								console.log(day, hour);
+								let new_hour =
+									hour +
+									1 +
+									(hour >= 2 ? (hour >= 4 ? 2 : 1) : 0);
+
+								console.log(new_hour);
 							}
 						}
 					}
