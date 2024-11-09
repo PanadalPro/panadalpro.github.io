@@ -521,10 +521,18 @@
 				const docSnap = await getDoc(docRef);
 
 				if (docSnap.exists()) {
-					console.log("Document data:", docSnap.data());
+					const data = docSnap.data();
+					for (day in data) {
+						for (hour in day) {
+							console.log(hour);
+							if (hour == subject_val) {
+								console.log("OK");
+							}
+						}
+						console.log("CH DAY");
+					}
 				} else {
-					// docSnap.data() will be undefined in this case
-					console.log("No such document!");
+					console.log("Error! No Schedule Data");
 				}
 			}
 		}
