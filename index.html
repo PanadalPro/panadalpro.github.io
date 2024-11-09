@@ -527,8 +527,8 @@
 						for (let hour in data[day]) {
 							if (data[day][hour] == subject_val) {
 								console.log(day, hour);
-								let new_hour = parseInt(hour);
-								new_hour +=
+								let new_hour =
+									parseInt(hour) +
 									2 +
 									(new_hour >= 2
 										? new_hour >= 4
@@ -536,7 +536,9 @@
 											: 1
 										: 0);
 
-								schedule_table.rows[2 + day].cells[
+								let new_day = parseInt(day) + 2;
+
+								schedule_table.rows[new_day].cells[
 									new_hour
 								].innerHTML = "OK";
 							}
