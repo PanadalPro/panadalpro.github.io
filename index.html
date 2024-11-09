@@ -522,9 +522,10 @@
 
 				if (docSnap.exists()) {
 					const data = docSnap.data();
+					console.log("Document data:", data);
 					for (let day in data) {
-						console.log("DAY", day);
-						for (let hour in day) {
+						console.log("DAY", data[day]);
+						for (let hour in data[day]) {
 							console.log("HOUR", hour);
 							if (hour == subject_val) {
 								console.log("OK");
