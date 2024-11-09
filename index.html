@@ -73,11 +73,7 @@
 					<div class="class-select">
 						<label for="class">Classe</label>
 						<br />
-						<select
-							class="class"
-							id="class"
-							onchange="class_subject()"
-						>
+						<select class="class" id="class">
 							<option value="" disabled selected>
 								Selecciona
 							</option>
@@ -97,11 +93,7 @@
 					<div class="subject-select">
 						<label for="subject">Assignatura</label>
 						<br />
-						<select
-							class="subject"
-							id="subject"
-							onchange="class_subject()"
-						>
+						<select class="subject" id="subject">
 							<option value="" disabled selected>
 								Selecciona
 							</option>
@@ -503,7 +495,20 @@
 		//#endregion
 
 		//#region Schedules
+		const class_select = document.getElementById("class");
+		const subject_select = document.getElementById("subject");
+		class_select.addEventListener("change", class_subject);
+		subject_select.addEventListener("change", class_subject);
 
+		function class_subject() {
+			class_val = class_select.value;
+			subject_val = subject_select.value;
+
+			if (class_val != "" && subject_val != "") {
+				class_select.value = "";
+				subject_select.value = "";
+			}
+		}
 		//#endregion
 	</script>
 	<script>
@@ -543,21 +548,5 @@
 		reservations();
 
 		//#endregion
-
-		const class_select = document.getElementById("class");
-		const subject_select = document.getElementById("subject");
-		function class_subject() {
-			class_val = class_select.value;
-			subject_val = subject_select.value;
-
-			console.log("hello");
-			console.log(class_select);
-			console.log(subject_select);
-
-			if (class_val != "" && subject_val != "") {
-				class_select.value = "";
-				subject_select.value = "";
-			}
-		}
 	</script>
 </html>
