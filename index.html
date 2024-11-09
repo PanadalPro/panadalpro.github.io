@@ -73,7 +73,11 @@
 					<div class="class-select">
 						<label for="class">Classe</label>
 						<br />
-						<select class="class" id="class">
+						<select
+							class="class"
+							id="class"
+							onchange="class_subject()"
+						>
 							<option value="" disabled selected>
 								Selecciona
 							</option>
@@ -93,7 +97,11 @@
 					<div class="subject-select">
 						<label for="subject">Assignatura</label>
 						<br />
-						<select class="subject" id="subject">
+						<select
+							class="subject"
+							id="subject"
+							onchange="class_subject()"
+						>
 							<option value="" disabled selected>
 								Selecciona
 							</option>
@@ -495,7 +503,18 @@
 		//#endregion
 
 		//#region Schedules
-		// TODO Add Schedule Functionality
+		// Fetch schedules from Firestore
+		const class_select = document.getElementById("class");
+		const subject_select = document.getElementById("subject");
+		function class_subject() {
+			class_val = class_select.value;
+			subject_val = subject_select.value;
+
+			if (class_val != 0 && subject_val != 0) {
+				class_select.value = 0;
+				subject_select.value = 0;
+			}
+		}
 		//#endregion
 	</script>
 	<script>
