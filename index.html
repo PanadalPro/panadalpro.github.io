@@ -537,9 +537,11 @@
 
 								let new_day = parseInt(day) + 2;
 
-								schedule_table.rows[new_day].cells[
-									new_hour
-								].innerHTML = "OK";
+								console.log(new_day, new_hour);
+
+								document.getElementById("schedule").rows[
+									new_day
+								].cells[new_hour].innerHTML = "OK";
 							}
 						}
 					}
