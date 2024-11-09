@@ -503,38 +503,28 @@
 		//#endregion
 
 		//#region Schedules
-		// Fetch schedules from Firestore
-		const class_select = document.getElementById("class");
-		const subject_select = document.getElementById("subject");
-		function class_subject() {
-			class_val = class_select.value;
-			subject_val = subject_select.value;
 
-			if (class_val != 0 && subject_val != 0) {
-				class_select.value = 0;
-				subject_select.value = 0;
-			}
-		}
 		//#endregion
 	</script>
 	<script>
+		//#region Login
+		const password_field = document.getElementById("password");
+		const show_check = document.getElementById("show-check");
+		function togglePassword() {
+			password_field.type = show_check.checked ? "text" : "password";
+		}
+
+		//#endregion
+
+		//#region Menubar
+		const MENUBAR_ACCENT_COLOR = "#b57f1f";
+
 		const reservations_win = document.getElementById("reservations");
 		const screens_win = document.getElementById("screens");
 		const reservations_element = document.getElementById(
 			"reservations-element"
 		);
 		const screens_element = document.getElementById("screens-element");
-
-		function togglePassword() {
-			document.getElementById("password").type = document.getElementById(
-				"show-check"
-			).checked
-				? "text"
-				: "password";
-		}
-
-		// Menubar Functions
-		const MENUBAR_ACCENT_COLOR = "#b57f1f";
 
 		function reservations() {
 			reservations_win.style.display = "initial";
@@ -551,5 +541,23 @@
 		}
 
 		reservations();
+
+		//#endregion
+
+		const class_select = document.getElementById("class");
+		const subject_select = document.getElementById("subject");
+		function class_subject() {
+			class_val = class_select.value;
+			subject_val = subject_select.value;
+
+			console.log("hello");
+			console.log(class_select);
+			console.log(subject_select);
+
+			if (class_val != "" && subject_val != "") {
+				class_select.value = "";
+				subject_select.value = "";
+			}
+		}
 	</script>
 </html>
