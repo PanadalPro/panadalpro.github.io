@@ -526,8 +526,8 @@
 					for (let day in data) {
 						for (let hour in data[day]) {
 							if (data[day][hour] == subject_val) {
-								let new_hour =
-									parseInt(hour) +
+								let new_hour = parseInt(hour);
+								new_hour +=
 									2 +
 									(new_hour >= 2
 										? new_hour >= 4
