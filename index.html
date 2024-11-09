@@ -435,6 +435,13 @@
 			browserLocalPersistence,
 		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
+		import {
+			getDatabase,
+			ref,
+			child,
+			get,
+		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
 		// Your web app's Firebase configuration
 		const firebaseConfig = {
 			apiKey: "AIzaSyD0N4UJKBvCkmWmJdd0gMQI0I9by-qRUxI",
@@ -495,6 +502,10 @@
 		//#endregion
 
 		//#region Schedules
+		// Init Database
+		const db = ref(getDatabase(app));
+
+		// Get Elements
 		const class_select = document.getElementById("class");
 		const subject_select = document.getElementById("subject");
 		class_select.addEventListener("change", class_subject);
@@ -505,8 +516,19 @@
 			let subject_val = subject_select.value;
 
 			if (class_val != "" && subject_val != "") {
-				class_select.value = "";
-				subject_select.value = "";
+				// class_select.value = "";
+				// subject_select.value = "";
+				get(child(db, `${class_val}`))
+					.then((snapshot) => {
+						if (snapshot.exists()) {
+							console.log(snapshot.val());
+						} else {
+							console.log("No data available");
+						}
+					})
+					.catch((error) => {
+						console.error(error);
+					});
 			}
 		}
 		//#endregion
