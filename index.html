@@ -511,6 +511,7 @@
 		class_select.addEventListener("change", class_subject);
 		subject_select.addEventListener("change", class_subject);
 
+		const EMPTY_SCHEDULE = schedule_table.rows;
 		async function class_subject() {
 			let class_val = class_select.value;
 			let subject_val = subject_select.value;
@@ -522,6 +523,7 @@
 				const docSnap = await getDoc(docRef);
 
 				if (docSnap.exists()) {
+					schedule_table.rows = EMPTY_SCHEDULE;
 					const data = docSnap.data();
 					for (let day in data) {
 						for (let hour in data[day]) {
@@ -541,9 +543,9 @@
 
 								console.log(new_day, new_hour);
 
-								document.getElementById("schedule").rows[
-									new_day
-								].cells[new_hour].innerHTML = "OK";
+								schedule_table.rows[new_day].cells[
+									new_hour
+								].innerHTML = "OK";
 							}
 						}
 					}
