@@ -530,14 +530,14 @@
 
 								let new_hour = parseInt(hour);
 								new_hour +=
-									2 +
+									1 +
 									(new_hour >= 2
 										? new_hour >= 4
 											? 2
 											: 1
 										: 0);
 
-								let new_day = parseInt(day) + 2;
+								let new_day = parseInt(day);
 
 								console.log(new_day, new_hour);
 
