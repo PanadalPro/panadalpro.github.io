@@ -67,6 +67,10 @@
 					<i class="bx bx-laptop" onclick="screens()"></i>
 					<p onclick="screens()">Veure Pantalles</p>
 				</div>
+				<div class="element" id="config-element">
+					<i class='bx bx-cog' onclick="config()"></i>
+					<p onclick="config()">Configuració</p>
+				</div>
 			</div>
 			<div class="reservations" id="reservations">
 				<div class="selects">
@@ -189,11 +193,22 @@
 			<div class="screens" id="screens">
 				<p>View Screens! Upcoming Feature...</p>
 			</div>
+			<div class="config" id="config">
+				<h2>Configuració</h2>
+
+				<!-- #region Schedules -->
+				<button class="element">Horaris</button>
+				<div class="config-schedules" id="config-schedules">
+
+				</div>
+				<!-- #endregion -->
+			</div>
 		</div>
 	</body>
 
 	<!-- Style -->
 	<style>
+		/* #region Body */
 		* {
 			margin: 0;
 			padding: 0;
@@ -211,9 +226,12 @@
 			background-size: cover;
 			background-position: center;
 		}
+		/* #endregion */
 
+		/* #region App */
 		.reservations,
-		.screens {
+		.screens,
+		.config {
 			display: none;
 		}
 
@@ -225,7 +243,9 @@
 			height: 80%;
 			background: rgba(255, 255, 255, 0.92);
 		}
+		/* #endregion */
 
+		/* #region App - Reservations */
 		.app .reservations select {
 			border-radius: 10px;
 			padding: 7px;
@@ -285,6 +305,38 @@
 			padding: 8px 10px;
 			min-width: 70px;
 		}
+		/* #endregion */
+
+		/* #region App - Screens */
+		/* #endregion */
+
+		/* #region App - Config */
+		.app .config h2 {
+			padding: 20px;
+			border-radius: 10px;
+			border: 1px solid black;
+			width: 190px;
+			background-color: rgb(219, 174, 77);
+			margin: 20px auto 0 auto;
+		}
+
+		.app .config .element {
+			border-radius: 10px;
+			border: 1px solid black;
+			margin: 20px auto;
+			display: flex;
+			height: 40px;
+			width: 90%;
+			justify-content: center;
+			font-size: 30px;
+		}
+
+		.app .config .element:hover {
+			background-color: rgb(225, 202, 125);
+		}
+		
+		/* #endregion */
+
 		/* #region Menubar */
 		.menubar {
 			/* width: 60%; */
@@ -312,8 +364,8 @@
 
 		.menubar .element i {
 			font-size: 30px;
-			margin-left: 60px;
-			margin-right: 60px;
+			margin-left: 50px;
+			margin-right: 50px;
 			padding: 60px -10px;
 		}
 
@@ -423,6 +475,7 @@
 
 	<!-- Scripts -->
 	<script type="module">
+		//#region Imports & Config 
 		// Import the functions you need from the SDKs you need
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 		import {
@@ -453,6 +506,8 @@
 
 		// Initialize Firebase
 		const app = initializeApp(firebaseConfig);
+
+		//#endregion
 
 		//#region Login
 		const auth = getAuth(app);
@@ -517,8 +572,6 @@
 			let subject_val = subject_select.value;
 
 			if (class_val != "" && subject_val != "") {
-				// class_select.value = "";
-				// subject_select.value = "";
 				const docRef = doc(db, "schedules", class_val);
 				const docSnap = await getDoc(docRef);
 
@@ -574,29 +627,57 @@
 		//#region Menubar
 		const MENUBAR_ACCENT_COLOR = "#b57f1f";
 
+		// Windows
 		const reservations_win = document.getElementById("reservations");
 		const screens_win = document.getElementById("screens");
-		const reservations_element = document.getElementById(
-			"reservations-element"
-		);
+		const config_win = document.getElementById("config");
+
+		// Elements
+		const reservations_element = document.getElementById("reservations-element");
 		const screens_element = document.getElementById("screens-element");
+		const config_element = document.getElementById("config-element")
 
 		function reservations() {
 			reservations_win.style.display = "initial";
 			screens_win.style.display = "none";
+			config_win.style.display = "none";
 			reservations_element.style.color = MENUBAR_ACCENT_COLOR;
 			screens_element.style.color = "black";
+			config_element.style.color = "black";
 		}
 
 		function screens() {
 			screens_win.style.display = "initial";
+			config_win.style.display = "none";
 			reservations_win.style.display = "none";
 			screens_element.style.color = MENUBAR_ACCENT_COLOR;
+			config_element.style.color = "black";
 			reservations_element.style.color = "black";
 		}
 
-		reservations();
+		function config() {
+			config_win.style.display = "initial";
+			reservations_win.style.display = "none";
+			screens_win.style.display = "none";
+			config_element.style.color = MENUBAR_ACCENT_COLOR;
+			reservations_element.style.color = "black";
+			screens_element.style.color = "black";
+		}
 
+		//reservations();
+		config();
+
+		//#endregion
+	
+		//#region Config
+		const schedules_win = document.getElementById("config-schedules")
+		const main_win = document.getElementById("app");
+
+		// TODO HERE
+
+		function schedules() {
+			
+		}
 		//#endregion
 	</script>
 </html>
