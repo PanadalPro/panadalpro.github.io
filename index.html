@@ -199,16 +199,70 @@
 				<!-- #region Schedules -->
 				<button class="element" onclick="schedules()">Horaris</button>
 				<div class="config-schedules" id="config-schedules">
-					<div class="select-class">
-						<button class="config-class" id="4a">4t A</button>
-						<button class="config-class" id="4b">4t B</button>
-						<button class="config-class" id="4c">4t C</button>
-						<button class="config-class" id="5a">5è A</button>
-						<button class="config-class" id="5b">5è B</button>
-						<button class="config-class" id="5c">5è C</button>
-						<button class="config-class" id="6a">6è A</button>
-						<button class="config-class" id="6b">6è B</button>
-						<button class="config-class" id="6c">6è C</button>
+					<div class="select-class" id="select-class">
+						<button
+							class="config-class"
+							id="4a"
+							onclick="schedules_table()"
+						>
+							4t A
+						</button>
+						<button
+							class="config-class"
+							id="4b"
+							onclick="schedules_table()"
+						>
+							4t B
+						</button>
+						<button
+							class="config-class"
+							id="4c"
+							onclick="schedules_table()"
+						>
+							4t C
+						</button>
+						<button
+							class="config-class"
+							id="5a"
+							onclick="schedules_table()"
+						>
+							5è A
+						</button>
+						<button
+							class="config-class"
+							id="5b"
+							onclick="schedules_table()"
+						>
+							5è B
+						</button>
+						<button
+							class="config-class"
+							id="5c"
+							onclick="schedules_table()"
+						>
+							5è C
+						</button>
+						<button
+							class="config-class"
+							id="6a"
+							onclick="schedules_table()"
+						>
+							6è A
+						</button>
+						<button
+							class="config-class"
+							id="6b"
+							onclick="schedules_table()"
+						>
+							6è B
+						</button>
+						<button
+							class="config-class"
+							id="6c"
+							onclick="schedules_table()"
+						>
+							6è C
+						</button>
 					</div>
 					<table
 						class="config-schedule-table"
@@ -461,7 +515,7 @@
 		}
 
 		.app .config .config-schedules .config-schedule-table {
-			margin: 40px auto 0px auto;
+			margin: 60px auto 0px auto;
 			border-collapse: collapse;
 			border: 2px solid black;
 			font-family: sans-serif;
@@ -833,15 +887,14 @@
 			"config-schedule-table"
 		);
 
+		const config_class_select = document.getElementById("select-class");
+
 		config_schedule_table.style.display = "none";
 
 		function schedules_table() {
+			config_class_select.style.display = "none";
 			config_schedule_table.style.display = "initial";
 		}
-
-		document.querySelectorAll("config-class").forEach(function (element) {
-			element.addEventListener("click", schedules_table);
-		});
 		//#endregion
 
 		//#endregion
