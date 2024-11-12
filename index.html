@@ -2,848 +2,848 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>TecnoThau</title>
-        <link
-            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-            rel="stylesheet"
-        />
-    </head>
-    <body>
-        <div class="login" id="login">
-            <form action="">
-                <h1>Inicia la Sessió</h1>
-                <div class="input-box">
-                    <input
-                        type="text"
-                        placeholder="Correu"
-                        class="input"
-                        id="email"
-                        required
-                    />
-                    <i class="bx bxs-envelope"></i>
-                </div>
-                <div class="input-box">
-                    <input
-                        type="password"
-                        placeholder="Contrasenya"
-                        class="input"
-                        id="password"
-                        required
-                    />
-                    <i class="bx bxs-lock-alt"></i>
-                    <label
-                        ><input
-                            type="checkbox"
-                            id="show-check"
-                            onclick="togglePassword()"
-                        />
-                        Mostrar Contrasenya</label
-                    >
-                </div>
-
-                <div class="remember-forgot">
-                    <label
-                        ><input type="checkbox" id="remember" checked />
-                        Recorda'm</label
-                    >
-                    <a href="#">Has oblidat la contrasenya?</a>
-                </div>
-
-                <button type="submit" class="btn" id="login-btn">
-                    Inicia la Sessió
-                </button>
-            </form>
-        </div>
-        <div class="app" id="app">
-            <div class="menubar">
-                <div class="element" id="reservations-element">
-                    <i class="bx bxs-calendar" onclick="reservations()"></i>
-                    <p onclick="reservations()">Reservar</p>
-                </div>
-                <div class="element" id="screens-element">
-                    <i class="bx bx-laptop" onclick="screens()"></i>
-                    <p onclick="screens()">Veure Pantalles</p>
-                </div>
-                <div class="element" id="config-element">
-                    <i class="bx bx-cog" onclick="config()"></i>
-                    <p onclick="config()">Configuració</p>
-                </div>
-            </div>
-            <div class="reservations" id="reservations">
-                <div class="selects">
-                    <div class="class-select">
-                        <label for="class">Classe</label>
-                        <br />
-                        <select class="class" id="class">
-                            <option value="" disabled selected>
-                                Selecciona
-                            </option>
-                            <option value="4a">4t A</option>
-                            <option value="4b">4t B</option>
-                            <option value="4c">4t C</option>
-                            <option value="5a">5è A</option>
-                            <option value="5b">5è B</option>
-                            <option value="5c">5è C</option>
-                            <option value="6a">6è A</option>
-                            <option value="6b">6è B</option>
-                            <option value="6c">6è C</option>
-                            <option value="other">Altres</option>
-                        </select>
-                    </div>
-
-                    <div class="subject-select">
-                        <label for="subject">Assignatura</label>
-                        <br />
-                        <select class="subject" id="subject">
-                            <option value="" disabled selected>
-                                Selecciona
-                            </option>
-                            <option value="1">Català</option>
-                            <option value="2">Castellà</option>
-                            <option value="3">Anglès</option>
-                            <option value="4">Medi</option>
-                            <option value="5">Matemàtiques</option>
-                            <option value="6">Valors / Tutoria</option>
-                            <option value="7">Altres</option>
-                        </select>
-                    </div>
-
-                    <div class="number-select">
-                        <label for="number">Número</label>
-                        <br />
-                        <input
-                            type="number"
-                            class="number"
-                            id="number"
-                            min="0"
-                        />
-                    </div>
-                </div>
-
-                <table class="schedule" id="schedule">
-                    <th>Horari</th>
-                    <th>8:30 - 9:30</th>
-                    <th>9:30 - 10:30</th>
-                    <th>10:30 - 11:00</th>
-                    <th>11:00 - 12:00</th>
-                    <th>12:00 - 13:00</th>
-                    <th>13:00 - 14:30</th>
-                    <th>14:30 - 15:30</th>
-                    <th>15:30 - 16:30</th>
-                    <tr>
-                        <th>Dilluns</th>
-                        <th></th>
-                        <th></th>
-                        <th>PATI</th>
-                        <th></th>
-                        <th></th>
-                        <th>DINAR</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <th>Dimarts</th>
-                        <th></th>
-                        <th></th>
-                        <th>PATI</th>
-                        <th></th>
-                        <th></th>
-                        <th>DINAR</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <th>Dimecres</th>
-                        <th></th>
-                        <th></th>
-                        <th>PATI</th>
-                        <th></th>
-                        <th></th>
-                        <th>DINAR</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <th>Dijous</th>
-                        <th></th>
-                        <th></th>
-                        <th>PATI</th>
-                        <th></th>
-                        <th></th>
-                        <th>DINAR</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <th>Divendres</th>
-                        <th></th>
-                        <th></th>
-                        <th>PATI</th>
-                        <th></th>
-                        <th></th>
-                        <th>DINAR</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </table>
-            </div>
-            <div class="screens" id="screens">
-                <p>View Screens! Upcoming Feature...</p>
-            </div>
-            <div class="config" id="config">
-                <h2>Configuració</h2>
-
-                <!-- #region Schedules -->
-                <button class="element" onclick="schedules()">Horaris</button>
-                <div class="config-schedules" id="config-schedules">
-                    <div class="select-class">
-                        <button class="config-class" id="4a">4t A</button>
-                        <button class="config-class" id="4b">4t B</button>
-                        <button class="config-class" id="4c">4t C</button>
-                        <button class="config-class" id="5a">5è A</button>
-                        <button class="config-class" id="5b">5è B</button>
-                        <button class="config-class" id="5c">5è C</button>
-                        <button class="config-class" id="6a">6è A</button>
-                        <button class="config-class" id="6b">6è B</button>
-                        <button class="config-class" id="6c">6è C</button>
-                    </div>
-                    <table
-                        class="config-schedule-table"
-                        id="config-schedule-table"
-                    >
-                        <th>Horari</th>
-                        <th>8:30 - 9:30</th>
-                        <th>9:30 - 10:30</th>
-                        <th>10:30 - 11:00</th>
-                        <th>11:00 - 12:00</th>
-                        <th>12:00 - 13:00</th>
-                        <th>13:00 - 14:30</th>
-                        <th>14:30 - 15:30</th>
-                        <th>15:30 - 16:30</th>
-                        <tr>
-                            <th>Dilluns</th>
-                            <th></th>
-                            <th></th>
-                            <th>PATI</th>
-                            <th></th>
-                            <th></th>
-                            <th>DINAR</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        <tr>
-                            <th>Dimarts</th>
-                            <th></th>
-                            <th></th>
-                            <th>PATI</th>
-                            <th></th>
-                            <th></th>
-                            <th>DINAR</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        <tr>
-                            <th>Dimecres</th>
-                            <th></th>
-                            <th></th>
-                            <th>PATI</th>
-                            <th></th>
-                            <th></th>
-                            <th>DINAR</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        <tr>
-                            <th>Dijous</th>
-                            <th></th>
-                            <th></th>
-                            <th>PATI</th>
-                            <th></th>
-                            <th></th>
-                            <th>DINAR</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        <tr>
-                            <th>Divendres</th>
-                            <th></th>
-                            <th></th>
-                            <th>PATI</th>
-                            <th></th>
-                            <th></th>
-                            <th>DINAR</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </table>
-                    <i
-                        class="bx bx-chevron-left"
-                        onclick="schedules_back()"
-                    ></i>
-                </div>
-                <!-- #endregion -->
-            </div>
-        </div>
-    </body>
-
-    <!-- Style -->
-    <style>
-        /* #region Body */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: url("https://thausantcugat.org/wp-content/uploads/2022/12/thau-sant-cugat-3.jpg")
-                no-repeat;
-            background-size: cover;
-            background-position: center;
-        }
-        /* #endregion */
-
-        /* #region App */
-        .reservations,
-        .screens,
-        .config {
-            display: none;
-        }
-
-        .app {
-            display: none;
-            text-align: center;
-            width: 100%;
-            min-height: inherit;
-            height: 80%;
-            background: rgba(255, 255, 255, 0.92);
-        }
-        /* #endregion */
-
-        /* #region App - Reservations */
-        .app .reservations select {
-            border-radius: 10px;
-            padding: 7px;
-            margin: 10px;
-            border: 1px solid black;
-        }
-
-        .app .reservations input {
-            border-radius: 10px;
-            padding: 7px;
-            margin: 10px;
-            border: 1px solid black;
-            width: 70px;
-            text-align: center;
-        }
-
-        .app .reservations .selects {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .app .reservations .class-select,
-        .app .reservations .subject-select,
-        .app .reservations .number-select {
-            display: block;
-            margin-top: 10px;
-            margin: 10px;
-        }
-
-        .app .reservations label {
-            font-size: 15px;
-            font-weight: bold;
-        }
-
-        .app .reservations {
-            text-align: center;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-        }
-
-        .app .reservations table {
-            margin: 40px auto 0px auto;
-            border-collapse: collapse;
-            border: 2px solid black;
-            font-family: sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            width: 630px;
-        }
-
-        .app .reservations table th,
-        .app .reservations table td {
-            border: 1px solid black;
-            padding: 8px 10px;
-            min-width: 70px;
-        }
-        /* #endregion */
-
-        /* #region App - Screens */
-        /* #endregion */
-
-        /* #region App - Config */
-        .app .config h2 {
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid black;
-            width: 190px;
-            background-color: rgb(219, 174, 77);
-            margin: 20px auto 0 auto;
-        }
-
-        .app .config .element {
-            border-radius: 10px;
-            border: 1px solid black;
-            margin: 20px auto;
-            display: flex;
-            height: 40px;
-            width: 90%;
-            justify-content: center;
-            font-size: 30px;
-        }
-
-        .app .config .element:hover {
-            background-color: rgb(225, 202, 125);
-        }
-
-        /* #region Config - Schedules */
-
-        .app .config .config-schedules {
-            position: absolute;
-            top: 5%;
-            left: 5%;
-            width: 90%;
-            height: 90%;
-            background-color: #fff;
-            border-radius: 10px;
-            border: 2px solid black;
-        }
-
-        .app .config .config-schedules i {
-            position: absolute;
-            border: 1px solid black;
-            border-radius: 10px;
-            font-size: 30px;
-            top: 10px;
-            left: 10px;
-        }
-
-        .app .config .config-schedules i:hover {
-            background-color: rgb(225, 202, 125);
-        }
-
-        .app .config .config-schedules .select-class {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            margin-top: 100px;
-        }
-
-        .app .config .config-schedules .select-class button {
-            width: 200px;
-            height: 30px;
-            font-size: 20px;
-            margin: 10px;
-        }
-
-        .app .config .config-schedules .config-schedule-table {
-            margin: 40px auto 0px auto;
-            border-collapse: collapse;
-            border: 2px solid black;
-            font-family: sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            width: 630px;
-        }
-
-        .app .config .config-schedules .config-schedule-table th,
-        .app .config .config-schedules .config-schedule-table td {
-            border: 1px solid black;
-            padding: 8px 10px;
-            min-width: 70px;
-        }
-        /* #endregion */
-
-        /* #endregion */
-
-        /* #region Menubar */
-        .menubar {
-            /* width: 60%; */
-            width: 400px;
-            height: 60px;
-            background: #edd3a6;
-            display: flex;
-            flex-direction: row;
-            text-align: center;
-            justify-content: center;
-            left: 50%;
-            transform: translateX(-50%);
-            position: fixed;
-            bottom: 0;
-            border-radius: 20px;
-        }
-
-        .menubar .element {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .menubar .element i {
-            font-size: 30px;
-            margin-left: 50px;
-            margin-right: 50px;
-            padding: 60px -10px;
-        }
-
-        .menubar .element p {
-            cursor: default;
-        }
-
-        /* #endregion */
-
-        /* #region Login */
-
-        .login {
-            display: none;
-            width: 420px;
-            background: transparent;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            color: #fff;
-            border-radius: 10px;
-            padding: 30px 40px;
-        }
-
-        .login h1 {
-            font-size: 36px;
-            text-align: center;
-        }
-
-        .login .input-box {
-            position: relative;
-            width: 100%;
-            height: 50px;
-            margin: 30px 0;
-        }
-
-        .input-box .input {
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 40px;
-            font-size: 16px;
-            color: #fff;
-            padding: 20px 45px 20px 20px;
-        }
-
-        .input-box input::placeholder {
-            color: #fff;
-        }
-
-        .input-box i {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 20px;
-        }
-
-        .input-box label {
-            padding-top: 10px;
-            position: absolute;
-            display: block;
-            text-align: center;
-            justify-content: center;
-            padding-left: 30%;
-        }
-
-        .login .remember-forgot {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14.5px;
-            margin: 5px 0 15px;
-        }
-
-        .remember-forgot label input {
-            accent-color: #fff;
-            margin-right: 3px;
-        }
-
-        .remember-forgot a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .remember-forgot a:hover {
-            text-decoration: underline;
-        }
-
-        .login .btn {
-            width: 100%;
-            height: 45px;
-            background: #fff;
-            border: none;
-            outline: none;
-            border-radius: 40px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            font-size: 16px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        /* #endregion */
-    </style>
-
-    <!-- Scripts -->
-    <script type="module">
-        //#region Imports & Config
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import {
-            getAuth,
-            signOut,
-            signInWithEmailAndPassword,
-            setPersistence,
-            browserSessionPersistence,
-            inMemoryPersistence,
-            browserLocalPersistence,
-        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-        import {
-            getFirestore,
-            doc,
-            getDoc,
-        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD0N4UJKBvCkmWmJdd0gMQI0I9by-qRUxI",
-            authDomain: "tecnothau1.firebaseapp.com",
-            projectId: "tecnothau1",
-            storageBucket: "tecnothau1.appspot.com",
-            messagingSenderId: "292144359028",
-            appId: "1:292144359028:web:673fb5332d1eddb5c01321",
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-
-        //#endregion
-
-        //#region Login
-        const auth = getAuth(app);
-        const email = document.getElementById("email");
-        const password = document.getElementById("password");
-        const remember = document.getElementById("remember");
-        const login_win = document.getElementById("login");
-        const app_win = document.getElementById("app");
-
-        const submit = document.getElementById("login-btn");
-        submit.addEventListener("click", function (event) {
-            event.preventDefault();
-
-            setPersistence(
-                auth,
-                remember.checked
-                    ? browserLocalPersistence
-                    : browserSessionPersistence
-            ).then(() => {
-                // Sign in
-                signInWithEmailAndPassword(auth, email.value, password.value)
-                    .then((userCredential) => {
-                        const user = userCredential.user;
-                    })
-                    .catch((error) => {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        console.log(errorCode, errorMessage);
-                        alert("Please check your email/password and try again");
-                    });
-            });
-        });
-        // Listen for auth state changes
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in, show the main application
-                login_win.style.display = "none";
-                app_win.style.display = "initial";
-                // signOut(auth);
-            } else {
-                // No user is signed in, show the login screen
-                login_win.style.display = "initial";
-                app_win.style.display = "none";
-            }
-        });
-        //#endregion
-
-        //#region Schedules
-        // Init Database
-        const db = getFirestore(app);
-
-        // Get Elements
-        const schedule_table = document.getElementById("schedule");
-        const class_select = document.getElementById("class");
-        const subject_select = document.getElementById("subject");
-        class_select.addEventListener("change", class_subject);
-        subject_select.addEventListener("change", class_subject);
-
-        const EMPTY_SCHEDULE = schedule_table.innerHTML;
-        async function class_subject() {
-            let class_val = class_select.value;
-            let subject_val = subject_select.value;
-
-            if (class_val != "" && subject_val != "") {
-                const docRef = doc(db, "schedules", class_val);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    schedule_table.innerHTML = EMPTY_SCHEDULE;
-                    const data = docSnap.data();
-                    for (let day in data) {
-                        for (let hour in data[day]) {
-                            if (String(data[day][hour]).includes(subject_val)) {
-                                console.log(day, hour);
-
-                                let new_hour = parseInt(hour);
-                                new_hour +=
-                                    1 +
-                                    (new_hour >= 2
-                                        ? new_hour >= 4
-                                            ? 2
-                                            : 1
-                                        : 0);
-
-                                let new_day = parseInt(day);
-
-                                console.log(new_day, new_hour);
-                                let random = Math.floor(Math.random() * 100);
-                                const cell =
-                                    schedule_table.rows[new_day].cells[
-                                        new_hour
-                                    ];
-                                cell.style.background = `linear-gradient(to right, red ${random}%, green ${
-                                    100 - random
-                                }%)`;
-                                cell.innerHTML = `${100 - random} lliures`;
-                            }
-                        }
-                    }
-                } else {
-                    console.log("Error! No Schedule Data");
-                }
-            }
-        }
-        //#endregion
-    </script>
-    <script>
-        //#region Login
-        const password_field = document.getElementById("password");
-        const show_check = document.getElementById("show-check");
-        function togglePassword() {
-            password_field.type = show_check.checked ? "text" : "password";
-        }
-
-        //#endregion
-
-        //#region Menubar
-        const MENUBAR_ACCENT_COLOR = "#b57f1f";
-
-        // Windows
-        const reservations_win = document.getElementById("reservations");
-        const screens_win = document.getElementById("screens");
-        const config_win = document.getElementById("config");
-
-        // Elements
-        const reservations_element = document.getElementById(
-            "reservations-element"
-        );
-        const screens_element = document.getElementById("screens-element");
-        const config_element = document.getElementById("config-element");
-
-        function reservations() {
-            reservations_win.style.display = "initial";
-            screens_win.style.display = "none";
-            config_win.style.display = "none";
-            reservations_element.style.color = MENUBAR_ACCENT_COLOR;
-            screens_element.style.color = "black";
-            config_element.style.color = "black";
-        }
-
-        function screens() {
-            screens_win.style.display = "initial";
-            config_win.style.display = "none";
-            reservations_win.style.display = "none";
-            screens_element.style.color = MENUBAR_ACCENT_COLOR;
-            config_element.style.color = "black";
-            reservations_element.style.color = "black";
-        }
-
-        function config() {
-            config_win.style.display = "initial";
-            reservations_win.style.display = "none";
-            screens_win.style.display = "none";
-            config_element.style.color = MENUBAR_ACCENT_COLOR;
-            reservations_element.style.color = "black";
-            screens_element.style.color = "black";
-        }
-
-        //reservations();
-        config();
-
-        //#endregion
-
-        //#region Config
-
-        //#region Schedules
-        const schedules_win = document.getElementById("config-schedules");
-
-        schedules_win.style.display = "none";
-
-        function schedules() {
-            schedules_win.style.display = "initial";
-        }
-
-        function schedules_back() {
-            schedules_win.style.display = "none";
-        }
-
-        const config_schedule_table = document.getElementById(
-            "config-schedule-table"
-        );
-
-        config_schedule_table.style.display = "none";
-
-        document
-            .querySelectorAll("config-class")
-            .addEventListener("click", () => {
-                config_schedule_table.style.display = "block";
-            });
-
-        // TODO HERE IT DOESN'T WORK :(
-        //#endregion
-
-        //#endregion
-    </script>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>TecnoThau</title>
+		<link
+			href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<div class="login" id="login">
+			<form action="">
+				<h1>Inicia la Sessió</h1>
+				<div class="input-box">
+					<input
+						type="text"
+						placeholder="Correu"
+						class="input"
+						id="email"
+						required
+					/>
+					<i class="bx bxs-envelope"></i>
+				</div>
+				<div class="input-box">
+					<input
+						type="password"
+						placeholder="Contrasenya"
+						class="input"
+						id="password"
+						required
+					/>
+					<i class="bx bxs-lock-alt"></i>
+					<label
+						><input
+							type="checkbox"
+							id="show-check"
+							onclick="togglePassword()"
+						/>
+						Mostrar Contrasenya</label
+					>
+				</div>
+
+				<div class="remember-forgot">
+					<label
+						><input type="checkbox" id="remember" checked />
+						Recorda'm</label
+					>
+					<a href="#">Has oblidat la contrasenya?</a>
+				</div>
+
+				<button type="submit" class="btn" id="login-btn">
+					Inicia la Sessió
+				</button>
+			</form>
+		</div>
+		<div class="app" id="app">
+			<div class="menubar">
+				<div class="element" id="reservations-element">
+					<i class="bx bxs-calendar" onclick="reservations()"></i>
+					<p onclick="reservations()">Reservar</p>
+				</div>
+				<div class="element" id="screens-element">
+					<i class="bx bx-laptop" onclick="screens()"></i>
+					<p onclick="screens()">Veure Pantalles</p>
+				</div>
+				<div class="element" id="config-element">
+					<i class="bx bx-cog" onclick="config()"></i>
+					<p onclick="config()">Configuració</p>
+				</div>
+			</div>
+			<div class="reservations" id="reservations">
+				<div class="selects">
+					<div class="class-select">
+						<label for="class">Classe</label>
+						<br />
+						<select class="class" id="class">
+							<option value="" disabled selected>
+								Selecciona
+							</option>
+							<option value="4a">4t A</option>
+							<option value="4b">4t B</option>
+							<option value="4c">4t C</option>
+							<option value="5a">5è A</option>
+							<option value="5b">5è B</option>
+							<option value="5c">5è C</option>
+							<option value="6a">6è A</option>
+							<option value="6b">6è B</option>
+							<option value="6c">6è C</option>
+							<option value="other">Altres</option>
+						</select>
+					</div>
+
+					<div class="subject-select">
+						<label for="subject">Assignatura</label>
+						<br />
+						<select class="subject" id="subject">
+							<option value="" disabled selected>
+								Selecciona
+							</option>
+							<option value="1">Català</option>
+							<option value="2">Castellà</option>
+							<option value="3">Anglès</option>
+							<option value="4">Medi</option>
+							<option value="5">Matemàtiques</option>
+							<option value="6">Valors / Tutoria</option>
+							<option value="7">Altres</option>
+						</select>
+					</div>
+
+					<div class="number-select">
+						<label for="number">Número</label>
+						<br />
+						<input
+							type="number"
+							class="number"
+							id="number"
+							min="0"
+						/>
+					</div>
+				</div>
+
+				<table class="schedule" id="schedule">
+					<th>Horari</th>
+					<th>8:30 - 9:30</th>
+					<th>9:30 - 10:30</th>
+					<th>10:30 - 11:00</th>
+					<th>11:00 - 12:00</th>
+					<th>12:00 - 13:00</th>
+					<th>13:00 - 14:30</th>
+					<th>14:30 - 15:30</th>
+					<th>15:30 - 16:30</th>
+					<tr>
+						<th>Dilluns</th>
+						<th></th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr>
+						<th>Dimarts</th>
+						<th></th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr>
+						<th>Dimecres</th>
+						<th></th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr>
+						<th>Dijous</th>
+						<th></th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr>
+						<th>Divendres</th>
+						<th></th>
+						<th></th>
+						<th>PATI</th>
+						<th></th>
+						<th></th>
+						<th>DINAR</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</table>
+			</div>
+			<div class="screens" id="screens">
+				<p>View Screens! Upcoming Feature...</p>
+			</div>
+			<div class="config" id="config">
+				<h2>Configuració</h2>
+
+				<!-- #region Schedules -->
+				<button class="element" onclick="schedules()">Horaris</button>
+				<div class="config-schedules" id="config-schedules">
+					<div class="select-class">
+						<button class="config-class" id="4a">4t A</button>
+						<button class="config-class" id="4b">4t B</button>
+						<button class="config-class" id="4c">4t C</button>
+						<button class="config-class" id="5a">5è A</button>
+						<button class="config-class" id="5b">5è B</button>
+						<button class="config-class" id="5c">5è C</button>
+						<button class="config-class" id="6a">6è A</button>
+						<button class="config-class" id="6b">6è B</button>
+						<button class="config-class" id="6c">6è C</button>
+					</div>
+					<table
+						class="config-schedule-table"
+						id="config-schedule-table"
+					>
+						<th>Horari</th>
+						<th>8:30 - 9:30</th>
+						<th>9:30 - 10:30</th>
+						<th>10:30 - 11:00</th>
+						<th>11:00 - 12:00</th>
+						<th>12:00 - 13:00</th>
+						<th>13:00 - 14:30</th>
+						<th>14:30 - 15:30</th>
+						<th>15:30 - 16:30</th>
+						<tr>
+							<th>Dilluns</th>
+							<th></th>
+							<th></th>
+							<th>PATI</th>
+							<th></th>
+							<th></th>
+							<th>DINAR</th>
+							<th></th>
+							<th></th>
+						</tr>
+						<tr>
+							<th>Dimarts</th>
+							<th></th>
+							<th></th>
+							<th>PATI</th>
+							<th></th>
+							<th></th>
+							<th>DINAR</th>
+							<th></th>
+							<th></th>
+						</tr>
+						<tr>
+							<th>Dimecres</th>
+							<th></th>
+							<th></th>
+							<th>PATI</th>
+							<th></th>
+							<th></th>
+							<th>DINAR</th>
+							<th></th>
+							<th></th>
+						</tr>
+						<tr>
+							<th>Dijous</th>
+							<th></th>
+							<th></th>
+							<th>PATI</th>
+							<th></th>
+							<th></th>
+							<th>DINAR</th>
+							<th></th>
+							<th></th>
+						</tr>
+						<tr>
+							<th>Divendres</th>
+							<th></th>
+							<th></th>
+							<th>PATI</th>
+							<th></th>
+							<th></th>
+							<th>DINAR</th>
+							<th></th>
+							<th></th>
+						</tr>
+					</table>
+					<i
+						class="bx bx-chevron-left"
+						onclick="schedules_back()"
+					></i>
+				</div>
+				<!-- #endregion -->
+			</div>
+		</div>
+	</body>
+
+	<!-- Style -->
+	<style>
+		/* #region Body */
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: "Poppins", sans-serif;
+		}
+
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			background: url("https://thausantcugat.org/wp-content/uploads/2022/12/thau-sant-cugat-3.jpg")
+				no-repeat;
+			background-size: cover;
+			background-position: center;
+		}
+		/* #endregion */
+
+		/* #region App */
+		.reservations,
+		.screens,
+		.config {
+			display: none;
+		}
+
+		.app {
+			display: none;
+			text-align: center;
+			width: 100%;
+			min-height: inherit;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.92);
+		}
+		/* #endregion */
+
+		/* #region App - Reservations */
+		.app .reservations select {
+			border-radius: 10px;
+			padding: 7px;
+			margin: 10px;
+			border: 1px solid black;
+		}
+
+		.app .reservations input {
+			border-radius: 10px;
+			padding: 7px;
+			margin: 10px;
+			border: 1px solid black;
+			width: 70px;
+			text-align: center;
+		}
+
+		.app .reservations .selects {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.app .reservations .class-select,
+		.app .reservations .subject-select,
+		.app .reservations .number-select {
+			display: block;
+			margin-top: 10px;
+			margin: 10px;
+		}
+
+		.app .reservations label {
+			font-size: 15px;
+			font-weight: bold;
+		}
+
+		.app .reservations {
+			text-align: center;
+			justify-content: center;
+			align-items: center;
+			padding: 10px;
+		}
+
+		.app .reservations table {
+			margin: 40px auto 0px auto;
+			border-collapse: collapse;
+			border: 2px solid black;
+			font-family: sans-serif;
+			font-size: 0.8rem;
+			letter-spacing: 1px;
+			width: 630px;
+		}
+
+		.app .reservations table th,
+		.app .reservations table td {
+			border: 1px solid black;
+			padding: 8px 10px;
+			min-width: 70px;
+		}
+		/* #endregion */
+
+		/* #region App - Screens */
+		/* #endregion */
+
+		/* #region App - Config */
+		.app .config h2 {
+			padding: 20px;
+			border-radius: 10px;
+			border: 1px solid black;
+			width: 190px;
+			background-color: rgb(219, 174, 77);
+			margin: 20px auto 0 auto;
+		}
+
+		.app .config .element {
+			border-radius: 10px;
+			border: 1px solid black;
+			margin: 20px auto;
+			display: flex;
+			height: 40px;
+			width: 90%;
+			justify-content: center;
+			font-size: 30px;
+		}
+
+		.app .config .element:hover {
+			background-color: rgb(225, 202, 125);
+		}
+
+		/* #region Config - Schedules */
+
+		.app .config .config-schedules {
+			position: absolute;
+			top: 5%;
+			left: 5%;
+			width: 90%;
+			height: 90%;
+			background-color: #fff;
+			border-radius: 10px;
+			border: 2px solid black;
+		}
+
+		.app .config .config-schedules i {
+			position: absolute;
+			border: 1px solid black;
+			border-radius: 10px;
+			font-size: 30px;
+			top: 10px;
+			left: 10px;
+		}
+
+		.app .config .config-schedules i:hover {
+			background-color: rgb(225, 202, 125);
+		}
+
+		.app .config .config-schedules .select-class {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			margin-top: 100px;
+		}
+
+		.app .config .config-schedules .select-class button {
+			width: 200px;
+			height: 30px;
+			font-size: 20px;
+			margin: 10px;
+		}
+
+		.app .config .config-schedules .config-schedule-table {
+			margin: 40px auto 0px auto;
+			border-collapse: collapse;
+			border: 2px solid black;
+			font-family: sans-serif;
+			font-size: 0.8rem;
+			letter-spacing: 1px;
+			width: 630px;
+		}
+
+		.app .config .config-schedules .config-schedule-table th,
+		.app .config .config-schedules .config-schedule-table td {
+			border: 1px solid black;
+			padding: 8px 10px;
+			min-width: 70px;
+		}
+		/* #endregion */
+
+		/* #endregion */
+
+		/* #region Menubar */
+		.menubar {
+			/* width: 60%; */
+			width: 400px;
+			height: 60px;
+			background: #edd3a6;
+			display: flex;
+			flex-direction: row;
+			text-align: center;
+			justify-content: center;
+			left: 50%;
+			transform: translateX(-50%);
+			position: fixed;
+			bottom: 0;
+			border-radius: 20px;
+		}
+
+		.menubar .element {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+		}
+
+		.menubar .element i {
+			font-size: 30px;
+			margin-left: 50px;
+			margin-right: 50px;
+			padding: 60px -10px;
+		}
+
+		.menubar .element p {
+			cursor: default;
+		}
+
+		/* #endregion */
+
+		/* #region Login */
+
+		.login {
+			display: none;
+			width: 420px;
+			background: transparent;
+			border: 2px solid rgba(255, 255, 255, 0.2);
+			backdrop-filter: blur(20px);
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+			color: #fff;
+			border-radius: 10px;
+			padding: 30px 40px;
+		}
+
+		.login h1 {
+			font-size: 36px;
+			text-align: center;
+		}
+
+		.login .input-box {
+			position: relative;
+			width: 100%;
+			height: 50px;
+			margin: 30px 0;
+		}
+
+		.input-box .input {
+			width: 100%;
+			height: 100%;
+			background: transparent;
+			border: none;
+			outline: none;
+			border: 2px solid rgba(255, 255, 255, 0.2);
+			border-radius: 40px;
+			font-size: 16px;
+			color: #fff;
+			padding: 20px 45px 20px 20px;
+		}
+
+		.input-box input::placeholder {
+			color: #fff;
+		}
+
+		.input-box i {
+			position: absolute;
+			right: 20px;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 20px;
+		}
+
+		.input-box label {
+			padding-top: 10px;
+			position: absolute;
+			display: block;
+			text-align: center;
+			justify-content: center;
+			padding-left: 30%;
+		}
+
+		.login .remember-forgot {
+			display: flex;
+			justify-content: space-between;
+			font-size: 14.5px;
+			margin: 5px 0 15px;
+		}
+
+		.remember-forgot label input {
+			accent-color: #fff;
+			margin-right: 3px;
+		}
+
+		.remember-forgot a {
+			color: #fff;
+			text-decoration: none;
+		}
+
+		.remember-forgot a:hover {
+			text-decoration: underline;
+		}
+
+		.login .btn {
+			width: 100%;
+			height: 45px;
+			background: #fff;
+			border: none;
+			outline: none;
+			border-radius: 40px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			cursor: pointer;
+			font-size: 16px;
+			color: #333;
+			font-weight: 600;
+		}
+
+		/* #endregion */
+	</style>
+
+	<!-- Scripts -->
+	<script type="module">
+		//#region Imports & Config
+		// Import the functions you need from the SDKs you need
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+		import {
+			getAuth,
+			signOut,
+			signInWithEmailAndPassword,
+			setPersistence,
+			browserSessionPersistence,
+			inMemoryPersistence,
+			browserLocalPersistence,
+		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+		import {
+			getFirestore,
+			doc,
+			getDoc,
+		} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+		// Your web app's Firebase configuration
+		const firebaseConfig = {
+			apiKey: "AIzaSyD0N4UJKBvCkmWmJdd0gMQI0I9by-qRUxI",
+			authDomain: "tecnothau1.firebaseapp.com",
+			projectId: "tecnothau1",
+			storageBucket: "tecnothau1.appspot.com",
+			messagingSenderId: "292144359028",
+			appId: "1:292144359028:web:673fb5332d1eddb5c01321",
+		};
+
+		// Initialize Firebase
+		const app = initializeApp(firebaseConfig);
+
+		//#endregion
+
+		//#region Login
+		const auth = getAuth(app);
+		const email = document.getElementById("email");
+		const password = document.getElementById("password");
+		const remember = document.getElementById("remember");
+		const login_win = document.getElementById("login");
+		const app_win = document.getElementById("app");
+
+		const submit = document.getElementById("login-btn");
+		submit.addEventListener("click", function (event) {
+			event.preventDefault();
+
+			setPersistence(
+				auth,
+				remember.checked
+					? browserLocalPersistence
+					: browserSessionPersistence
+			).then(() => {
+				// Sign in
+				signInWithEmailAndPassword(auth, email.value, password.value)
+					.then((userCredential) => {
+						const user = userCredential.user;
+					})
+					.catch((error) => {
+						const errorCode = error.code;
+						const errorMessage = error.message;
+						console.log(errorCode, errorMessage);
+						alert("Please check your email/password and try again");
+					});
+			});
+		});
+		// Listen for auth state changes
+		auth.onAuthStateChanged((user) => {
+			if (user) {
+				// User is signed in, show the main application
+				login_win.style.display = "none";
+				app_win.style.display = "initial";
+				// signOut(auth);
+			} else {
+				// No user is signed in, show the login screen
+				login_win.style.display = "initial";
+				app_win.style.display = "none";
+			}
+		});
+		//#endregion
+
+		//#region Schedules
+		// Init Database
+		const db = getFirestore(app);
+
+		// Get Elements
+		const schedule_table = document.getElementById("schedule");
+		const class_select = document.getElementById("class");
+		const subject_select = document.getElementById("subject");
+		class_select.addEventListener("change", class_subject);
+		subject_select.addEventListener("change", class_subject);
+
+		const EMPTY_SCHEDULE = schedule_table.innerHTML;
+		async function class_subject() {
+			let class_val = class_select.value;
+			let subject_val = subject_select.value;
+
+			if (class_val != "" && subject_val != "") {
+				const docRef = doc(db, "schedules", class_val);
+				const docSnap = await getDoc(docRef);
+
+				if (docSnap.exists()) {
+					schedule_table.innerHTML = EMPTY_SCHEDULE;
+					const data = docSnap.data();
+					for (let day in data) {
+						for (let hour in data[day]) {
+							if (String(data[day][hour]).includes(subject_val)) {
+								console.log(day, hour);
+
+								let new_hour = parseInt(hour);
+								new_hour +=
+									1 +
+									(new_hour >= 2
+										? new_hour >= 4
+											? 2
+											: 1
+										: 0);
+
+								let new_day = parseInt(day);
+
+								console.log(new_day, new_hour);
+								let random = Math.floor(Math.random() * 100);
+								const cell =
+									schedule_table.rows[new_day].cells[
+										new_hour
+									];
+								cell.style.background = `linear-gradient(to right, red ${random}%, green ${
+									100 - random
+								}%)`;
+								cell.innerHTML = `${100 - random} lliures`;
+							}
+						}
+					}
+				} else {
+					console.log("Error! No Schedule Data");
+				}
+			}
+		}
+		//#endregion
+	</script>
+	<script>
+		//#region Login
+		const password_field = document.getElementById("password");
+		const show_check = document.getElementById("show-check");
+		function togglePassword() {
+			password_field.type = show_check.checked ? "text" : "password";
+		}
+
+		//#endregion
+
+		//#region Menubar
+		const MENUBAR_ACCENT_COLOR = "#b57f1f";
+
+		// Windows
+		const reservations_win = document.getElementById("reservations");
+		const screens_win = document.getElementById("screens");
+		const config_win = document.getElementById("config");
+
+		// Elements
+		const reservations_element = document.getElementById(
+			"reservations-element"
+		);
+		const screens_element = document.getElementById("screens-element");
+		const config_element = document.getElementById("config-element");
+
+		function reservations() {
+			reservations_win.style.display = "initial";
+			screens_win.style.display = "none";
+			config_win.style.display = "none";
+			reservations_element.style.color = MENUBAR_ACCENT_COLOR;
+			screens_element.style.color = "black";
+			config_element.style.color = "black";
+		}
+
+		function screens() {
+			screens_win.style.display = "initial";
+			config_win.style.display = "none";
+			reservations_win.style.display = "none";
+			screens_element.style.color = MENUBAR_ACCENT_COLOR;
+			config_element.style.color = "black";
+			reservations_element.style.color = "black";
+		}
+
+		function config() {
+			config_win.style.display = "initial";
+			reservations_win.style.display = "none";
+			screens_win.style.display = "none";
+			config_element.style.color = MENUBAR_ACCENT_COLOR;
+			reservations_element.style.color = "black";
+			screens_element.style.color = "black";
+		}
+
+		//reservations();
+		config();
+
+		//#endregion
+
+		//#region Config
+
+		//#region Schedules
+		const schedules_win = document.getElementById("config-schedules");
+
+		schedules_win.style.display = "none";
+
+		function schedules() {
+			schedules_win.style.display = "initial";
+		}
+
+		function schedules_back() {
+			schedules_win.style.display = "none";
+		}
+
+		const config_schedule_table = document.getElementById(
+			"config-schedule-table"
+		);
+
+		config_schedule_table.style.display = "none";
+
+		function schedules_table() {
+			config_schedule_table.style.display = "initial";
+		}
+
+		document.querySelectorAll("config-class").forEach(function (element) {
+			element.addEventListener("click", schedules_table);
+		});
+		//#endregion
+
+		//#endregion
+	</script>
 </html>
