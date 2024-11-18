@@ -203,63 +203,63 @@
                         <button
                             class="config-class"
                             id="4a"
-                            onclick="schedules_table()"
+                            onclick="schedules_table('4a')"
                         >
                             4t A
                         </button>
                         <button
                             class="config-class"
                             id="4b"
-                            onclick="schedules_table()"
+                            onclick="schedules_table('4b')"
                         >
                             4t B
                         </button>
                         <button
                             class="config-class"
                             id="4c"
-                            onclick="schedules_table()"
+                            onclick="schedules_table('4c')"
                         >
                             4t C
                         </button>
                         <button
                             class="config-class"
                             id="5a"
-                            onclick="schedules_table()"
+                            onclick="schedules_table('5a')"
                         >
                             5è A
                         </button>
                         <button
                             class="config-class"
                             id="5b"
-                            onclick="schedules_table()"
+                            onclick="schedules_table('5b')"
                         >
                             5è B
                         </button>
                         <button
                             class="config-class"
                             id="5c"
-                            onclick="schedules_table()"
+                            onclick="schedules_table('5c')"
                         >
                             5è C
                         </button>
                         <button
                             class="config-class"
                             id="6a"
-                            onclick="schedules_table()"
+                            onclick="schedules_table('6a')"
                         >
                             6è A
                         </button>
                         <button
                             class="config-class"
                             id="6b"
-                            onclick="schedules_table()"
+                            onclick="schedules_table('6b')"
                         >
                             6è B
                         </button>
                         <button
                             class="config-class"
                             id="6c"
-                            onclick="schedules_table()"
+                            onclick="schedules_table('6c')"
                         >
                             6è C
                         </button>
@@ -809,6 +809,40 @@
                 }
             }
         }
+
+        const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
+        async function load_config_schedule(class_name) {
+            config_schedule_table.innerHTML = EMPTY_CONFIG_SCHEDULE;
+
+            const docRef = doc(db, "schedules", class_name);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                for (let day in data) {
+                    for (let hour in data[day]) {
+                        if (String(data[day][hour]).includes(subject_val)) {
+                            console.log(day, hour);
+
+                            let new_hour = parseInt(hour);
+                            new_hour +=
+                                1 +
+                                (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
+
+                            let new_day = parseInt(day);
+
+                            console.log(new_day, new_hour);
+                            let random = Math.floor(Math.random() * 100);
+                            const cell =
+                                schedule_table.rows[new_day].cells[new_hour];
+                            cell.innerHTML = class_name;
+                        }
+                    }
+                }
+            } else {
+                console.log("Error! No Schedule Data");
+            }
+        }
         //#endregion
     </script>
     <script>
@@ -871,7 +905,7 @@
         //#region Config
 
         //#region Schedules
-        let position = 1;
+        let position = "";
         const schedules_win = document.getElementById("config-schedules");
 
         schedules_win.style.display = "none";
@@ -881,12 +915,12 @@
         }
 
         function schedules_back() {
-            if (position == 1) {
+            if (position == "") {
                 schedules_win.style.display = "none";
-            } else if (position == 2) {
-                position = 1;
+            } else {
+                position = "";
                 config_schedule_table.style.display = "none";
-                config_class_select.style.display = "initial";
+                config_class_select.style.display = "flex";
             }
         }
 
@@ -898,10 +932,12 @@
 
         config_schedule_table.style.display = "none";
 
-        function schedules_table() {
+        function schedules_table(class_name) {
             config_class_select.style.display = "none";
-            config_schedule_table.style.display = "initial";
-            position = 2;
+            config_schedule_table.style.display = "block";
+            position = class_name;
+
+            load_config_schedule(class_name);
         }
         //#endregion
 
