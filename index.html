@@ -755,7 +755,7 @@
         });
         //#endregion
 
-        //#region Reservations Schedules
+        //#region Reservations - Schedules
         // Init Database
         const db = getFirestore(app);
 
@@ -814,20 +814,32 @@
         }
         //#endregion
 
-        //#region Schedules
-        let position = "";
-        const schedules_win = document.getElementById("config-schedules");
+        //#region Config - Schedules
+        const subjects_id_name = {
+            1: "Català",
+            2: "Castellà",
+            3: "Anglès",
+            4: "Medi",
+            5: "Mates",
+            6: "Valors / Tutoria",
+            7: "Altres",
+        };
 
+        let position = "";
+
+        // Schedules Win
+        const schedules_win = document.getElementById("config-schedules");
         schedules_win.style.display = "none";
 
-        // Config Schedules Button
+        //#region Config Schedules Button
         document
             .getElementById("config-schedules-button")
             .addEventListener("click", function () {
                 schedules_win.style.display = "initial";
             });
+        //#endregion
 
-        // Config Schedules Back Button
+        //#region Config Schedules Back Button
         document
             .getElementById("config-schedules-back-button")
             .addEventListener("click", function () {
@@ -839,6 +851,7 @@
                     config_class_select.style.display = "flex";
                 }
             });
+        //#endregion
 
         const config_schedule_table = document.getElementById(
             "config-schedule-table"
@@ -848,7 +861,7 @@
 
         config_schedule_table.style.display = "none";
 
-        //#region Assign Target to every Config Class Select
+        //#region Config Class Select Function
         const config_class_elements =
             document.querySelectorAll(".config-class");
 
@@ -856,20 +869,13 @@
         config_class_elements.forEach((element) => {
             // Add an event listener to each element
             element.addEventListener("click", (event) => {
-                // Call the target function and pass the element's ID
-                schedules_table(event.target.id);
+                config_class_select.style.display = "none";
+                config_schedule_table.style.display = "block";
+                position = event.target.id;
+
+                load_config_schedule(event.target.id);
             });
         });
-        //#endregion
-
-        // Target Function
-        function schedules_table(class_name) {
-            config_class_select.style.display = "none";
-            config_schedule_table.style.display = "block";
-            position = class_name;
-
-            load_config_schedule(class_name);
-        }
         //#endregion
 
         const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
@@ -883,24 +889,25 @@
                 const data = docSnap.data();
                 for (let day in data) {
                     for (let hour in data[day]) {
-                        if (String(data[day][hour]).includes(subject_val)) {
-                            console.log(day, hour);
+                        // Offset the Hours (Columns) to match the table
+                        let new_hour = parseInt(hour);
+                        new_hour +=
+                            1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
 
-                            let new_hour = parseInt(hour);
-                            new_hour +=
-                                1 +
-                                (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
+                        // Offset the Days (Rows) to match the table
+                        const new_day = parseInt(day);
 
-                            let new_day = parseInt(day);
+                        // Get the Cell
+                        const cell =
+                            config_schedule_table.rows[new_day].cells[new_hour];
 
-                            console.log(new_day, new_hour);
-                            let random = Math.floor(Math.random() * 100);
-                            const cell =
-                                config_schedule_table.rows[new_day].cells[
-                                    new_hour
-                                ];
-                            cell.innerHTML = class_name;
-                        }
+                        // Assign the Class Name to the Cell
+
+                        let content = Array.from(data[hour][day].toString())
+                            .map((digit) => subjects_id_name[digit]) // Map each digit to the corresponding value in the dictionary
+                            .join(" / "); // Join the values with ' / ' delimiter
+
+                        cell.innerHTML = content;
                     }
                 }
             } else {
