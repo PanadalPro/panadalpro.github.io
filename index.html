@@ -197,7 +197,9 @@
                 <h2>Configuració</h2>
 
                 <!-- #region Schedules -->
-                <button class="element" onclick="schedules()">Horaris</button>
+                <button class="element" id="config-schedules-button">
+                    Horaris
+                </button>
                 <div class="config-schedules" id="config-schedules">
                     <div class="select-class" id="select-class">
                         <button
@@ -335,6 +337,7 @@
                     </table>
                     <i
                         class="bx bx-chevron-left"
+                        id="config-schedules-back-button"
                         onclick="schedules_back()"
                     ></i>
                 </div>
@@ -752,7 +755,7 @@
         });
         //#endregion
 
-        //#region Schedules
+        //#region Reservations Schedules
         // Init Database
         const db = getFirestore(app);
 
@@ -809,6 +812,65 @@
                 }
             }
         }
+        //#endregion
+
+        //#region Schedules
+        let position = "";
+        const schedules_win = document.getElementById("config-schedules");
+
+        schedules_win.style.display = "none";
+
+        // Config Schedules Button
+        document
+            .getElementById("config-schedules-button")
+            .addEventListener("click", function () {
+                schedules_win.style.display = "initial";
+            });
+
+        // Config Schedules Back Button
+        document
+            .getElementById("config-schedules-back-button")
+            .addEventListener("click", function () {
+                if (position == "") {
+                    schedules_win.style.display = "none";
+                } else {
+                    position = "";
+                    config_schedule_table.style.display = "none";
+                    config_class_select.style.display = "flex";
+                }
+            });
+
+        const config_schedule_table = document.getElementById(
+            "config-schedule-table"
+        );
+
+        const config_class_select = document.getElementById("select-class");
+
+        config_schedule_table.style.display = "none";
+
+        //#region Assign Target to every Config Class Select
+        const config_class_elements =
+            document.querySelectorAll(".config-class");
+
+        // Iterate over each element
+        config_class_elements.forEach((element) => {
+            // Add an event listener to each element
+            element.addEventListener("click", (event) => {
+                // Call the target function and pass the element's ID
+                schedules_table(event.target.id);
+            });
+        });
+        //#endregion
+
+        // Target Function
+        function schedules_table(class_name) {
+            config_class_select.style.display = "none";
+            config_schedule_table.style.display = "block";
+            position = class_name;
+
+            load_config_schedule(class_name);
+        }
+        //#endregion
 
         const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
         async function load_config_schedule(class_name) {
@@ -834,7 +896,9 @@
                             console.log(new_day, new_hour);
                             let random = Math.floor(Math.random() * 100);
                             const cell =
-                                schedule_table.rows[new_day].cells[new_hour];
+                                config_schedule_table.rows[new_day].cells[
+                                    new_hour
+                                ];
                             cell.innerHTML = class_name;
                         }
                     }
@@ -903,44 +967,6 @@
         //#endregion
 
         //#region Config
-
-        //#region Schedules
-        let position = "";
-        const schedules_win = document.getElementById("config-schedules");
-
-        schedules_win.style.display = "none";
-
-        function schedules() {
-            schedules_win.style.display = "initial";
-        }
-
-        function schedules_back() {
-            if (position == "") {
-                schedules_win.style.display = "none";
-            } else {
-                position = "";
-                config_schedule_table.style.display = "none";
-                config_class_select.style.display = "flex";
-            }
-        }
-
-        const config_schedule_table = document.getElementById(
-            "config-schedule-table"
-        );
-
-        const config_class_select = document.getElementById("select-class");
-
-        config_schedule_table.style.display = "none";
-
-        function schedules_table(class_name) {
-            config_class_select.style.display = "none";
-            config_schedule_table.style.display = "block";
-            position = class_name;
-
-            load_config_schedule(class_name);
-            //Uncaught ReferenceError: load_config_schedule is not defined
-        }
-        //#endregion
 
         //#endregion
     </script>
