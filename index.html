@@ -202,69 +202,15 @@
                 </button>
                 <div class="config-schedules" id="config-schedules">
                     <div class="select-class" id="select-class">
-                        <button
-                            class="config-class"
-                            id="4a"
-                            onclick="schedules_table('4a')"
-                        >
-                            4t A
-                        </button>
-                        <button
-                            class="config-class"
-                            id="4b"
-                            onclick="schedules_table('4b')"
-                        >
-                            4t B
-                        </button>
-                        <button
-                            class="config-class"
-                            id="4c"
-                            onclick="schedules_table('4c')"
-                        >
-                            4t C
-                        </button>
-                        <button
-                            class="config-class"
-                            id="5a"
-                            onclick="schedules_table('5a')"
-                        >
-                            5è A
-                        </button>
-                        <button
-                            class="config-class"
-                            id="5b"
-                            onclick="schedules_table('5b')"
-                        >
-                            5è B
-                        </button>
-                        <button
-                            class="config-class"
-                            id="5c"
-                            onclick="schedules_table('5c')"
-                        >
-                            5è C
-                        </button>
-                        <button
-                            class="config-class"
-                            id="6a"
-                            onclick="schedules_table('6a')"
-                        >
-                            6è A
-                        </button>
-                        <button
-                            class="config-class"
-                            id="6b"
-                            onclick="schedules_table('6b')"
-                        >
-                            6è B
-                        </button>
-                        <button
-                            class="config-class"
-                            id="6c"
-                            onclick="schedules_table('6c')"
-                        >
-                            6è C
-                        </button>
+                        <button class="config-class" id="4a">4t A</button>
+                        <button class="config-class" id="4b">4t B</button>
+                        <button class="config-class" id="4c">4t C</button>
+                        <button class="config-class" id="5a">5è A</button>
+                        <button class="config-class" id="5b">5è B</button>
+                        <button class="config-class" id="5c">5è C</button>
+                        <button class="config-class" id="6a">6è A</button>
+                        <button class="config-class" id="6b">6è B</button>
+                        <button class="config-class" id="6c">6è C</button>
                     </div>
                     <table
                         class="config-schedule-table"
@@ -878,6 +824,7 @@
         });
         //#endregion
 
+        //#region Load Schedule
         const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
         async function load_config_schedule(class_name) {
             config_schedule_table.innerHTML = EMPTY_CONFIG_SCHEDULE;
@@ -902,18 +849,44 @@
                             config_schedule_table.rows[new_day].cells[new_hour];
 
                         // Assign the Class Name to the Cell
+                        const subject_id = data[day][hour];
+                        let result = (
+                            Array.isArray(subject_id)
+                                ? subject_id
+                                : [subject_id]
+                        ) // Convert to array if it's a single number
+                            .map(
+                                (num) =>
+                                    Array.from(num.toString()) // Convert each number to a string and split into characters
+                                        .map((digit) => subjects_id_name[digit]) // Map digits to their corresponding dictionary values
+                                        .join(" / ") // Join the values with ' / ' delimiter
+                            )
+                            .join(" / "); // Join multiple results with ' / ' delimiter
 
-                        let content = Array.from(data[hour][day].toString())
-                            .map((digit) => subjects_id_name[digit]) // Map each digit to the corresponding value in the dictionary
-                            .join(" / "); // Join the values with ' / ' delimiter
-
-                        cell.innerHTML = content;
+                        cell.innerHTML = result;
                     }
                 }
             } else {
                 console.log("Error! No Schedule Data");
             }
         }
+        //#endregion
+
+        //#region Table Cells Click Function Edit
+        //! TODO HERE Chatgpt:
+
+        // Get all table cells (td elements)
+        // const cells = table.getElementsByTagName('td');
+
+        // // Loop through each cell and add an event listener
+        // for (let i = 0; i < cells.length; i++) {
+        // cells[i].addEventListener('click', function(event) {
+        //     alert('Cell clicked: ' + event.target.textContent);  // or handle any other logic
+        // });
+        // }
+
+        //#endregion
+
         //#endregion
     </script>
     <script>
