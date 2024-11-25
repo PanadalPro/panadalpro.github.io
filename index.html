@@ -922,13 +922,10 @@
         // Loop through each cell and add an event listener
         for (let i = 0; i < cells.length; i++) {
             console.log(cells[i]);
-            cells[i].onclick = cells[i].addEventListener(
-                "click",
-                function (event) {
-                    alert("Cell clicked: " + event.target.textContent);
-                    edit_subject.style.display = "block";
-                }
-            );
+            cells[i].onclick = function (event) {
+                alert("Cell clicked: " + event.target.textContent);
+                edit_subject.style.display = "block";
+            };
         }
 
         //#endregion
