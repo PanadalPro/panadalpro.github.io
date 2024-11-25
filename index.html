@@ -917,11 +917,13 @@
 
         // Get all table cells (th elements)
         const cells = config_schedule_table.getElementsByTagName("th");
+        console.log(cells);
 
         // Loop through each cell and add an event listener
         for (let i = 0; i < cells.length; i++) {
+            console.log(cells[i]);
             cells[i].addEventListener("click", function (event) {
-                // alert("Cell clicked: " + event.target.textContent);
+                alert("Cell clicked: " + event.target.textContent);
                 edit_subject.style.display = "block";
             });
         }
