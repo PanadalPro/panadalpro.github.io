@@ -845,6 +845,20 @@
 
         config_schedule_table.style.display = "none";
 
+        const cells = config_schedule_table.getElementsByTagName("td");
+
+        // Loop through each cell and add an event listener
+        for (let i = 0; i < cells.length; i++) {
+            cells[i].innerHTML = "<button></button>";
+            cells[i]
+                .getElementsByTagName("button")[0]
+                .addEventListener("click", function (event) {
+                    alert("Cell clicked: " + event.target.textContent);
+                    edit_subject.style.display = "block";
+                });
+            console.log(cells[i]);
+        }
+
         //#region Config Class Select Function
         const config_class_elements =
             document.querySelectorAll(".config-class");
@@ -883,8 +897,10 @@
                         const new_day = parseInt(day);
 
                         // Get the Cell
-                        const cell =
-                            config_schedule_table.rows[new_day].cells[new_hour];
+                        const btn =
+                            config_schedule_table.rows[new_day].cells[
+                                new_hour
+                            ].getElementsByTagName("button")[0];
 
                         // Assign the Class Name to the Cell
                         const subject_id = data[day][hour];
@@ -901,7 +917,7 @@
                             )
                             .join(" / "); // Join multiple results with ' / ' delimiter
 
-                        cell.innerHTML = result;
+                        btn.innerHTML = result;
                     }
                 }
             } else {
@@ -916,17 +932,6 @@
         edit_subject.style.display = "none";
 
         // Get all table cells (th elements)
-        const cells = config_schedule_table.getElementsByTagName("td");
-        console.log(cells);
-
-        // Loop through each cell and add an event listener
-        for (let i = 0; i < cells.length; i++) {
-            cells[i].onclick = function (event) {
-                alert("Cell clicked: " + event.target.textContent);
-                edit_subject.style.display = "block";
-            };
-            console.log(cells[i]);
-        }
 
         //#endregion
 
