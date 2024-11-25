@@ -300,7 +300,6 @@
                     <i
                         class="bx bx-chevron-left"
                         id="config-schedules-back-button"
-                        onclick="schedules_back()"
                     ></i>
                 </div>
                 <!-- #endregion -->
@@ -480,20 +479,21 @@
         }
 
         .app .config .config-schedules .config-schedule-table {
+            display: block;
             margin: 60px auto 0px auto;
             border-collapse: collapse;
-            border: 2px solid black;
             font-family: sans-serif;
-            font-size: 0.8rem;
+            font-size: 12px;
             letter-spacing: 1px;
-            width: 630px;
+            width: 633px;
         }
 
         .app .config .config-schedules .config-schedule-table th,
         .app .config .config-schedules .config-schedule-table td {
             border: 1px solid black;
-            padding: 8px 10px;
+            padding: 8px 2px;
             min-width: 70px;
+            max-width: 70px;
         }
 
         .app .config .config-schedules select {
@@ -922,10 +922,13 @@
         // Loop through each cell and add an event listener
         for (let i = 0; i < cells.length; i++) {
             console.log(cells[i]);
-            cells[i].addEventListener("click", function (event) {
-                alert("Cell clicked: " + event.target.textContent);
-                edit_subject.style.display = "block";
-            });
+            cells[i].onclick = cells[i].addEventListener(
+                "click",
+                function (event) {
+                    alert("Cell clicked: " + event.target.textContent);
+                    edit_subject.style.display = "block";
+                }
+            );
         }
 
         //#endregion
