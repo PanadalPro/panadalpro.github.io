@@ -850,12 +850,12 @@
         // Loop through each cell and add an event listener
         for (let i = 0; i < cells.length; i++) {
             cells[i].innerHTML = "<button></button>";
-            cells[i]
-                .getElementsByTagName("button")[0]
-                .addEventListener("click", function (event) {
-                    alert("Cell clicked: " + event.target.textContent);
-                    edit_subject.style.display = "block";
-                });
+            const button = cells[i].getElementsByTagName("button")[0];
+            console.log(button);
+            button.addEventListener("click", function (event) {
+                alert("Cell clicked: " + event.target.textContent);
+                edit_subject.style.display = "block";
+            });
             console.log(cells[i]);
         }
 
