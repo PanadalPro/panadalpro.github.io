@@ -296,6 +296,13 @@
                             <option value="6">Valors / Tutoria</option>
                             <option value="7">Altres</option>
                         </select>
+
+                        <button
+                            class="close-edit-subject"
+                            id="close-edit-subject"
+                        >
+                            Tancar
+                        </button>
                     </div>
                     <i
                         class="bx bx-chevron-left"
@@ -516,6 +523,26 @@
             display: block;
             margin-top: 10px;
             margin: 10px;
+
+            position: absolute;
+            top: 35%;
+            left: 35%;
+            width: 30%;
+            height: 20%;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 2px solid black;
+        }
+
+        .app .config .config-schedules .edit-subject label {
+            margin-top: 30px;
+            font-size: 20px;
+        }
+
+        .app .config .config-schedules .edit-subject .close-edit-subject {
+            border-radius: 10px;
+            border: 1px solid black;
+            padding: 10px 5px;
         }
         /* #endregion */
 
@@ -851,7 +878,7 @@
         for (let i = 0; i < cells.length; i++) {
             console.log(cells[i].innerHTML);
             if (cells[i].innerHTML == "") {
-                cells[i].innerHTML = '<button id="edit-btn"></button>';
+                cells[i].innerHTML = "<button></button>";
             }
         }
 
@@ -900,8 +927,7 @@
 
                         // Assign the Button's Onclick
                         btn.addEventListener("click", function (event) {
-                            alert("Cell clicked: " + event.target.textContent);
-                            console.log("Clicked:" + event.target.textContent);
+                            console.log("Clicked:" + event.target.id);
                             edit_subject.style.display = "block";
                         });
 
@@ -934,7 +960,7 @@
         const edit_subject = document.getElementById("edit-subject");
         edit_subject.style.display = "none";
 
-        // Get all table cells (th elements)
+        // TODO ADD FUNCTIONALITY ID close-edit-subject
 
         //#endregion
 
