@@ -852,7 +852,7 @@
             console.log(cells[i].innerHTML);
             if (cells[i].innerHTML == "") {
                 cells[i].innerHTML = '<button id="edit-btn"></button>';
-                const button = document.getElementsById("edit-btn");
+                const button = document.getElementById("edit-btn");
                 console.log(button);
                 button.onclick = function (event) {
                     alert("Cell clicked: " + event.target.textContent);
