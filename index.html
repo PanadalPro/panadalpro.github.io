@@ -854,10 +854,11 @@
                 cells[i].innerHTML = '<button id="edit-btn"></button>';
                 const button = document.getElementById("edit-btn");
                 console.log(button);
-                button.onclick = function (event) {
+                button.addEventListener("click", function (event) {
                     alert("Cell clicked: " + event.target.textContent);
+                    console.log("Clicked:" + event.target.textContent);
                     edit_subject.style.display = "block";
-                };
+                });
                 console.log(cells[i]);
             }
         }
