@@ -851,8 +851,8 @@
         for (let i = 0; i < cells.length; i++) {
             console.log(cells[i].innerHTML);
             if (cells[i].innerHTML == "") {
-                cells[i].innerHTML = "<button></button>";
-                const button = cells[i].getElementsByTagName("button")[0];
+                cells[i].innerHTML = '<button id="edit-btn"></button>';
+                const button = document.getElementsById("edit-btn");
                 console.log(button);
                 button.onclick = function (event) {
                     alert("Cell clicked: " + event.target.textContent);
