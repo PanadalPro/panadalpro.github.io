@@ -850,7 +850,7 @@
         // Loop through each cell and add an event listener
         for (let i = 0; i < cells.length; i++) {
             console.log(cells[i].innerHTML);
-            if (cells[i].innerHTML != "") {
+            if (cells[i].innerHTML == "") {
                 cells[i].innerHTML = "<button></button>";
                 const button = cells[i].getElementsByTagName("button")[0];
                 console.log(button);
