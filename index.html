@@ -852,14 +852,6 @@
             console.log(cells[i].innerHTML);
             if (cells[i].innerHTML == "") {
                 cells[i].innerHTML = '<button id="edit-btn"></button>';
-                const button = document.getElementById("edit-btn");
-                console.log(button);
-                button.addEventListener("click", function (event) {
-                    alert("Cell clicked: " + event.target.textContent);
-                    console.log("Clicked:" + event.target.textContent);
-                    edit_subject.style.display = "block";
-                });
-                console.log(cells[i]);
             }
         }
 
@@ -900,11 +892,18 @@
                         // Offset the Days (Rows) to match the table
                         const new_day = parseInt(day);
 
-                        // Get the Cell
+                        // Get the Cell Button
                         const btn =
                             config_schedule_table.rows[new_day].cells[
                                 new_hour
                             ].getElementsByTagName("button")[0];
+
+                        // Assign the Button's Onclick
+                        btn.addEventListener("click", function (event) {
+                            alert("Cell clicked: " + event.target.textContent);
+                            console.log("Clicked:" + event.target.textContent);
+                            edit_subject.style.display = "block";
+                        });
 
                         // Assign the Class Name to the Cell
                         const subject_id = data[day][hour];
