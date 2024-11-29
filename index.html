@@ -849,14 +849,17 @@
 
         // Loop through each cell and add an event listener
         for (let i = 0; i < cells.length; i++) {
-            cells[i].innerHTML = "<button></button>";
-            const button = cells[i].getElementsByTagName("button")[0];
-            console.log(button);
-            button.addEventListener("click", function (event) {
-                alert("Cell clicked: " + event.target.textContent);
-                edit_subject.style.display = "block";
-            });
-            console.log(cells[i]);
+            console.log(cells[i].innerHTML);
+            if (cells[i].innerHTML != "") {
+                cells[i].innerHTML = "<button></button>";
+                const button = cells[i].getElementsByTagName("button")[0];
+                console.log(button);
+                button.onclick = function (event) {
+                    alert("Cell clicked: " + event.target.textContent);
+                    edit_subject.style.display = "block";
+                };
+                console.log(cells[i]);
+            }
         }
 
         //#region Config Class Select Function
