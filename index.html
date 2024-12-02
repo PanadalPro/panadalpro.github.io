@@ -899,8 +899,10 @@
         });
         //#endregion
 
+        var new_config_schedule = new Array();
         //#region Load Schedule
         const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
+
         async function load_config_schedule(class_name) {
             config_schedule_table.innerHTML = EMPTY_CONFIG_SCHEDULE;
 
@@ -909,6 +911,8 @@
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
+                new_config_schedule = data;
+
                 for (let day in data) {
                     for (let hour in data[day]) {
                         // Offset the Hours (Columns) to match the table
@@ -956,11 +960,19 @@
         //#endregion
 
         //#region Table Cells Click Function Edit
-
+        // Window
         const edit_subject = document.getElementById("edit-subject");
         edit_subject.style.display = "none";
 
-        // TODO ADD FUNCTIONALITY ID close-edit-subject
+        const config_subject_select = edit_subject.getElementById("subject");
+
+        // Close Button
+        document.getElementById("close-edit-subject").onclick = function (
+            event
+        ) {
+            event.target.innerHTML =
+                subjects_id_name[config_subject_select.value];
+        };
 
         //#endregion
 
