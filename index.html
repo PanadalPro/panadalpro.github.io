@@ -900,6 +900,8 @@
         //#endregion
 
         var new_config_schedule = new Array();
+        var config_edit_subject = "";
+
         //#region Load Schedule
         const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
 
@@ -933,6 +935,11 @@
                         btn.addEventListener("click", function (event) {
                             console.log("Clicked:" + event.target.id);
                             edit_subject.style.display = "block";
+                            const row = event.target.parentNode.rowIndex;
+                            const column = Array.from(
+                                event.target.parentNode.children
+                            ).indexOf(event.target);
+                            config_edit_subject = `${row}${column}`;
                         });
 
                         // Assign the Class Name to the Cell
@@ -964,14 +971,13 @@
         const edit_subject = document.getElementById("edit-subject");
         edit_subject.style.display = "none";
 
-        const config_subject_select = edit_subject.getElementById("subject");
+        const config_subject_select = edit_subject.querySelector("#subject");
 
         // Close Button
         document.getElementById("close-edit-subject").onclick = function (
             event
         ) {
-            event.target.innerHTML =
-                subjects_id_name[config_subject_select.value];
+            event.target.innerHTML = config_edit_subject;
         };
 
         //#endregion
