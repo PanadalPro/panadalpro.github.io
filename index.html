@@ -828,6 +828,8 @@
         //#endregion
 
         //#region Config - Schedules
+
+        // Dict ID - Name
         const subjects_id_name = {
             1: "Català",
             2: "Castellà",
@@ -837,6 +839,11 @@
             6: "Valors / Tutoria",
             7: "Altres",
         };
+
+        // Reverse dict to have Name - ID
+        const subjects_name_id = Object.fromEntries(
+            Object.entries(subjects_id_name).map(([key, value]) => [value, key])
+        );
 
         let position = "";
 
@@ -880,19 +887,34 @@
                     config_schedule_table.style.display = "none";
                     config_class_select.style.display = "flex";
 
-                    // Save Schedule
+                    //#region Save Schedule
+
+                    // New Schedule
+                    let new_schedule = new Array();
+                    let day = new Array();
+
+                    // Get Cells in Table
                     const cells =
                         config_schedule_table.getElementsByTagName("td");
 
                     // Loop through each cell
                     for (let i = 0; i < cells.length; i++) {
-                        console.log(cells[i].innerHTML);
                         let btn = cells[i].querySelector("button");
                         if (btn !== null) {
                             // Contains a Button
-                            console.log(btn.innerHTML);
+                            day.push(subjects_name_id[btn.innerHTML]);
+
+                            if (day.length >= 6) {
+                                new_schedule.push(day);
+                                day = new Array();
+                            }
                         }
                     }
+
+                    // Test this
+                    console.log(new_schedule);
+
+                    //#endregion
                 }
             });
         //#endregion
