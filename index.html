@@ -501,6 +501,8 @@
             padding: 8px 2px;
             min-width: 70px;
             max-width: 70px;
+            /* min-height: 100px; */
+            height: 50px;
         }
 
         .app .config .config-schedules select {
@@ -850,20 +852,6 @@
             });
         //#endregion
 
-        //#region Config Schedules Back Button
-        document
-            .getElementById("config-schedules-back-button")
-            .addEventListener("click", function () {
-                if (position == "") {
-                    schedules_win.style.display = "none";
-                } else {
-                    position = "";
-                    config_schedule_table.style.display = "none";
-                    config_class_select.style.display = "flex";
-                }
-            });
-        //#endregion
-
         const config_schedule_table = document.getElementById(
             "config-schedule-table"
         );
@@ -876,11 +864,38 @@
 
         // Loop through each cell and add an event listener
         for (let i = 0; i < cells.length; i++) {
-            console.log(cells[i].innerHTML);
             if (cells[i].innerHTML == "") {
                 cells[i].innerHTML = "<button></button>";
             }
         }
+
+        //#region Config Schedules Back Button
+        document
+            .getElementById("config-schedules-back-button")
+            .addEventListener("click", function () {
+                if (position == "") {
+                    schedules_win.style.display = "none";
+                } else {
+                    position = "";
+                    config_schedule_table.style.display = "none";
+                    config_class_select.style.display = "flex";
+
+                    // Save Schedule
+                    const cells =
+                        config_schedule_table.getElementsByTagName("td");
+
+                    // Loop through each cell
+                    for (let i = 0; i < cells.length; i++) {
+                        console.log(cells[i].innerHTML);
+                        let btn = cells[i].querySelector("button");
+                        if (btn !== null) {
+                            // Contains a Button
+                            console.log(btn.innerHTML);
+                        }
+                    }
+                }
+            });
+        //#endregion
 
         //#region Config Class Select Function
         const config_class_elements =
@@ -899,8 +914,7 @@
         });
         //#endregion
 
-        var new_config_schedule = new Array();
-        var config_edit_subject = "";
+        var config_edit_subject;
 
         //#region Load Schedule
         const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
@@ -913,7 +927,6 @@
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                new_config_schedule = data;
 
                 for (let day in data) {
                     for (let hour in data[day]) {
@@ -933,13 +946,8 @@
 
                         // Assign the Button's Onclick
                         btn.addEventListener("click", function (event) {
-                            console.log("Clicked:" + event.target.id);
                             edit_subject.style.display = "block";
-                            const row = event.target.parentNode.rowIndex;
-                            const column = Array.from(
-                                event.target.parentNode.children
-                            ).indexOf(event.target);
-                            config_edit_subject = `${row}${column}`;
+                            config_edit_subject = event.target;
                         });
 
                         // Assign the Class Name to the Cell
@@ -977,7 +985,13 @@
         document.getElementById("close-edit-subject").onclick = function (
             event
         ) {
-            event.target.innerHTML = config_edit_subject;
+            if (config_subject_select.value != "") {
+                config_edit_subject.innerHTML =
+                    subjects_id_name[config_subject_select.value];
+
+                config_edit_subject = null;
+                edit_subject.style.display = "none";
+            }
         };
 
         //#endregion
