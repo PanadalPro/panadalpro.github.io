@@ -869,6 +869,8 @@
 
         const cells = config_schedule_table.getElementsByTagName("td");
 
+        var config_edit_subject;
+
         // Loop through each cell and add an event listener
         for (let i = 0; i < cells.length; i++) {
             if (cells[i].innerHTML == "") {
@@ -879,7 +881,7 @@
         //#region Config Schedules Back Button
         document
             .getElementById("config-schedules-back-button")
-            .addEventListener("click", function () {
+            .addEventListener("click", async function () {
                 if (position == "") {
                     schedules_win.style.display = "none";
                 } else {
@@ -907,13 +909,19 @@
 
                             if (day.length >= 6) {
                                 new_schedule[day_idx] = day;
+                                day_idx++;
                                 day = new Array();
                             }
                         }
                     }
 
-                    // Test this
                     console.log(new_schedule);
+                    console.log(
+                        config_edit_subject.innerHTML,
+                        subjects_name_id[config_edit_subject.innerHTML]
+                    );
+
+                    // await getDoc(doc(db, "schedules", ))
 
                     //#endregion
                 }
@@ -936,8 +944,6 @@
             });
         });
         //#endregion
-
-        var config_edit_subject;
 
         //#region Load Schedule
         const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
