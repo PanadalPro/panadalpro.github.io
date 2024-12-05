@@ -911,10 +911,12 @@
                         }
                     }
 
-                    console.log(new_schedule);
+                    console.log("Set Class", position, "to", new_schedule);
                     console.log(position);
 
-                    // await getDoc(doc(db, "schedules", ))
+                    await getDoc(doc(db, "schedules", position), {
+                        new_schedule,
+                    });
 
                     //#endregion
                     position = "";
