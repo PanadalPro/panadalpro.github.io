@@ -885,10 +885,6 @@
                 if (position == "") {
                     schedules_win.style.display = "none";
                 } else {
-                    position = "";
-                    config_schedule_table.style.display = "none";
-                    config_class_select.style.display = "flex";
-
                     //#region Save Schedule
 
                     // New Schedule
@@ -921,6 +917,9 @@
                     // await getDoc(doc(db, "schedules", ))
 
                     //#endregion
+                    position = "";
+                    config_schedule_table.style.display = "none";
+                    config_class_select.style.display = "flex";
                 }
             });
         //#endregion
