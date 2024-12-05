@@ -890,7 +890,8 @@
                     //#region Save Schedule
 
                     // New Schedule
-                    let new_schedule = new Array();
+                    let new_schedule = {};
+                    day_idx = 1;
                     let day = new Array();
 
                     // Get Cells in Table
@@ -905,7 +906,7 @@
                             day.push(subjects_name_id[btn.innerHTML]);
 
                             if (day.length >= 6) {
-                                new_schedule.push(day);
+                                new_schedule[day_idx] = day;
                                 day = new Array();
                             }
                         }
