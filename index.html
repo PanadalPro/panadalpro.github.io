@@ -12,6 +12,7 @@
         />
     </head>
     <body>
+        <!-- #region Login -->
         <div class="login" id="login">
             <form action="">
                 <h1>Inicia la Sessió</h1>
@@ -57,7 +58,11 @@
                 </button>
             </form>
         </div>
+        <!-- #endregion -->
+
+        <!-- #region App -->
         <div class="app" id="app">
+            <!-- #region Menubar -->
             <div class="menubar">
                 <div class="element" id="reservations-element">
                     <i class="bx bxs-calendar" onclick="reservations()"></i>
@@ -72,6 +77,9 @@
                     <p onclick="config()">Configuració</p>
                 </div>
             </div>
+            <!-- #endregion -->
+
+            <!-- #region Reservations -->
             <div class="reservations" id="reservations">
                 <div class="selects">
                     <div class="class-select">
@@ -122,6 +130,12 @@
                             min="0"
                         />
                     </div>
+                </div>
+
+                <div class="time-select">
+                    <i class="bx bx-chevron-left"></i>
+                    <p class="time-text" id="time-text">Time</p>
+                    <i class="bx bx-chevron-right"></i>
                 </div>
 
                 <table class="schedule" id="schedule">
@@ -191,9 +205,15 @@
                     </tr>
                 </table>
             </div>
+            <!-- #endregion -->
+
+            <!-- #region View Screens -->
             <div class="screens" id="screens">
                 <p>View Screens! Upcoming Feature...</p>
             </div>
+            <!-- #endregion -->
+
+            <!-- #region Config -->
             <div class="config" id="config">
                 <h2>Configuració</h2>
 
@@ -313,7 +333,9 @@
                 </div>
                 <!-- #endregion -->
             </div>
+            <!-- #endregion -->
         </div>
+        <!-- #endregion -->
     </body>
 
     <!-- Style -->
@@ -796,7 +818,7 @@
                     const data = docSnap.data();
                     for (let day in data) {
                         for (let hour in data[day]) {
-                            if (String(data[day][hour]).includes(subject_val)) {
+                            if (String(data[day][hour]) === subject_val) {
                                 console.log(day, hour);
 
                                 let new_hour = parseInt(hour);
@@ -810,12 +832,12 @@
 
                                 let new_day = parseInt(day);
 
-                                console.log(new_day, new_hour);
                                 let random = Math.floor(Math.random() * 100);
                                 const cell =
                                     schedule_table.rows[new_day].cells[
                                         new_hour
                                     ];
+
                                 cell.style.background = `linear-gradient(to right, red ${random}%, green ${
                                     100 - random
                                 }%)`;
@@ -905,9 +927,7 @@
                         let btn = cells[i].querySelector("button");
                         if (btn !== null) {
                             // Contains a Button
-                            day.push(
-                                subjects_name_id[btn.innerHTML].parseInt()
-                            );
+                            day.push(parseInt(subjects_name_id[btn.innerHTML]));
 
                             if (day.length >= 6) {
                                 new_schedule[day_idx] = day;
@@ -1081,8 +1101,8 @@
             screens_element.style.color = "black";
         }
 
-        //reservations();
-        config();
+        reservations();
+        // config();
 
         //#endregion
 
