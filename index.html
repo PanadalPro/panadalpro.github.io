@@ -918,9 +918,7 @@
                     console.log("Set Class", position, "to", new_schedule);
                     console.log(position);
 
-                    await setDoc(doc(db, "schedules", position), {
-                        new_schedule,
-                    });
+                    await setDoc(doc(db, "schedules", position), new_schedule);
                     // LOADING: TypeError: config_schedule_table.rows[new_day] is undefined
                     // See Firebase page saving format error
 
