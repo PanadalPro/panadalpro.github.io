@@ -905,7 +905,9 @@
                         let btn = cells[i].querySelector("button");
                         if (btn !== null) {
                             // Contains a Button
-                            day.push(subjects_name_id[btn.innerHTML]);
+                            day.push(
+                                subjects_name_id[btn.innerHTML].parseInt()
+                            );
 
                             if (day.length >= 6) {
                                 new_schedule[day_idx] = day;
@@ -919,8 +921,6 @@
                     console.log(position);
 
                     await setDoc(doc(db, "schedules", position), new_schedule);
-                    // LOADING: TypeError: config_schedule_table.rows[new_day] is undefined
-                    // See Firebase page saving format error
 
                     //#endregion
                     position = "";
