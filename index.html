@@ -705,6 +705,7 @@
             getFirestore,
             doc,
             getDoc,
+            setDoc,
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
@@ -914,7 +915,7 @@
                     console.log("Set Class", position, "to", new_schedule);
                     console.log(position);
 
-                    await getDoc(doc(db, "schedules", position), {
+                    await setDoc(doc(db, "schedules", position), {
                         new_schedule,
                     });
                     // NOT SAVING
