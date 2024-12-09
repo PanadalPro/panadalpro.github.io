@@ -921,7 +921,8 @@
                     await setDoc(doc(db, "schedules", position), {
                         new_schedule,
                     });
-                    // NOT SAVING
+                    // LOADING: TypeError: config_schedule_table.rows[new_day] is undefined
+                    // See Firebase page saving format error
 
                     //#endregion
                     position = "";
