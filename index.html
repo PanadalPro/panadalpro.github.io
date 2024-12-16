@@ -1141,7 +1141,7 @@
             );
             const sundayFormatted = sunday.toLocaleDateString("ca-ES", options);
 
-            return `${mondayFormatted} - ${sundayFormatted}`;
+            time_text.innerHTML = `${mondayFormatted} - ${sundayFormatted}`;
         }
 
         function changeWeek(offset) {
@@ -1159,10 +1159,6 @@
 
             time_text.innerHTML = `${mondayFormatted} - ${sundayFormatted}`;
         }
-
-        time_text.innerHTML = getCurrentWeek();
-
-        console.log("Next", changeWeek(1));
 
         //! TODO ADD TO TEXT AND BUTTONS. YEAR?
 
