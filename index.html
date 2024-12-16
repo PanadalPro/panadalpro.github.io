@@ -1135,8 +1135,8 @@
 
             // Format the dates as '1 December - 7 December'
             const options = { day: "numeric", month: "long" };
-            const mondayFormatted = monday.toLocaleDateString("en-GB", options); // e.g., '1 December'
-            const sundayFormatted = sunday.toLocaleDateString("en-GB", options); // e.g., '7 December'
+            const mondayFormatted = monday.toLocaleDateString("es-es", options); // e.g., '1 December'
+            const sundayFormatted = sunday.toLocaleDateString("es-es", options); // e.g., '7 December'
 
             return `${mondayFormatted} - ${sundayFormatted}`;
         }
