@@ -369,7 +369,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: url("https://tdausantcugat.org/wp-content/uploads/2022/12/tdau-sant-cugat-3.jpg")
+            background: url("https://thausantcugat.org/wp-content/uploads/2022/12/tdau-sant-cugat-3.jpg")
                 no-repeat;
             background-size: cover;
             background-position: center;
@@ -451,8 +451,8 @@
         }
 
         .app .reservations .time-select p {
-            font-size: 20px;
-            top: 3px;
+            font-size: 17px;
+            top: 5px;
         }
 
         .app .reservations .time-select button {
@@ -1140,8 +1140,7 @@
 
             return `${mondayFormatted} - ${sundayFormatted}`;
         }
-
-        console.log(getCurrentWeek());
+        time_text.innerHTML = getCurrentWeek();
 
         //! TODO ADD TO TEXT AND BUTTONS. YEAR?
 
