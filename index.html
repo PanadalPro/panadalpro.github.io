@@ -133,9 +133,23 @@
                 </div>
 
                 <div class="time-select">
-                    <i class="bx bx-chevron-left"></i>
-                    <p class="time-text" id="time-text">Time</p>
-                    <i class="bx bx-chevron-right"></i>
+                    <button
+                        class="time-left-btn"
+                        id="time-left-btn"
+                        onclick="time_select_left()"
+                    >
+                        <i class="bx bx-chevron-left"></i>
+                    </button>
+
+                    <p class="time-text" id="time-text"></p>
+
+                    <button
+                        class="time-right-btn"
+                        id="time-right-btn"
+                        onclick="time_select_right()"
+                    >
+                        <i class="bx bx-chevron-right"></i>
+                    </button>
                 </div>
 
                 <table class="schedule" id="schedule">
@@ -340,14 +354,16 @@
 
     <!-- Style -->
     <style>
-        /* #region Body */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Poppins", sans-serif;
+
+            --accent-color: #b57f1f;
         }
 
+        /* #region Body */
         body {
             display: flex;
             justify-content: center;
@@ -378,6 +394,15 @@
         /* #endregion */
 
         /* #region App - Reservations */
+
+        .app .reservations {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        /* #region Selects */
         .app .reservations select {
             border-radius: 10px;
             padding: 7px;
@@ -414,15 +439,44 @@
             font-weight: bold;
         }
 
-        .app .reservations {
-            text-align: center;
+        /* #endregion */
+
+        /* #region Time Select */
+
+        .app .reservations .time-select {
+            display: flex;
+            flex-direction: row;
             justify-content: center;
-            align-items: center;
-            padding: 10px;
+            margin-top: 40px;
         }
 
+        .app .reservations .time-select p {
+            font-size: 20px;
+            top: 3px;
+        }
+
+        .app .reservations .time-select button {
+            margin: 0px 30px;
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            background-color: #fff;
+        }
+
+        .app .reservations .time-select button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .app .reservations .time-select button i {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* #endregion */
+
+        /* #region Schedule Table */
         .app .reservations table {
-            margin: 40px auto 0px auto;
+            margin: 5px auto 0px auto;
             border-collapse: collapse;
             border: 2px solid black;
             font-family: sans-serif;
@@ -437,6 +491,8 @@
             padding: 8px 10px;
             min-width: 70px;
         }
+        /* #endregion */
+
         /* #endregion */
 
         /* #region App - Screens */
@@ -1059,9 +1115,43 @@
 
         //#endregion
 
-        //#region Menubar
-        const MENUBAR_ACCENT_COLOR = "#b57f1f";
+        //#region Reservations
 
+        //#region Time Selects
+        const time_text = document.getElementById("time-text");
+
+        function getCurrentWeek() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // Get day of the week (0=Sunday, 1=Monday, ..., 6=Saturday)
+
+            // Adjust so that Monday is the start of the week (1) and Sunday is the end (7)
+            const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust if today is Sunday (0) or another day
+            const monday = new Date(today);
+            monday.setDate(today.getDate() + diffToMonday); // Get the Monday of the current week
+
+            // Calculate the Sunday of the current week (7 days after Monday)
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6); // Add 6 days to Monday to get Sunday
+
+            // Format the dates as '1 December - 7 December'
+            const options = { day: "numeric", month: "long" };
+            const mondayFormatted = monday.toLocaleDateString("en-GB", options); // e.g., '1 December'
+            const sundayFormatted = sunday.toLocaleDateString("en-GB", options); // e.g., '7 December'
+
+            return `${mondayFormatted} - ${sundayFormatted}`;
+        }
+
+        console.log(getCurrentWeek());
+
+        function time_select_left() {}
+
+        function time_select_right() {}
+
+        //#endregion
+
+        //#endregion
+
+        //#region Menubar
         // Windows
         const reservations_win = document.getElementById("reservations");
         const screens_win = document.getElementById("screens");
@@ -1074,11 +1164,16 @@
         const screens_element = document.getElementById("screens-element");
         const config_element = document.getElementById("config-element");
 
+        // Get Accent Color from CSS Variable
+        const accent_color = window
+            .getComputedStyle(document.querySelector(".menubar"))
+            .getPropertyValue("--accent-color");
+
         function reservations() {
             reservations_win.style.display = "initial";
             screens_win.style.display = "none";
             config_win.style.display = "none";
-            reservations_element.style.color = MENUBAR_ACCENT_COLOR;
+            reservations_element.style.color = accent_color;
             screens_element.style.color = "black";
             config_element.style.color = "black";
         }
@@ -1087,7 +1182,7 @@
             screens_win.style.display = "initial";
             config_win.style.display = "none";
             reservations_win.style.display = "none";
-            screens_element.style.color = MENUBAR_ACCENT_COLOR;
+            screens_element.style.color = accent_color;
             config_element.style.color = "black";
             reservations_element.style.color = "black";
         }
@@ -1096,7 +1191,7 @@
             config_win.style.display = "initial";
             reservations_win.style.display = "none";
             screens_win.style.display = "none";
-            config_element.style.color = MENUBAR_ACCENT_COLOR;
+            config_element.style.color = accent_color;
             reservations_element.style.color = "black";
             screens_element.style.color = "black";
         }
