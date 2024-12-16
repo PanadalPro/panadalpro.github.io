@@ -1157,9 +1157,7 @@
             );
             const sundayFormatted = sunday.toLocaleDateString("ca-ES", options);
 
-            document.getElementById(
-                "weekDisplay"
-            ).textContent = `${mondayFormatted} - ${sundayFormatted}`;
+            time_text.innerHTML = `${mondayFormatted} - ${sundayFormatted}`;
         }
 
         time_text.innerHTML = getCurrentWeek();
