@@ -1120,27 +1120,51 @@
         //#region Time Selects
         const time_text = document.getElementById("time-text");
 
+        let currentMonday;
+
         function getCurrentWeek() {
             const today = new Date();
-            const dayOfWeek = today.getDay(); // Get day of the week (0=Sunday, 1=Monday, ..., 6=Saturday)
+            const dayOfWeek = today.getDay();
+            const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            currentMonday = new Date(today);
+            currentMonday.setDate(today.getDate() + diffToMonday);
 
-            // Adjust so that Monday is the start of the week (1) and Sunday is the end (7)
-            const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust if today is Sunday (0) or another day
-            const monday = new Date(today);
-            monday.setDate(today.getDate() + diffToMonday); // Get the Monday of the current week
+            // Calcula la data de diumenge de la setmana
+            const sunday = new Date(currentMonday);
+            sunday.setDate(currentMonday.getDate() + 6);
 
-            // Calculate the Sunday of the current week (7 days after Monday)
-            const sunday = new Date(monday);
-            sunday.setDate(monday.getDate() + 6); // Add 6 days to Monday to get Sunday
-
-            // Format the dates as '1 December - 7 December'
+            // Formata les dates
             const options = { day: "numeric", month: "long" };
-            const mondayFormatted = monday.toLocaleDateString("ca-ES", options); // e.g., '1 December'
-            const sundayFormatted = sunday.toLocaleDateString("ca-ES", options); // e.g., '7 December'
+            const mondayFormatted = currentMonday.toLocaleDateString(
+                "ca-ES",
+                options
+            );
+            const sundayFormatted = sunday.toLocaleDateString("ca-ES", options);
 
             return `${mondayFormatted} - ${sundayFormatted}`;
         }
+
+        function changeWeek(offset) {
+            currentMonday.setDate(currentMonday.getDate() + offset * 7);
+
+            const sunday = new Date(currentMonday);
+            sunday.setDate(currentMonday.getDate() + 6);
+
+            const options = { day: "numeric", month: "long" };
+            const mondayFormatted = currentMonday.toLocaleDateString(
+                "ca-ES",
+                options
+            );
+            const sundayFormatted = sunday.toLocaleDateString("ca-ES", options);
+
+            document.getElementById(
+                "weekDisplay"
+            ).textContent = `${mondayFormatted} - ${sundayFormatted}`;
+        }
+
         time_text.innerHTML = getCurrentWeek();
+
+        console.log("Next", changeWeek(1));
 
         //! TODO ADD TO TEXT AND BUTTONS. YEAR?
 
