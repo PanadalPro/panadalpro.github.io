@@ -866,7 +866,6 @@
 
         if (paramsSnap.exists()) {
             params = paramsSnap.data();
-            console.log(params);
         } else {
             console.log("Unable to fetch Reservations Params File!");
         }
@@ -874,6 +873,9 @@
         //#endregion
 
         const EMPTY_SCHEDULE = schedule_table.innerHTML;
+
+        var schedules_data;
+
         async function class_subject() {
             let class_val = class_select.value;
             let subject_val = subject_select.value;
@@ -883,38 +885,37 @@
 
                 if (docSnap.exists()) {
                     schedule_table.innerHTML = EMPTY_SCHEDULE;
-                    const data = docSnap.data();
-                    for (let day in data) {
-                        for (let hour in data[day]) {
-                            if (String(data[day][hour]) === subject_val) {
-                                console.log(day, hour);
-
-                                let new_hour = parseInt(hour);
-                                new_hour +=
-                                    1 +
-                                    (new_hour >= 2
-                                        ? new_hour >= 4
-                                            ? 2
-                                            : 1
-                                        : 0);
-
-                                let new_day = parseInt(day);
-
-                                let random = Math.floor(Math.random() * 100);
-                                const cell =
-                                    schedule_table.rows[new_day].cells[
-                                        new_hour
-                                    ];
-
-                                cell.style.background = `linear-gradient(to right, red ${random}%, green ${
-                                    100 - random
-                                }%)`;
-                                cell.innerHTML = `${100 - random} lliures`;
-                            }
-                        }
-                    }
+                    schedules_data = docSnap.data();
+                    reload_schedule();
                 } else {
-                    console.log("Error! No Schedule Data");
+                    console.log("Unable to fetch Schedule Data!");
+                }
+            }
+        }
+
+        async function time_select_modify() {}
+
+        async function reload_schedule() {
+            for (let day in schedules_data) {
+                for (let hour in data[day]) {
+                    if (String(data[day][hour]) === subject_val) {
+                        console.log(day, hour);
+
+                        let new_hour = parseInt(hour);
+                        new_hour +=
+                            1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
+
+                        let new_day = parseInt(day);
+
+                        let random = Math.floor(Math.random() * 100);
+                        const cell =
+                            schedule_table.rows[new_day].cells[new_hour];
+
+                        cell.style.background = `linear-gradient(to right, red ${random}%, green ${
+                            100 - random
+                        }%)`;
+                        cell.innerHTML = `${100 - random} lliures`;
+                    }
                 }
             }
         }
@@ -1136,12 +1137,14 @@
         var minMonday;
         var currentMonday;
 
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        const thisMonday = new Date(today);
+        thisMonday.setDate(today.getDate() + diffToMonday);
+
         function getCurrentWeek() {
-            const today = new Date();
-            const dayOfWeek = today.getDay();
-            const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-            currentMonday = new Date(today);
-            currentMonday.setDate(today.getDate() + diffToMonday);
+            currentMonday = new Date(thisMonday);
 
             // Calcula la data de diumenge de la setmana
             const sunday = new Date(currentMonday);
@@ -1166,10 +1169,9 @@
             // Get the current date and ensure we can't navigate past it
             const today = new Date();
 
-            // Check if the new Monday is in the future
-            if (newMonday < today) {
-                // Allow changing only if the new Monday is not in the future
-                return; // Do nothing if the new week is in the future
+            // Check if the new Monday is in the past
+            if (newMonday < thisMonday) {
+                return;
             }
 
             // Update the current Monday to the new calculated week
