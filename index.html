@@ -860,14 +860,26 @@
         class_select.addEventListener("change", class_subject);
         subject_select.addEventListener("change", class_subject);
 
+        //#region Get Params / Settings File
+        var params;
+        let paramsSnap = await getDoc(doc(db, "reservations", "params"));
+
+        if (paramsSnap.exists()) {
+            params = paramsSnap.data();
+            console.log(params);
+        } else {
+            console.log("Unable to fetch Reservations Params File!");
+        }
+
+        //#endregion
+
         const EMPTY_SCHEDULE = schedule_table.innerHTML;
         async function class_subject() {
             let class_val = class_select.value;
             let subject_val = subject_select.value;
 
             if (class_val != "" && subject_val != "") {
-                const docRef = doc(db, "schedules", class_val);
-                const docSnap = await getDoc(docRef);
+                const docSnap = await getDoc(doc(db, "schedules", class_val));
 
                 if (docSnap.exists()) {
                     schedule_table.innerHTML = EMPTY_SCHEDULE;
@@ -912,6 +924,7 @@
 
         // Dict ID - Name
         const subjects_id_name = {
+            0: "None",
             1: "Català",
             2: "Castellà",
             3: "Anglès",
@@ -956,7 +969,7 @@
         // Loop through each cell and add an event listener
         for (let i = 0; i < cells.length; i++) {
             if (cells[i].innerHTML == "") {
-                cells[i].innerHTML = "<button></button>";
+                cells[i].innerHTML = "<button>None</button>";
             }
         }
 
@@ -1120,6 +1133,7 @@
         //#region Time Selects
         const time_text = document.getElementById("time-text");
 
+        var minMonday;
         var currentMonday;
 
         function getCurrentWeek() {
@@ -1145,6 +1159,20 @@
         }
 
         function changeWeek(offset) {
+            // Calculate the potential new Monday for the week change
+            const newMonday = new Date(currentMonday);
+            newMonday.setDate(currentMonday.getDate() + offset * 7);
+
+            // Get the current date and ensure we can't navigate past it
+            const today = new Date();
+
+            // Check if the new Monday is in the future
+            if (newMonday < today) {
+                // Allow changing only if the new Monday is not in the future
+                return; // Do nothing if the new week is in the future
+            }
+
+            // Update the current Monday to the new calculated week
             currentMonday.setDate(currentMonday.getDate() + offset * 7);
 
             const sunday = new Date(currentMonday);
@@ -1159,8 +1187,6 @@
 
             time_text.innerHTML = `${mondayFormatted} - ${sundayFormatted}`;
         }
-
-        //! TODO ADD TO TEXT AND BUTTONS. YEAR?
 
         getCurrentWeek();
 
