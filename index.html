@@ -874,6 +874,8 @@
 		const EMPTY_SCHEDULE = schedule_table.innerHTML;
 
 		var schedules_data;
+		var schedules_subject;
+		var schedules_ddmmyy;
 
 		async function class_subject() {
 			let class_val = class_select.value;
@@ -885,7 +887,8 @@
 				if (docSnap.exists()) {
 					schedule_table.innerHTML = EMPTY_SCHEDULE;
 					schedules_data = docSnap.data();
-					reload_schedule(subject_val);
+					schedules_subject = subject_val;
+					reload_schedule();
 				} else {
 					console.log("Unable to fetch Schedule Data!");
 				}
@@ -895,22 +898,37 @@
 		class_select.addEventListener("change", class_subject);
 		subject_select.addEventListener("change", class_subject);
 
-		async function time_select_modify(currentMonday) {
-			const formattedDate = currentMonday
+		function reload_ddmmyy() {
+			const formattedDate = window.currentMonday
 				.toISOString()
 				.slice(0, 10)
 				.split("-");
-			const ddmmyy = `${formattedDate[2]}${
+			schedules_ddmmyy = `${formattedDate[2]}${
 				formattedDate[1]
 			}${formattedDate[0].slice(-2)}`;
-			console.log(ddmmyy);
-		}
-		window.time_select_modify = time_select_modify; // attach the function to the window object to call it from the other script tag
 
-		async function reload_schedule(subject_val) {
+			reload_schedule();
+		}
+		window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
+
+		async function reload_schedule() {
+			// Get the occupied devices for date
+			const docSnap = await getDoc(
+				doc(db, "reservations", schedules_ddmmyy)
+			);
+
+			if (docSnap.exists()) {
+				let reservations_data = docSnap.data();
+			} else {
+				let reservations_data = new Array();
+			}
+			console.log(reservations_data);
+
 			for (let day in schedules_data) {
 				for (let hour in schedules_data[day]) {
-					if (String(schedules_data[day][hour]) === subject_val) {
+					if (
+						String(schedules_data[day][hour]) === schedules_subject
+					) {
 						let new_hour = parseInt(hour);
 						new_hour +=
 							1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
@@ -1146,7 +1164,6 @@
 		const time_text = document.getElementById("time-text");
 
 		var minMonday;
-		var currentMonday;
 
 		const today = new Date();
 		const dayOfWeek = today.getDay();
@@ -1155,15 +1172,13 @@
 		thisMonday.setDate(today.getDate() + diffToMonday);
 
 		function getCurrentWeek() {
-			currentMonday = new Date(thisMonday);
+			window.currentMonday = new Date(thisMonday);
 
-			// Calcula la data de diumenge de la setmana
-			const sunday = new Date(currentMonday);
-			sunday.setDate(currentMonday.getDate() + 6);
+			const sunday = new Date(window.currentMonday);
+			sunday.setDate(window.currentMonday.getDate() + 6);
 
-			// Formata les dates
 			const options = { day: "numeric", month: "long" };
-			const mondayFormatted = currentMonday.toLocaleDateString(
+			const mondayFormatted = window.currentMonday.toLocaleDateString(
 				"ca-ES",
 				options
 			);
@@ -1174,8 +1189,8 @@
 
 		function changeWeek(offset) {
 			// Calculate the potential new Monday for the week change
-			const newMonday = new Date(currentMonday);
-			newMonday.setDate(currentMonday.getDate() + offset * 7);
+			const newMonday = new Date(window.currentMonday);
+			newMonday.setDate(window.currentMonday.getDate() + offset * 7);
 
 			// Get the current date and ensure we can't navigate past it
 			const today = new Date();
@@ -1186,13 +1201,15 @@
 			}
 
 			// Update the current Monday to the new calculated week
-			currentMonday.setDate(currentMonday.getDate() + offset * 7);
+			window.currentMonday.setDate(
+				window.currentMonday.getDate() + offset * 7
+			);
 
-			const sunday = new Date(currentMonday);
-			sunday.setDate(currentMonday.getDate() + 6);
+			const sunday = new Date(window.currentMonday);
+			sunday.setDate(window.currentMonday.getDate() + 6);
 
 			const options = { day: "numeric", month: "long" };
-			const mondayFormatted = currentMonday.toLocaleDateString(
+			const mondayFormatted = window.currentMonday.toLocaleDateString(
 				"ca-ES",
 				options
 			);
@@ -1205,12 +1222,12 @@
 
 		function time_select_left() {
 			changeWeek(-1);
-			window.time_select_modify(currentMonday);
+			window.reload_ddmmyy();
 		}
 
 		function time_select_right() {
 			changeWeek(1);
-			window.time_select_modify(currentMonday);
+			window.reload_ddmmyy();
 		}
 
 		//#endregion
