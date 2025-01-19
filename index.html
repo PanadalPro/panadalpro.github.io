@@ -944,7 +944,11 @@
 						cell.style.background = `linear-gradient(to right, red ${random}%, green ${
 							100 - random
 						}%)`;
-						console.log(day, reservations_data[day]);
+						console.log(day);
+						let i = reservations_data[`${day}${hour}`];
+						if (i != undefined) {
+							console.log(`DAY: ${day} VAL: ${i}`);
+						}
 						cell.innerHTML = `${100 - random} lliures`;
 					}
 				}
