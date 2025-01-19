@@ -918,10 +918,11 @@
 				doc(db, "reservations", schedules_ddmmyy)
 			);
 
+			let reservations_data;
 			if (docSnap.exists()) {
-				let reservations_data = docSnap.data();
+				reservations_data = docSnap.data();
 			} else {
-				let reservations_data = new Array();
+				reservations_data = new Array();
 			}
 			console.log(reservations_data);
 
