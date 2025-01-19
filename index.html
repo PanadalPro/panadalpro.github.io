@@ -884,7 +884,7 @@
 				if (docSnap.exists()) {
 					schedule_table.innerHTML = EMPTY_SCHEDULE;
 					schedules_data = docSnap.data();
-					reload_schedule();
+					reload_schedule(subject_val);
 				} else {
 					console.log("Unable to fetch Schedule Data!");
 				}
@@ -894,9 +894,11 @@
 		class_select.addEventListener("change", class_subject);
 		subject_select.addEventListener("change", class_subject);
 
-		async function time_select_modify() {}
+		async function time_select_modify(currentMonday) {
+			console.log(currentMonday);
+		}
 
-		async function reload_schedule() {
+		async function reload_schedule(subject_val) {
 			for (let day in schedules_data) {
 				for (let hour in schedules_data[day]) {
 					if (String(schedules_data[day][hour]) === subject_val) {
@@ -1195,10 +1197,12 @@
 
 		function time_select_left() {
 			changeWeek(-1);
+			time_select_modify(currentMonday);
 		}
 
 		function time_select_right() {
 			changeWeek(1);
+			time_select_modify(currentMonday);
 		}
 
 		//#endregion
