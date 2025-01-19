@@ -922,7 +922,7 @@
 			if (docSnap.exists()) {
 				reservations_data = docSnap.data();
 			} else {
-				reservations_data = new Array();
+				reservations_data = {};
 			}
 			console.log(reservations_data);
 
@@ -944,7 +944,7 @@
 						cell.style.background = `linear-gradient(to right, red ${random}%, green ${
 							100 - random
 						}%)`;
-						console.log(cell.style.background);
+						console.log(day, reservations_data[day]);
 						cell.innerHTML = `${100 - random} lliures`;
 					}
 				}
