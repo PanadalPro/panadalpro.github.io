@@ -910,6 +910,7 @@
 			reload_schedule();
 		}
 		window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
+		reload_ddmmyy();
 
 		async function reload_schedule() {
 			// Get the occupied devices for date
