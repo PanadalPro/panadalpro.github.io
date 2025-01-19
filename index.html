@@ -898,8 +898,8 @@
 
 		async function reload_schedule() {
 			for (let day in schedules_data) {
-				for (let hour in data[day]) {
-					if (String(data[day][hour]) === subject_val) {
+				for (let hour in schedules_data[day]) {
+					if (String(schedules_data[day][hour]) === subject_val) {
 						console.log(day, hour);
 
 						let new_hour = parseInt(hour);
