@@ -897,13 +897,12 @@
 		async function time_select_modify(currentMonday) {
 			console.log(currentMonday);
 		}
+		window.time_select_modify = time_select_modify; // attach the function to the window object to call it from the other script tag
 
 		async function reload_schedule(subject_val) {
 			for (let day in schedules_data) {
 				for (let hour in schedules_data[day]) {
 					if (String(schedules_data[day][hour]) === subject_val) {
-						console.log(day, hour);
-
 						let new_hour = parseInt(hour);
 						new_hour +=
 							1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
@@ -1198,12 +1197,12 @@
 
 		function time_select_left() {
 			changeWeek(-1);
-			time_select_modify(currentMonday);
+			window.time_select_modify(currentMonday);
 		}
 
 		function time_select_right() {
 			changeWeek(1);
-			time_select_modify(currentMonday);
+			window.time_select_modify(currentMonday);
 		}
 
 		//#endregion
