@@ -895,7 +895,14 @@
 		subject_select.addEventListener("change", class_subject);
 
 		async function time_select_modify(currentMonday) {
-			console.log(currentMonday);
+			const formattedDate = currentMonday
+				.toISOString()
+				.slice(0, 10)
+				.split("-");
+			const ddmmyy = `${formattedDate[2]}${
+				formattedDate[1]
+			}${formattedDate[0].slice(-2)}`;
+			console.log(ddmmyy);
 		}
 		window.time_select_modify = time_select_modify; // attach the function to the window object to call it from the other script tag
 
