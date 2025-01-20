@@ -211,19 +211,31 @@
                 </table>
 
                 <div class="reserve" id="reserve">
-                    <input
-                        type="number"
-                        class="reserve-num"
-                        id="reserve-num"
-                        min="1"
-                        value="1"
-                    />
-                    <button
-                        class="reserve-cancel-btn"
-                        onclick="reserve_close_win()"
-                    >
-                        Cancelar
-                    </button>
+                    <div class="content">
+                        <h2 class="reserve-text" id="reserve-text"></h2>
+                        <div class="num-select">
+                            <h3>Número de portàtils:</h3>
+                            <input
+                                type="number"
+                                class="reserve-num"
+                                id="reserve-num"
+                                min="1"
+                                value="1"
+                            />
+                            <h3 id="max"></h3>
+                        </div>
+                        <div class="btns">
+                            <button
+                                class="reserve-cancel-btn"
+                                onclick="reserve_close_win()"
+                            >
+                                Cancelar
+                            </button>
+                            <button class="reserve-btn" id="reserve-btn">
+                                Reservar
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- #endregion -->
@@ -467,6 +479,7 @@
             width: 30px;
             height: 30px;
             border-radius: 7px;
+            border: 1px solid black;
             background-color: #fff;
         }
 
@@ -496,7 +509,7 @@
             border: 1px solid black;
             padding: 8px 10px;
             min-width: 80px;
-            height: 50px;
+            height: 60px;
             background: linear-gradient(
                 to right,
                 #4caf50 0%,
@@ -546,7 +559,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            width: 300px;
+            width: 350px;
             height: 200px;
             background-color: #fff;
             border-radius: 10px;
@@ -560,23 +573,47 @@
             transform: translate(-50%, -50%);
         }
 
-        .app .reservations .reserve .reserve-num {
+        .app .reservations .reserve .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app .reservations .reserve .content .num-select {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .app .reservations .reserve .content .num-select h3 {
+            padding: 12px;
+        }
+
+        .app .reservations .reserve .content .num-select .reserve-num {
             width: 40px;
             height: 40px;
             border-radius: 10px;
             border: 1px solid black;
+            font-size: 20px;
+            font-weight: normal;
         }
 
-        .app .reservations .reserve .reserve-cancel-btn {
+        .app .reservations .reserve .content .btns {
             align-self: center;
             margin-top: auto;
-            margin-bottom: 10px;
-            padding: 10px 20px;
-            border-radius: 10px;
-            background-color: var(--accent-color);
-            border: none;
+            margin-bottom: -10px;
+        }
+
+        .app .reservations .reserve .content .btns button {
             color: white;
             cursor: pointer;
+            background-color: var(--accent-color);
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin-left: 10px;
+            margin-right: 10px;
         }
 
         .reserve_overlay {
@@ -591,6 +628,61 @@
             z-index: 999;
             display: none;
         }
+
+        /* #region Tick Animation */
+        .tick-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tick {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: green;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInCircle 0.5s ease-in-out forwards;
+        }
+
+        .tick::before {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-right: 5px solid white;
+            border-bottom: 5px solid white;
+            transform: rotate(45deg);
+            animation: drawTick 0.5s ease-in-out 0.3s forwards;
+        }
+
+        @keyframes fadeInCircle {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes drawTick {
+            from {
+                width: 0;
+                height: 0;
+            }
+            to {
+                width: 20px;
+                height: 50px;
+            }
+        }
+        /* #endregion */
         /* #endregion */
 
         /* #endregion */
@@ -1051,7 +1143,7 @@
                         if (i == window.reserve_params["laptop_num"]) {
                             cell.innerHTML = "OCUPATS";
                         } else {
-                            cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i})">${
+                            cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i}, ${day})">${
                                 window.reserve_params["laptop_num"] - i
                             } lliures</button>`;
                         }
@@ -1061,10 +1153,52 @@
         }
 
         const reserve_num = document.getElementById("reserve-num");
+        const reserve_text = document.getElementById("reserve-text");
+        const reserve_max = document.querySelector(
+            ".app .reservations .reserve .num-select #max"
+        );
+        const reserve_content = document.querySelector(
+            ".app .reservations .reserve .content"
+        );
+        const reserve_win_ = document.getElementById("reserve");
 
-        function load_reserve(i) {
+        function load_reserve(i, day) {
+            let reserve_day = new Date(window.currentMonday);
+            reserve_day.setDate(reserve_day.getDate() + (day - 1));
+            let reserve_day_str = reserve_day.toLocaleDateString("ca-ES", {
+                weekday: "long", // Full weekday name
+                day: "numeric", // Day of the month
+                month: "long", // Full month name
+            });
+
             reserve_num.max = window.reserve_params["laptop_num"] - i;
+            reserve_text.innerText = `Reservar per al ${reserve_day_str}`;
+            reserve_max.innerText = `Màx. ${
+                window.reserve_params["laptop_num"] - i
+            }`;
         }
+
+        // 2nd time there is space
+
+        async function reserve_ok() {
+            reserve_content.style.display = "none";
+
+            const tickContainer = document.createElement("div");
+            tickContainer.classList.add("tick-container");
+            const tick = document.createElement("div");
+            tick.classList.add("tick");
+            tickContainer.appendChild(tick);
+            reserve_win_.appendChild(tickContainer);
+
+            setTimeout(() => {
+                window.reserve_close_win();
+                reserve_content.style.display = "block";
+            }, 3000);
+        }
+
+        const reserve_btn = document.getElementById("reserve-btn");
+        reserve_btn.addEventListener("click", reserve_ok);
+
         window.load_reserve = load_reserve;
         //#endregion
 
@@ -1354,16 +1488,17 @@
         const reserve_win = document.getElementById("reserve");
         const overlay = document.getElementById("reserve_overlay");
 
-        function reserve_open_win(i) {
+        function reserve_open_win(i, day) {
             reserve_win.style.display = "flex";
             overlay.style.display = "flex";
-            window.load_reserve(i);
+            window.load_reserve(i, day);
         }
 
         function reserve_close_win() {
             reserve_win.style.display = "none";
             overlay.style.display = "none";
         }
+        window.reserve_close_win = reserve_close_win;
         //#endregion
 
         //#endregion
