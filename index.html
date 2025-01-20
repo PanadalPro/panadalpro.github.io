@@ -60,6 +60,8 @@
         </div>
         <!-- #endregion -->
 
+        <div class="reserve_overlay" id="reserve_overlay"></div>
+
         <!-- #region App -->
         <div class="app" id="app">
             <!-- #region Menubar -->
@@ -207,6 +209,22 @@
                         <td></td>
                     </tr>
                 </table>
+
+                <div class="reserve" id="reserve">
+                    <input
+                        type="number"
+                        class="reserve-num"
+                        id="reserve-num"
+                        min="1"
+                        value="1"
+                    />
+                    <button
+                        class="reserve-cancel-btn"
+                        onclick="reserve_close_win()"
+                    >
+                        Cancelar
+                    </button>
+                </div>
             </div>
             <!-- #endregion -->
 
@@ -521,6 +539,58 @@
             transition: opacity 0.2s ease; /* Smooth transition */
         }
 
+        /* #endregion */
+
+        /* #region Reserve Pop-Up */
+        .app .reservations .reserve {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 200px;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 2px solid black;
+            z-index: 1000;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            transform: translate(-50%, -50%);
+        }
+
+        .app .reservations .reserve .reserve-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid black;
+        }
+
+        .app .reservations .reserve .reserve-cancel-btn {
+            align-self: center;
+            margin-top: auto;
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: var(--accent-color);
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .reserve_overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            display: none;
+        }
         /* #endregion */
 
         /* #endregion */
@@ -889,11 +959,10 @@
         const subject_select = document.getElementById("subject");
 
         //#region Get Params / Settings File
-        var params;
         let paramsSnap = await getDoc(doc(db, "reservations", "params"));
 
         if (paramsSnap.exists()) {
-            params = paramsSnap.data();
+            window.reserve_params = paramsSnap.data();
         } else {
             console.log("Unable to fetch Reservations Params File!");
         }
@@ -974,21 +1043,29 @@
                         const cell =
                             schedule_table.rows[new_day].cells[new_hour];
 
-                        let percentage = (i * 100) / params["laptop_num"];
+                        let percentage =
+                            (i * 100) / window.reserve_params["laptop_num"];
 
                         cell.style.backgroundSize = `${100 - percentage}% 100%`;
 
-                        if (i == params["laptop_num"]) {
+                        if (i == window.reserve_params["laptop_num"]) {
                             cell.innerHTML = "OCUPATS";
                         } else {
-                            cell.innerHTML = `<button class="reservation-cell-btn">${
-                                params["laptop_num"] - i
+                            cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i})">${
+                                window.reserve_params["laptop_num"] - i
                             } lliures</button>`;
                         }
                     }
                 }
             }
         }
+
+        const reserve_num = document.getElementById("reserve-num");
+
+        function load_reserve(i) {
+            reserve_num.max = window.reserve_params["laptop_num"] - i;
+        }
+        window.load_reserve = load_reserve;
         //#endregion
 
         //#region Config - Schedules
@@ -1271,6 +1348,22 @@
             window.reload_ddmmyy();
         }
 
+        //#endregion
+
+        //#region Schedule Cell Click - Reserve
+        const reserve_win = document.getElementById("reserve");
+        const overlay = document.getElementById("reserve_overlay");
+
+        function reserve_open_win(i) {
+            reserve_win.style.display = "flex";
+            overlay.style.display = "flex";
+            window.load_reserve(i);
+        }
+
+        function reserve_close_win() {
+            reserve_win.style.display = "none";
+            overlay.style.display = "none";
+        }
         //#endregion
 
         //#endregion
