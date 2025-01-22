@@ -1119,7 +1119,6 @@
 			} else {
 				reservations_data = {};
 			}
-			console.log(reservations_data);
 
 			for (let day in schedules_data) {
 				for (let hour in schedules_data[day]) {
@@ -1148,7 +1147,7 @@
 						if (i == window.reserve_params["laptop_num"]) {
 							cell.innerHTML = "OCUPATS";
 						} else {
-							cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i}, ${day})">${
+							cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i}, ${day}, ${hour})">${
 								window.reserve_params["laptop_num"] - i
 							} lliures</button>`;
 						}
@@ -1167,7 +1166,10 @@
 		);
 		const reserve_win_ = document.getElementById("reserve");
 
-		function load_reserve(i, day) {
+		var reserve_day;
+		var reserve_hour;
+
+		function load_reserve(i, day, hour) {
 			let reserve_day = new Date(window.currentMonday);
 			reserve_day.setDate(reserve_day.getDate() + (day - 1));
 			let reserve_day_str = reserve_day.toLocaleDateString("ca-ES", {
@@ -1181,14 +1183,32 @@
 			reserve_max.innerText = `Màx. ${
 				window.reserve_params["laptop_num"] - i
 			}`;
+
+			reserve_day = day;
+			reserve_hour = hour;
 		}
 
 		const reserve_btn = document.getElementById("reserve-btn");
 		reserve_btn.addEventListener("click", reserve_ok);
 
 		async function reserve_ok() {
+			let reserved = parseInt(reserve_num.value);
+
 			reserve_content.style.display = "none";
 
+			let i = reserve_day * 10 + reserve_hour;
+			// Reserve
+			await setDoc(
+				doc(db, "reservations", schedules_ddmmyy),
+				{
+					i: reserved,
+				},
+				{ capital: true },
+				{ merge: true }
+			);
+			console.log(i, reserved);
+
+			// Add tick animation
 			const tickContainer = document.createElement("div");
 			tickContainer.classList.add("tick-container");
 			const tick = document.createElement("div");
@@ -1196,6 +1216,7 @@
 			tickContainer.appendChild(tick);
 			document.body.appendChild(tickContainer);
 
+			// Wait 3 secs to hide the tick and the reserve window
 			setTimeout(() => {
 				document.body.removeChild(tickContainer);
 				window.reserve_close_win();
@@ -1492,10 +1513,10 @@
 		const reserve_win = document.getElementById("reserve");
 		const overlay = document.getElementById("reserve_overlay");
 
-		function reserve_open_win(i, day) {
+		function reserve_open_win(i, day, hour) {
 			reserve_win.style.display = "flex";
 			overlay.style.display = "flex";
-			window.load_reserve(i, day);
+			window.load_reserve(i, day, hour);
 		}
 
 		function reserve_close_win() {
