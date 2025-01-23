@@ -1186,6 +1186,7 @@
 
 			reserve_day = day;
 			reserve_hour = hour;
+			console.log("Load reserve", day, hour);
 		}
 
 		const reserve_btn = document.getElementById("reserve-btn");
@@ -1516,6 +1517,7 @@
 		function reserve_open_win(i, day, hour) {
 			reserve_win.style.display = "flex";
 			overlay.style.display = "flex";
+			console.log("openwin", day, hour);
 			window.load_reserve(i, day, hour);
 		}
 
