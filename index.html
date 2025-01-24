@@ -1,5 +1,5 @@
 <!-- TODO: Forgot Password -->
-
+<!-- 1091 -->
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -66,10 +66,10 @@
         <!-- #region App -->
         <div class="app" id="app">
             <!-- #region Account -->
-            <div class="account">
+            <button class="account">
                 <i class="bx bxs-user"></i>
-                <button class="account-btn"></button>
-            </div>
+                <p id="account-text">Nico</p>
+            </button>
             <!-- #endregion -->
 
             <!-- #region Menubar -->
@@ -423,15 +423,24 @@
         /* #region App - Account */
         .app .account {
             position: fixed;
-            top: 0;
-            right: 0;
+            top: 10px;
+            right: 10px;
             padding: 10px;
             border: 1px solid black;
             border-radius: 10px;
+            font-size: 10px;
+            height: 35px;
+            display: flex;
+            flex-direction: row;
         }
 
         .app .account i {
-            font-size: 25x;
+            font-size: 15px;
+            margin-right: 10px;
+        }
+
+        .app .account p {
+            font-size: 15px;
         }
         /* #endregion */
 
@@ -1069,12 +1078,17 @@
                     });
             });
         });
+
+        const account_text = document.getElementById("account-text");
+
         // Listen for auth state changes
         auth.onAuthStateChanged((user) => {
             if (user) {
                 // User is signed in, show the main application
                 login_win.style.display = "none";
                 app_win.style.display = "initial";
+
+                account_text.innerText = user.email;
                 // signOut(auth);
             } else {
                 // No user is signed in, show the login screen
