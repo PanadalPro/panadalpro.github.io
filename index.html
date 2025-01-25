@@ -1,0 +1,1638 @@
+<!-- TODO: Forgot Password -->
+<!-- 1091 -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TecnoThau</title>
+        <link
+            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <!-- #region Login -->
+        <div class="login" id="login">
+            <form action="">
+                <h1>Inicia la Sessió</h1>
+                <div class="input-box">
+                    <input
+                        type="text"
+                        placeholder="Correu"
+                        class="input"
+                        id="email"
+                        required
+                    />
+                    <i class="bx bxs-envelope"></i>
+                </div>
+                <div class="input-box">
+                    <input
+                        type="password"
+                        placeholder="Contrasenya"
+                        class="input"
+                        id="password"
+                        required
+                    />
+                    <i class="bx bxs-lock-alt"></i>
+                    <label
+                        ><input
+                            type="checkbox"
+                            id="show-check"
+                            onclick="togglePassword()"
+                        />
+                        Mostrar Contrasenya</label
+                    >
+                </div>
+
+                <div class="remember-forgot">
+                    <label
+                        ><input type="checkbox" id="remember" checked />
+                        Recorda'm</label
+                    >
+                    <a href="#">Has oblidat la contrasenya?</a>
+                </div>
+
+                <button type="submit" class="btn" id="login-btn">
+                    Inicia la Sessió
+                </button>
+            </form>
+        </div>
+        <!-- #endregion -->
+
+        <div class="reserve_overlay" id="reserve_overlay"></div>
+        <div class="config_overlay" id="config_overlay"></div>
+
+        <!-- #region App -->
+        <div class="app" id="app">
+            <!-- #region Account -->
+            <button class="account">
+                <i class="bx bxs-user"></i>
+                <p id="account-text">Nico</p>
+            </button>
+            <!-- #endregion -->
+
+            <!-- #region Menubar -->
+            <div class="menubar">
+                <div class="element" id="reservations-element">
+                    <i class="bx bxs-calendar" onclick="reservations()"></i>
+                    <p onclick="reservations()">Reservar</p>
+                </div>
+                <div class="element" id="screens-element">
+                    <i class="bx bx-laptop" onclick="screens()"></i>
+                    <p onclick="screens()">Veure Pantalles</p>
+                </div>
+                <div class="element" id="config-element">
+                    <i class="bx bx-cog" onclick="config()"></i>
+                    <p onclick="config()">Configuració</p>
+                </div>
+            </div>
+            <!-- #endregion -->
+
+            <!-- #region Reservations -->
+            <div class="reservations" id="reservations">
+                <div class="selects">
+                    <div class="class-select">
+                        <label for="class">Classe</label>
+                        <br />
+                        <select class="class" id="class">
+                            <option value="" disabled selected>
+                                Selecciona
+                            </option>
+                            <option value="4a">4t A</option>
+                            <option value="4b">4t B</option>
+                            <option value="4c">4t C</option>
+                            <option value="5a">5è A</option>
+                            <option value="5b">5è B</option>
+                            <option value="5c">5è C</option>
+                            <option value="6a">6è A</option>
+                            <option value="6b">6è B</option>
+                            <option value="6c">6è C</option>
+                            <option value="other">Altres</option>
+                        </select>
+                    </div>
+
+                    <div class="subject-select">
+                        <label for="subject">Assignatura</label>
+                        <br />
+                        <select class="subject" id="subject">
+                            <option value="" disabled selected>
+                                Selecciona
+                            </option>
+                            <option value="1">Català</option>
+                            <option value="2">Castellà</option>
+                            <option value="3">Anglès</option>
+                            <option value="4">Medi</option>
+                            <option value="5">Matemàtiques</option>
+                            <option value="6">Valors / Tutoria</option>
+                            <option value="7">Laboratori</option>
+                            <option value="8">Altres</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="time-select">
+                    <button
+                        class="time-left-btn"
+                        id="time-left-btn"
+                        onclick="time_select_left()"
+                    >
+                        <i class="bx bx-chevron-left"></i>
+                    </button>
+
+                    <p class="time-text" id="time-text"></p>
+
+                    <button
+                        class="time-right-btn"
+                        id="time-right-btn"
+                        onclick="time_select_right()"
+                    >
+                        <i class="bx bx-chevron-right"></i>
+                    </button>
+                </div>
+
+                <table class="schedule" id="schedule">
+                    <td>Horari</td>
+                    <td>8:30 - 9:30</td>
+                    <td>9:30 - 10:30</td>
+                    <td>10:30 - 11:00</td>
+                    <td>11:00 - 12:00</td>
+                    <td>12:00 - 13:00</td>
+                    <td>13:00 - 14:30</td>
+                    <td>14:30 - 15:30</td>
+                    <td>15:30 - 16:30</td>
+                    <tr>
+                        <td>Dilluns</td>
+                        <td></td>
+                        <td></td>
+                        <td>PATI</td>
+                        <td></td>
+                        <td></td>
+                        <td>DINAR</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Dimarts</td>
+                        <td></td>
+                        <td></td>
+                        <td>PATI</td>
+                        <td></td>
+                        <td></td>
+                        <td>DINAR</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Dimecres</td>
+                        <td></td>
+                        <td></td>
+                        <td>PATI</td>
+                        <td></td>
+                        <td></td>
+                        <td>DINAR</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Dijous</td>
+                        <td></td>
+                        <td></td>
+                        <td>PATI</td>
+                        <td></td>
+                        <td></td>
+                        <td>DINAR</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Divendres</td>
+                        <td></td>
+                        <td></td>
+                        <td>PATI</td>
+                        <td></td>
+                        <td></td>
+                        <td>DINAR</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+
+                <div class="reserve" id="reserve">
+                    <div class="content">
+                        <h2 class="reserve-text" id="reserve-text"></h2>
+                        <div class="num-select">
+                            <h3>Número de portàtils:</h3>
+                            <input
+                                type="number"
+                                class="reserve-num"
+                                id="reserve-num"
+                                min="1"
+                                value="1"
+                            />
+                            <h3 id="max"></h3>
+                        </div>
+                        <div class="btns">
+                            <button
+                                class="reserve-cancel-btn"
+                                onclick="reserve_close_win()"
+                            >
+                                Cancelar
+                            </button>
+                            <button class="reserve-btn" id="reserve-btn">
+                                Reservar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #endregion -->
+
+            <!-- #region View Screens -->
+            <div class="screens" id="screens">
+                <p>View Screens! Upcoming Feature...</p>
+            </div>
+            <!-- #endregion -->
+
+            <!-- #region Config -->
+            <div class="config" id="config">
+                <h2>Configuració</h2>
+
+                <!-- #region Schedules -->
+                <button class="element" id="config-schedules-button">
+                    Horaris
+                </button>
+                <div class="config-schedules" id="config-schedules">
+                    <div class="select-class" id="select-class">
+                        <button class="config-class" id="4a">4t A</button>
+                        <button class="config-class" id="4b">4t B</button>
+                        <button class="config-class" id="4c">4t C</button>
+                        <button class="config-class" id="5a">5è A</button>
+                        <button class="config-class" id="5b">5è B</button>
+                        <button class="config-class" id="5c">5è C</button>
+                        <button class="config-class" id="6a">6è A</button>
+                        <button class="config-class" id="6b">6è B</button>
+                        <button class="config-class" id="6c">6è C</button>
+                    </div>
+                    <table
+                        class="config-schedule-table"
+                        id="config-schedule-table"
+                    >
+                        <td>Horari</td>
+                        <td>8:30 - 9:30</td>
+                        <td>9:30 - 10:30</td>
+                        <td>10:30 - 11:00</td>
+                        <td>11:00 - 12:00</td>
+                        <td>12:00 - 13:00</td>
+                        <td>13:00 - 14:30</td>
+                        <td>14:30 - 15:30</td>
+                        <td>15:30 - 16:30</td>
+                        <tr>
+                            <td>Dilluns</td>
+                            <td></td>
+                            <td></td>
+                            <td>PATI</td>
+                            <td></td>
+                            <td></td>
+                            <td>DINAR</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Dimarts</td>
+                            <td></td>
+                            <td></td>
+                            <td>PATI</td>
+                            <td></td>
+                            <td></td>
+                            <td>DINAR</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Dimecres</td>
+                            <td></td>
+                            <td></td>
+                            <td>PATI</td>
+                            <td></td>
+                            <td></td>
+                            <td>DINAR</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Dijous</td>
+                            <td></td>
+                            <td></td>
+                            <td>PATI</td>
+                            <td></td>
+                            <td></td>
+                            <td>DINAR</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Divendres</td>
+                            <td></td>
+                            <td></td>
+                            <td>PATI</td>
+                            <td></td>
+                            <td></td>
+                            <td>DINAR</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <div class="edit-subject" id="edit-subject">
+                        <label for="subject">Assignatura</label>
+                        <br />
+                        <select class="subject" id="subject">
+                            <option value="" disabled selected>
+                                Selecciona
+                            </option>
+                            <option value="1">Català</option>
+                            <option value="2">Castellà</option>
+                            <option value="3">Anglès</option>
+                            <option value="4">Medi</option>
+                            <option value="5">Matemàtiques</option>
+                            <option value="6">Valors / Tutoria</option>
+                            <option value="7">Laboratori</option>
+                            <option value="8">Altres</option>
+                        </select>
+
+                        <button
+                            class="close-edit-subject"
+                            id="close-edit-subject"
+                        >
+                            Tancar
+                        </button>
+                    </div>
+                    <i
+                        class="bx bx-chevron-left"
+                        id="config-schedules-back-button"
+                    ></i>
+                </div>
+                <!-- #endregion -->
+            </div>
+            <!-- #endregion -->
+        </div>
+        <!-- #endregion -->
+    </body>
+
+    <!-- Style -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+
+            --accent-color: #b57f1f;
+        }
+
+        /* #region Body */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url("https://thausantcugat.org/wp-content/uploads/2022/12/thau-sant-cugat-3.jpg")
+                no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+        /* #endregion */
+
+        /* #region App */
+        .reservations,
+        .screens,
+        .config {
+            display: none;
+        }
+
+        .app {
+            display: none;
+            text-align: center;
+            width: 100%;
+            min-height: inherit;
+            height: 80%;
+            background: rgba(255, 255, 255, 0.92);
+        }
+        /* #endregion */
+
+        /* #region App - Account */
+        .app .account {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 10px;
+            font-size: 10px;
+            height: 35px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .app .account i {
+            font-size: 15px;
+            margin-right: 10px;
+        }
+
+        .app .account p {
+            font-size: 15px;
+        }
+        /* #endregion */
+
+        /* #region App - Reservations */
+
+        .app .reservations {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        /* #region Selects */
+        .app .reservations .selects select {
+            border-radius: 10px;
+            padding: 7px;
+            margin: 10px;
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+
+        .app .reservations .selects input {
+            border-radius: 10px;
+            padding: 7px;
+            margin: 10px;
+            border: 1px solid black;
+            width: 70px;
+            text-align: center;
+        }
+
+        .app .reservations .selects {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app .reservations .class-select,
+        .app .reservations .subject-select {
+            display: block;
+            margin-top: 10px;
+            margin: 10px;
+        }
+
+        .app .reservations label {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        /* #endregion */
+
+        /* #region Time Select */
+
+        .app .reservations .time-select {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .app .reservations .time-select p {
+            font-size: 17px;
+            top: 5px;
+        }
+
+        .app .reservations .time-select button {
+            margin: 0px 30px;
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            border: 1px solid black;
+            background-color: #fff;
+        }
+
+        .app .reservations .time-select button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .app .reservations .time-select button i {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* #endregion */
+
+        /* #region Schedule Table */
+        .app .reservations table {
+            margin: 5px auto 0px auto;
+            border-collapse: collapse;
+            border: 2px solid black;
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            width: 630px;
+        }
+
+        .app .reservations table td {
+            border: 1px solid black;
+            padding: 8px 10px;
+            min-width: 80px;
+            height: 60px;
+            background: linear-gradient(
+                to right,
+                #4caf50 0%,
+                #4caf50 100%,
+                #f5f5f5 100%
+            );
+            background-size: 0% 100%;
+            background-repeat: no-repeat;
+            border: 1px solid black;
+            transition: background-size 0.3s ease; /* Smooth transition for the gradient */
+        }
+
+        .app .reservations table .reservation-cell-btn {
+            border-radius: 10px;
+            border: 1px solid black;
+            position: relative;
+            height: 40px;
+        }
+
+        .app .reservations table .reservation-cell-btn:hover {
+            background-color: var(--accent-color);
+            color: transparent;
+        }
+
+        .app .reservations table .reservation-cell-btn:hover::after {
+            opacity: 1;
+        }
+
+        .app .reservations table .reservation-cell-btn::after {
+            content: "Reservar";
+            position: absolute;
+            top: 30%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: black; /* Match your button's text color */
+            text-align: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease; /* Smooth transition */
+        }
+
+        /* #endregion */
+
+        /* #region Reserve Pop-Up */
+        .app .reservations .reserve {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 350px;
+            height: 200px;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 2px solid black;
+            z-index: 1000;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            transform: translate(-50%, -50%);
+        }
+
+        .app .reservations .reserve .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .app .reservations .reserve .content .num-select {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .app .reservations .reserve .content .num-select h3 {
+            padding: 12px;
+        }
+
+        .app .reservations .reserve .content .num-select .reserve-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid black;
+            font-size: 20px;
+            font-weight: normal;
+        }
+
+        .app .reservations .reserve .content .btns {
+            align-self: center;
+            margin-top: auto;
+            margin-bottom: -10px;
+        }
+
+        .app .reservations .reserve .content .btns button {
+            color: white;
+            cursor: pointer;
+            background-color: var(--accent-color);
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .reserve_overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            display: none;
+        }
+
+        /* #region Tick Animation */
+        .tick-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 350px;
+            height: 200px;
+            transform: translate(-50%, -50%);
+        }
+
+        .tick {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: green;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInCircle 0.5s ease-in-out forwards;
+        }
+
+        .tick::before {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-right: 5px solid white;
+            border-bottom: 5px solid white;
+            transform: rotate(45deg);
+            animation: drawTick 0.5s ease-in-out 0.3s forwards;
+        }
+
+        @keyframes fadeInCircle {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes drawTick {
+            from {
+                width: 0;
+                height: 0;
+            }
+            to {
+                width: 20px;
+                height: 50px;
+            }
+        }
+        /* #endregion */
+        /* #endregion */
+
+        /* #endregion */
+
+        /* #region App - Screens */
+        /* #endregion */
+
+        /* #region App - Config */
+        .app .config h2 {
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid black;
+            width: 190px;
+            background-color: rgb(219, 174, 77);
+            margin: 20px auto 0 auto;
+        }
+
+        .app .config .element {
+            border-radius: 10px;
+            border: 1px solid black;
+            margin: 20px auto;
+            display: flex;
+            height: 40px;
+            width: 90%;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .app .config .element:hover {
+            background-color: rgb(225, 202, 125);
+        }
+
+        /* #region Config - Schedules */
+
+        .config_overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            display: none;
+        }
+
+        .app .config .config-schedules {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 2px solid black;
+            z-index: 1000;
+        }
+
+        .app .config .config-schedules i {
+            position: absolute;
+            border: 1px solid black;
+            border-radius: 10px;
+            font-size: 30px;
+            top: 10px;
+            left: 10px;
+        }
+
+        .app .config .config-schedules i:hover {
+            background-color: rgb(225, 202, 125);
+        }
+
+        .app .config .config-schedules .select-class {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .app .config .config-schedules .select-class button {
+            width: 200px;
+            height: 30px;
+            font-size: 20px;
+            margin: 10px;
+        }
+
+        .app .config .config-schedules .config-schedule-table {
+            display: block;
+            margin: 60px auto 0px auto;
+            border-collapse: collapse;
+            font-family: sans-serif;
+            font-size: 12px;
+            letter-spacing: 1px;
+            width: 633px;
+        }
+
+        /* .app .config .config-schedules .config-schedule-table td, */
+        .app .config .config-schedules .config-schedule-table td {
+            border: 1px solid black;
+            padding: 8px 2px;
+            min-width: 70px;
+            max-width: 70px;
+            /* min-height: 100px; */
+            height: 50px;
+        }
+
+        .app .config .config-schedules select {
+            border-radius: 10px;
+            padding: 7px;
+            margin: 10px;
+            border: 1px solid black;
+        }
+
+        .app .config .config-schedules input {
+            border-radius: 10px;
+            padding: 7px;
+            margin: 10px;
+            border: 1px solid black;
+            width: 70px;
+            text-align: center;
+        }
+
+        .app .config .config-schedules .edit-subject {
+            display: block;
+            margin-top: 10px;
+            margin: 10px;
+
+            position: absolute;
+            top: 35%;
+            left: 35%;
+            width: 30%;
+            height: 20%;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 2px solid black;
+        }
+
+        .app .config .config-schedules .edit-subject label {
+            margin-top: 30px;
+            font-size: 20px;
+        }
+
+        .app .config .config-schedules .edit-subject .close-edit-subject {
+            border-radius: 10px;
+            border: 1px solid black;
+            padding: 10px 5px;
+        }
+        /* #endregion */
+
+        /* #endregion */
+
+        /* #region Menubar */
+        .menubar {
+            /* width: 60%; */
+            width: 400px;
+            height: 60px;
+            background: #edd3a6;
+            display: flex;
+            flex-direction: row;
+            text-align: center;
+            justify-content: center;
+            left: 50%;
+            transform: translateX(-50%);
+            position: fixed;
+            bottom: 0;
+            border-radius: 20px;
+        }
+
+        .menubar .element {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .menubar .element i {
+            font-size: 30px;
+            margin-left: 50px;
+            margin-right: 50px;
+            padding: 60px -10px;
+        }
+
+        .menubar .element p {
+            cursor: default;
+        }
+
+        /* #endregion */
+
+        /* #region Login */
+
+        .login {
+            display: none;
+            width: 420px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            border-radius: 10px;
+            padding: 30px 40px;
+        }
+
+        .login h1 {
+            font-size: 36px;
+            text-align: center;
+        }
+
+        .login .input-box {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            margin: 30px 0;
+        }
+
+        .input-box .input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #fff;
+            padding: 20px 45px 20px 20px;
+        }
+
+        .input-box input::placeholder {
+            color: #fff;
+        }
+
+        .input-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+
+        .input-box label {
+            padding-top: 10px;
+            position: absolute;
+            display: block;
+            text-align: center;
+            justify-content: center;
+            padding-left: 30%;
+        }
+
+        .login .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14.5px;
+            margin: 5px 0 15px;
+        }
+
+        .remember-forgot label input {
+            accent-color: #fff;
+            margin-right: 3px;
+        }
+
+        .remember-forgot a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+
+        .login .btn {
+            width: 100%;
+            height: 45px;
+            background: #fff;
+            border: none;
+            outline: none;
+            border-radius: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* #endregion */
+    </style>
+
+    <!-- Scripts -->
+    <script type="module">
+        //#region Imports & Config
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import {
+            getAuth,
+            signOut,
+            signInWithEmailAndPassword,
+            setPersistence,
+            browserSessionPersistence,
+            inMemoryPersistence,
+            browserLocalPersistence,
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD0N4UJKBvCkmWmJdd0gMQI0I9by-qRUxI",
+            authDomain: "tecnothau1.firebaseapp.com",
+            projectId: "tecnothau1",
+            storageBucket: "tecnothau1.appspot.com",
+            messagingSenderId: "292144359028",
+            appId: "1:292144359028:web:673fb5332d1eddb5c01321",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        //#endregion
+
+        //#region Login
+        const auth = getAuth(app);
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const remember = document.getElementById("remember");
+        const login_win = document.getElementById("login");
+        const app_win = document.getElementById("app");
+
+        const submit = document.getElementById("login-btn");
+        submit.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            setPersistence(
+                auth,
+                remember.checked
+                    ? browserLocalPersistence
+                    : browserSessionPersistence
+            ).then(() => {
+                // Sign in
+                signInWithEmailAndPassword(auth, email.value, password.value)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.log(errorCode, errorMessage);
+                        alert("Please check your email/password and try again");
+                    });
+            });
+        });
+
+        const account_text = document.getElementById("account-text");
+
+        // Listen for auth state changes
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, show the main application
+                login_win.style.display = "none";
+                app_win.style.display = "initial";
+
+                account_text.innerText = user.email;
+                // signOut(auth);
+            } else {
+                // No user is signed in, show the login screen
+                login_win.style.display = "initial";
+                app_win.style.display = "none";
+            }
+        });
+        //#endregion
+
+        //#region Reservations - Schedules
+        // Init Database
+        const db = getFirestore(app);
+
+        // Get Elements
+        const schedule_table = document.getElementById("schedule");
+        const class_select = document.getElementById("class");
+        const subject_select = document.getElementById("subject");
+
+        //#region Get Params / Settings File
+        let paramsSnap = await getDoc(doc(db, "reservations", "params"));
+
+        if (paramsSnap.exists()) {
+            window.reserve_params = paramsSnap.data();
+        } else {
+            console.log("Unable to fetch Reservations Params File!");
+        }
+
+        //#endregion
+
+        const EMPTY_SCHEDULE = schedule_table.innerHTML;
+
+        var schedules_data;
+        var schedules_subject;
+        var schedules_ddmmyy;
+
+        async function class_subject() {
+            let class_val = class_select.value;
+            let subject_val = subject_select.value;
+
+            if (class_val != "" && subject_val != "") {
+                const docSnap = await getDoc(doc(db, "schedules", class_val));
+
+                if (docSnap.exists()) {
+                    schedule_table.innerHTML = EMPTY_SCHEDULE;
+                    schedules_data = docSnap.data();
+                    schedules_subject = subject_val;
+                    reload_schedule();
+                } else {
+                    console.log("Unable to fetch Schedule Data!");
+                }
+            }
+        }
+
+        class_select.addEventListener("change", class_subject);
+        subject_select.addEventListener("change", class_subject);
+
+        function reload_ddmmyy() {
+            const formattedDate = window.currentMonday
+                .toISOString()
+                .slice(0, 10)
+                .split("-");
+            schedules_ddmmyy = `${formattedDate[2]}${
+                formattedDate[1]
+            }${formattedDate[0].slice(-2)}`;
+
+            reload_schedule();
+        }
+        window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
+        window.reload_ddmmyy();
+
+        async function reload_schedule() {
+            // Get the occupied devices for date
+            const docSnap = await getDoc(
+                doc(db, "reservations", schedules_ddmmyy)
+            );
+
+            let reservations_data;
+            if (docSnap.exists()) {
+                reservations_data = docSnap.data();
+            } else {
+                reservations_data = {};
+            }
+
+            for (let day in schedules_data) {
+                for (let hour in schedules_data[day]) {
+                    if (
+                        String(schedules_data[day][hour]) === schedules_subject
+                    ) {
+                        let new_hour = parseInt(hour);
+                        new_hour +=
+                            1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
+
+                        let new_day = parseInt(day);
+
+                        let h = parseInt(hour) + 1;
+                        let i = reservations_data[`${day}${h}`];
+                        if (i == undefined) {
+                            i = 0;
+                        }
+
+                        const cell =
+                            schedule_table.rows[new_day].cells[new_hour];
+
+                        let percentage =
+                            (i * 100) / window.reserve_params["laptop_num"];
+
+                        cell.style.backgroundSize = `${100 - percentage}% 100%`;
+
+                        if (i == window.reserve_params["laptop_num"]) {
+                            cell.innerHTML = "OCUPATS";
+                        } else {
+                            cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i}, ${day}, ${hour})">${
+                                window.reserve_params["laptop_num"] - i
+                            } lliures</button>`;
+                        }
+                    }
+                }
+            }
+        }
+
+        const reserve_num = document.getElementById("reserve-num");
+        const reserve_text = document.getElementById("reserve-text");
+        const reserve_max = document.querySelector(
+            ".app .reservations .reserve .num-select #max"
+        );
+        const reserve_content = document.querySelector(
+            ".app .reservations .reserve .content"
+        );
+        const reserve_win_ = document.getElementById("reserve");
+
+        var reserve_day;
+        var reserve_hour;
+
+        function load_reserve(i, day, hour) {
+            let reserve_day_date = new Date(window.currentMonday);
+            reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
+            let reserve_day_str = reserve_day_date.toLocaleDateString("ca-ES", {
+                weekday: "long", // Full weekday name
+                day: "numeric", // Day of the month
+                month: "long", // Full month name
+            });
+
+            reserve_num.max = window.reserve_params["laptop_num"] - i;
+            reserve_text.innerText = `Reservar per al ${reserve_day_str}`;
+            reserve_max.innerText = `Màx. ${
+                window.reserve_params["laptop_num"] - i
+            }`;
+
+            reserve_day = day;
+            reserve_hour = hour;
+        }
+
+        const reserve_btn = document.getElementById("reserve-btn");
+        reserve_btn.addEventListener("click", reserve_ok);
+
+        async function reserve_ok() {
+            let reserved = parseInt(reserve_num.value);
+
+            reserve_content.style.display = "none";
+
+            let i = String(reserve_day) + String(reserve_hour + 1);
+            // Reserve
+            await setDoc(
+                doc(db, "reservations", schedules_ddmmyy),
+                {
+                    [i]: reserved,
+                },
+                { merge: true }
+            );
+
+            // Add tick animation
+            const tickContainer = document.createElement("div");
+            tickContainer.classList.add("tick-container");
+            const tick = document.createElement("div");
+            tick.classList.add("tick");
+            tickContainer.appendChild(tick);
+            document.body.appendChild(tickContainer);
+
+            // Wait 3 secs to hide the tick and the reserve window
+            setTimeout(() => {
+                document.body.removeChild(tickContainer);
+                window.reserve_close_win();
+                reserve_content.style.display = "flex";
+                reload_schedule();
+            }, 3000);
+        }
+
+        window.load_reserve = load_reserve;
+        //#endregion
+
+        //#region Config - Schedules
+
+        // Dict ID - Name
+        const subjects_id_name = {
+            0: "None",
+            1: "Català",
+            2: "Castellà",
+            3: "Anglès",
+            4: "Medi",
+            5: "Mates",
+            6: "Valors / Tutoria",
+            7: "Laboratori",
+            8: "Altres",
+        };
+
+        // Reverse dict to have Name - ID
+        const subjects_name_id = Object.fromEntries(
+            Object.entries(subjects_id_name).map(([key, value]) => [value, key])
+        );
+
+        let position = "";
+
+        // Schedules Win
+        const schedules_win = document.getElementById("config-schedules");
+        schedules_win.style.display = "none";
+
+        const config_overlay = document.getElementById("config_overlay");
+
+        //#region Config Schedules Button
+        document
+            .getElementById("config-schedules-button")
+            .addEventListener("click", function () {
+                config_overlay.style.display = "flex";
+                schedules_win.style.display = "initial";
+            });
+        //#endregion
+
+        const config_schedule_table = document.getElementById(
+            "config-schedule-table"
+        );
+
+        const config_class_select = document.getElementById("select-class");
+
+        config_schedule_table.style.display = "none";
+
+        const cells = config_schedule_table.getElementsByTagName("td");
+
+        var config_edit_subject;
+
+        // Loop through each cell and add an event listener
+        for (let i = 0; i < cells.length; i++) {
+            if (cells[i].innerHTML == "") {
+                cells[i].innerHTML = "<button>None</button>";
+            }
+        }
+
+        //#region Config Schedules Back Button
+        document
+            .getElementById("config-schedules-back-button")
+            .addEventListener("click", async function () {
+                if (position == "") {
+                    config_overlay.style.display = "none";
+                    schedules_win.style.display = "none";
+                } else {
+                    //#region Save Schedule
+
+                    // New Schedule
+                    let new_schedule = {};
+                    let day_idx = 1;
+                    let day = new Array();
+
+                    // Get Cells in Table
+                    const cells =
+                        config_schedule_table.getElementsByTagName("td");
+
+                    // Loop through each cell
+                    for (let i = 0; i < cells.length; i++) {
+                        let btn = cells[i].querySelector("button");
+                        if (btn !== null) {
+                            // Contains a Button
+                            day.push(parseInt(subjects_name_id[btn.innerHTML]));
+
+                            if (day.length >= 6) {
+                                new_schedule[day_idx] = day;
+                                day_idx++;
+                                day = new Array();
+                            }
+                        }
+                    }
+
+                    console.log("Set Class", position, "to", new_schedule);
+                    console.log(position);
+
+                    await setDoc(doc(db, "schedules", position), new_schedule);
+
+                    //#endregion
+                    position = "";
+                    config_schedule_table.style.display = "none";
+                    config_class_select.style.display = "flex";
+                }
+            });
+        //#endregion
+
+        //#region Config Class Select Function
+        const config_class_elements =
+            document.querySelectorAll(".config-class");
+
+        // Iterate over each element
+        config_class_elements.forEach((element) => {
+            // Add an event listener to each element
+            element.addEventListener("click", (event) => {
+                config_class_select.style.display = "none";
+                config_schedule_table.style.display = "block";
+                position = event.target.id;
+
+                load_config_schedule(event.target.id);
+            });
+        });
+        //#endregion
+
+        //#region Load Schedule
+        const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
+
+        async function load_config_schedule(class_name) {
+            config_schedule_table.innerHTML = EMPTY_CONFIG_SCHEDULE;
+
+            const docRef = doc(db, "schedules", class_name);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+
+                for (let day in data) {
+                    for (let hour in data[day]) {
+                        // Offset the Hours (Columns) to match the table
+                        let new_hour = parseInt(hour);
+                        new_hour +=
+                            1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
+
+                        // Offset the Days (Rows) to match the table
+                        const new_day = parseInt(day);
+
+                        // Get the Cell Button
+                        const btn =
+                            config_schedule_table.rows[new_day].cells[
+                                new_hour
+                            ].getElementsByTagName("button")[0];
+
+                        // Assign the Button's Onclick
+                        btn.addEventListener("click", function (event) {
+                            edit_subject.style.display = "block";
+                            config_edit_subject = event.target;
+                        });
+
+                        // Assign the Class Name to the Cell
+                        const subject_id = data[day][hour];
+                        let result = (
+                            Array.isArray(subject_id)
+                                ? subject_id
+                                : [subject_id]
+                        ) // Convert to array if it's a single number
+                            .map(
+                                (num) =>
+                                    Array.from(num.toString()) // Convert each number to a string and split into characters
+                                        .map((digit) => subjects_id_name[digit]) // Map digits to their corresponding dictionary values
+                                        .join(" / ") // Join the values with ' / ' delimiter
+                            )
+                            .join(" / "); // Join multiple results with ' / ' delimiter
+
+                        btn.innerHTML = result;
+                    }
+                }
+            } else {
+                console.log("Error! No Schedule Data");
+            }
+        }
+        //#endregion
+
+        //#region Table Cells Click Function Edit
+        // Window
+        const edit_subject = document.getElementById("edit-subject");
+        edit_subject.style.display = "none";
+
+        const config_subject_select = edit_subject.querySelector("#subject");
+
+        // Close Button
+        document.getElementById("close-edit-subject").onclick = function (
+            event
+        ) {
+            if (config_subject_select.value != "") {
+                config_edit_subject.innerHTML =
+                    subjects_id_name[config_subject_select.value];
+
+                config_edit_subject = null;
+                edit_subject.style.display = "none";
+            }
+        };
+
+        //#endregion
+
+        //#endregion
+    </script>
+    <script>
+        //#region Login
+        const password_field = document.getElementById("password");
+        const show_check = document.getElementById("show-check");
+        function togglePassword() {
+            password_field.type = show_check.checked ? "text" : "password";
+        }
+
+        //#endregion
+
+        //#region Reservations
+
+        //#region Time Selects
+        const time_text = document.getElementById("time-text");
+
+        var minMonday;
+
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        const thisMonday = new Date(today);
+        thisMonday.setDate(today.getDate() + diffToMonday);
+
+        function getCurrentWeek() {
+            window.currentMonday = new Date(thisMonday);
+
+            const sunday = new Date(window.currentMonday);
+            sunday.setDate(window.currentMonday.getDate() + 6);
+
+            const options = { day: "numeric", month: "long" };
+            const mondayFormatted = window.currentMonday.toLocaleDateString(
+                "ca-ES",
+                options
+            );
+            const sundayFormatted = sunday.toLocaleDateString("ca-ES", options);
+
+            time_text.innerHTML = `${mondayFormatted} - ${sundayFormatted}`;
+        }
+
+        function changeWeek(offset) {
+            // Calculate the potential new Monday for the week change
+            const newMonday = new Date(window.currentMonday);
+            newMonday.setDate(window.currentMonday.getDate() + offset * 7);
+
+            // Get the current date and ensure we can't navigate past it
+            const today = new Date();
+
+            // Check if the new Monday is in the past
+            if (newMonday < thisMonday) {
+                return;
+            }
+
+            // Update the current Monday to the new calculated week
+            window.currentMonday.setDate(
+                window.currentMonday.getDate() + offset * 7
+            );
+
+            const sunday = new Date(window.currentMonday);
+            sunday.setDate(window.currentMonday.getDate() + 6);
+
+            const options = { day: "numeric", month: "long" };
+            const mondayFormatted = window.currentMonday.toLocaleDateString(
+                "ca-ES",
+                options
+            );
+            const sundayFormatted = sunday.toLocaleDateString("ca-ES", options);
+
+            time_text.innerHTML = `${mondayFormatted} - ${sundayFormatted}`;
+        }
+
+        getCurrentWeek();
+
+        function time_select_left() {
+            changeWeek(-1);
+            window.reload_ddmmyy();
+        }
+
+        function time_select_right() {
+            changeWeek(1);
+            window.reload_ddmmyy();
+        }
+
+        //#endregion
+
+        //#region Schedule Cell Click - Reserve
+        const reserve_win = document.getElementById("reserve");
+        const reserve_overlay = document.getElementById("reserve_overlay");
+
+        function reserve_open_win(i, day, hour) {
+            reserve_win.style.display = "flex";
+            reserve_overlay.style.display = "flex";
+            console.log("openwin", day, hour);
+            window.load_reserve(i, day, hour);
+        }
+
+        function reserve_close_win() {
+            reserve_win.style.display = "none";
+            reserve_overlay.style.display = "none";
+        }
+        window.reserve_close_win = reserve_close_win;
+        //#endregion
+
+        //#endregion
+
+        //#region Menubar
+        // Windows
+        const reservations_win = document.getElementById("reservations");
+        const screens_win = document.getElementById("screens");
+        const config_win = document.getElementById("config");
+
+        // Elements
+        const reservations_element = document.getElementById(
+            "reservations-element"
+        );
+        const screens_element = document.getElementById("screens-element");
+        const config_element = document.getElementById("config-element");
+
+        // Get Accent Color from CSS Variable
+        const accent_color = window
+            .getComputedStyle(document.querySelector(".menubar"))
+            .getPropertyValue("--accent-color");
+
+        function reservations() {
+            reservations_win.style.display = "initial";
+            screens_win.style.display = "none";
+            config_win.style.display = "none";
+            reservations_element.style.color = accent_color;
+            screens_element.style.color = "black";
+            config_element.style.color = "black";
+        }
+
+        function screens() {
+            screens_win.style.display = "initial";
+            config_win.style.display = "none";
+            reservations_win.style.display = "none";
+            screens_element.style.color = accent_color;
+            config_element.style.color = "black";
+            reservations_element.style.color = "black";
+        }
+
+        function config() {
+            config_win.style.display = "initial";
+            reservations_win.style.display = "none";
+            screens_win.style.display = "none";
+            config_element.style.color = accent_color;
+            reservations_element.style.color = "black";
+            screens_element.style.color = "black";
+        }
+
+        reservations();
+        // config();
+
+        //#endregion
+    </script>
+</html>
