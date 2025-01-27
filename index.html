@@ -1121,6 +1121,8 @@
 
         const account_text = document.getElementById("account-text");
 
+        let account_email;
+
         // Listen for auth state changes
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -1129,7 +1131,8 @@
                 app_win.style.display = "block";
                 app_win.classList.remove("fade-out");
 
-                account_text.innerText = user.email;
+                account_email = user.email;
+                account_text.innerText = account_email;
             } else {
                 // No user is signed in, show the login screen
                 login_win.style.display = "initial";
@@ -1256,11 +1259,13 @@
                         let new_day = parseInt(day);
 
                         let h = parseInt(hour) + 1;
-                        let i = reservations_data[`${day}${h}`];
+                        let i = reservations_data[`${day}${h}`].split("-");
+                        let person = i[1];
+                        i = parseInt(i[0]);
+
                         if (i == undefined) {
                             i = 0;
                         }
-                        // add check for person that reserves "num-email"
 
                         const cell =
                             schedule_table.rows[new_day].cells[new_hour];
