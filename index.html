@@ -64,7 +64,7 @@
         <div class="config_overlay" id="config_overlay"></div>
 
         <!-- #region App -->
-        <div class="app" id="app">
+        <div class="app fade-out" id="app">
             <!-- #region Account -->
             <button class="account">
                 <i class="bx bxs-user"></i>
@@ -394,6 +394,7 @@
             font-family: "Poppins", sans-serif;
 
             --accent-color: #b57f1f;
+            --bg-color: rgba(255, 255, 255, 0.92);
         }
 
         /* #region Body */
@@ -417,13 +418,19 @@
         }
 
         .app {
-            display: none;
             text-align: center;
             width: 100%;
             min-height: inherit;
             height: 80%;
-            background: rgba(255, 255, 255, 0.92);
+            background: var(--bg-color);
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
         }
+
+        .app.fade-out {
+            opacity: 0;
+        }
+
         /* #endregion */
 
         /* #region App - Account */
@@ -1119,10 +1126,10 @@
             if (user) {
                 // User is signed in, show the main application
                 login_win.style.display = "none";
-                app_win.style.display = "initial";
+                app_win.style.display = "block";
+                app_win.classList.remove("fade-out");
 
                 account_text.innerText = user.email;
-                // signOut(auth);
             } else {
                 // No user is signed in, show the login screen
                 login_win.style.display = "initial";
@@ -1135,8 +1142,31 @@
         const account = document.querySelector(".app .account");
         const account_menu = document.querySelector(".app .account-menu");
 
-        account.addEventListener("click", function () {
-            account_menu.classList.toggle("show");
+        function account_menu_toggle() {
+            if (account_menu.classList.contains("show")) {
+                account_menu.classList.remove("show");
+                account.style.backgroundColor = "transparent";
+                setTimeout(() => {
+                    account_menu.style.display = "none";
+                }, 500); // Match the duration of the transition
+            } else {
+                account_menu.style.display = "block";
+                account.style.backgroundColor = "var(--accent-color)";
+                setTimeout(() => {
+                    account_menu.classList.add("show");
+                }, 10); // Small delay to ensure the display change is applied
+            }
+        }
+
+        account.addEventListener("click", account_menu_toggle);
+
+        const account_logout = document.getElementById("account-logout");
+        account_logout.addEventListener("click", function () {
+            account_menu_toggle();
+            app_win.classList.add("fade-out");
+            setTimeout(() => {
+                signOut(auth);
+            }, 500);
         });
         //#endregion
 
@@ -1230,6 +1260,7 @@
                         if (i == undefined) {
                             i = 0;
                         }
+                        // add check for person that reserves "num-email"
 
                         const cell =
                             schedule_table.rows[new_day].cells[new_hour];
