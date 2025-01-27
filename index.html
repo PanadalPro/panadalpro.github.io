@@ -624,6 +624,18 @@
             transition: opacity 0.2s ease; /* Smooth transition */
         }
 
+        .app .reservations table .reservation-cell-btn-edit {
+            border-radius: 10px;
+            border: 1px solid black;
+            position: relative;
+            height: 25px;
+            width: 50px;
+        }
+
+        .app .reservations table .reservation-cell-btn-edit:hover {
+            background-color: var(--accent-color);
+        }
+
         /* #endregion */
 
         /* #region Reserve Pop-Up */
@@ -1259,28 +1271,50 @@
                         let new_day = parseInt(day);
 
                         let h = parseInt(hour) + 1;
-                        let i = reservations_data[`${day}${h}`].split("-");
-                        let person = i[1];
-                        i = parseInt(i[0]);
+                        let i = [];
+                        let raw = reservations_data[`${day}${h}`];
+                        if (raw == undefined) {
+                            i = [0, ""];
+                        } else
+                            for (let res in raw.split("/")) {
+                                let val = raw[res].split("-");
+                                i[res] = [parseInt(val[0]), val[1]];
+                            }
 
-                        if (i == undefined) {
-                            i = 0;
+                        let total = 0;
+                        let modifiable = 0;
+
+                        for (let res in i) {
+                            if (i[res][1] == account_email) {
+                                modifiable += i[res][0];
+                            }
+                            total += i[res][0];
                         }
 
                         const cell =
                             schedule_table.rows[new_day].cells[new_hour];
 
                         let percentage =
-                            (i * 100) / window.reserve_params["laptop_num"];
+                            (total * 100) / window.reserve_params["laptop_num"];
 
                         cell.style.backgroundSize = `${100 - percentage}% 100%`;
 
-                        if (i == window.reserve_params["laptop_num"]) {
-                            cell.innerHTML = "OCUPATS";
+                        if (person == account_email) {
+                            if (total == window.reserve_params["laptop_num"]) {
+                                cell.innerHTML = `OCUPATS<br><button class="reservation-cell-btn-edit" onclick="reserve_open_win(${i}, ${day}, ${hour}, ${total}, true)">Editar</button>`;
+                            } else {
+                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win((${i}, ${day}, ${hour}, ${total}, true)">${
+                                    window.reserve_params["laptop_num"] - total
+                                } lliures\n<p style="font-weight: bold;">Editar</p></button>`;
+                            }
                         } else {
-                            cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i}, ${day}, ${hour})">${
-                                window.reserve_params["laptop_num"] - i
-                            } lliures</button>`;
+                            if (total == window.reserve_params["laptop_num"]) {
+                                cell.innerHTML = "OCUPATS";
+                            } else {
+                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win((${i}, ${day}, ${hour}, ${total})">${
+                                    window.reserve_params["laptop_num"] - total
+                                } lliures</button>`;
+                            }
                         }
                     }
                 }
@@ -1300,7 +1334,7 @@
         var reserve_day;
         var reserve_hour;
 
-        function load_reserve(i, day, hour) {
+        function load_reserve(i, day, hour, total, edit = false) {
             let reserve_day_date = new Date(window.currentMonday);
             reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
             let reserve_day_str = reserve_day_date.toLocaleDateString("ca-ES", {
@@ -1309,11 +1343,14 @@
                 month: "long", // Full month name
             });
 
-            reserve_num.max = window.reserve_params["laptop_num"] - i;
-            reserve_text.innerText = `Reservar per al ${reserve_day_str}`;
-            reserve_max.innerText = `Màx. ${
-                window.reserve_params["laptop_num"] - i
-            }`;
+            if (edit) {
+                reserve_num.max = editable;
+                reserve_text.innerText = `Editar reserva per al ${reserve_day_str}`;
+            } else {
+                reserve_num.max = window.reserve_params["laptop_num"] - total;
+                reserve_text.innerText = `Reservar per al ${reserve_day_str}`;
+            }
+            reserve_max.innerText = `Màx. ${editable}`;
 
             reserve_day = day;
             reserve_hour = hour;
@@ -1647,11 +1684,10 @@
         const reserve_win = document.getElementById("reserve");
         const reserve_overlay = document.getElementById("reserve_overlay");
 
-        function reserve_open_win(i, day, hour) {
+        function reserve_open_win(i, day, hour, total, edit = false) {
             reserve_win.style.display = "flex";
             reserve_overlay.style.display = "flex";
-            console.log("openwin", day, hour);
-            window.load_reserve(i, day, hour);
+            window.load_reserve(i, day, hour, total, edit);
         }
 
         function reserve_close_win() {
