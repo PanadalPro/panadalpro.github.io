@@ -1290,6 +1290,7 @@
                             }
                             total += i[res][0];
                         }
+                        console.log(raw, total, modifiable);
 
                         const cell =
                             schedule_table.rows[new_day].cells[new_hour];
@@ -1299,7 +1300,7 @@
 
                         cell.style.backgroundSize = `${100 - percentage}% 100%`;
 
-                        if (person == account_email) {
+                        if (modifiable > 0) {
                             if (total == window.reserve_params["laptop_num"]) {
                                 cell.innerHTML = `OCUPATS<br><button class="reservation-cell-btn-edit" onclick="reserve_open_win(${i}, ${day}, ${hour}, ${total}, true)">Editar</button>`;
                             } else {
