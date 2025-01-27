@@ -70,6 +70,12 @@
                 <i class="bx bxs-user"></i>
                 <p id="account-text">Nico</p>
             </button>
+            <div class="account-menu">
+                <button class="account-logout" id="account-logout">
+                    <i class="bx bx-log-out"></i>
+                    Tanca la Sessió
+                </button>
+            </div>
             <!-- #endregion -->
 
             <!-- #region Menubar -->
@@ -440,6 +446,33 @@
         }
 
         .app .account p {
+            font-size: 15px;
+        }
+
+        .app .account-menu {
+            display: none;
+            position: fixed;
+            top: 40px;
+            right: 5px;
+            padding: 10px;
+            transform: translateX(100%); /* Start off-screen */
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .app .account-menu.show {
+            display: block;
+            transform: translateX(0); /* Slide to its position */
+        }
+
+        .app .account-menu button {
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 8px;
+        }
+
+        .app .account-menu button i {
+            margin-right: 10px;
+            font-weight: bold;
             font-size: 15px;
         }
         /* #endregion */
@@ -1095,6 +1128,15 @@
                 login_win.style.display = "initial";
                 app_win.style.display = "none";
             }
+        });
+        //#endregion
+
+        //#region App - Account
+        const account = document.querySelector(".app .account");
+        const account_menu = document.querySelector(".app .account-menu");
+
+        account.addEventListener("click", function () {
+            account_menu.classList.toggle("show");
         });
         //#endregion
 
