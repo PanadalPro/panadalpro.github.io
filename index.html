@@ -1274,11 +1274,12 @@
                         let i = [];
                         let raw = reservations_data[`${day}${h}`];
                         if (raw == undefined) {
-                            i = [0, ""];
+                            i = [[0, ""]];
                         } else
                             for (let res in raw.split("/")) {
                                 let val = raw[res].split("-");
                                 i[res] = [parseInt(val[0]), val[1]];
+                                console.log(raw[res], val, i);
                             }
 
                         let total = 0;
