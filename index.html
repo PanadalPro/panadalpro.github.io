@@ -1275,12 +1275,13 @@
                         let raw = reservations_data[`${day}${h}`];
                         if (raw == undefined) {
                             i = [[0, ""]];
-                        } else
-                            for (let res in raw.split("/")) {
-                                let val = raw[res].split("-");
+                        } else {
+                            let rawi = raw.split("/");
+                            for (let res in rawi) {
+                                let val = rawi[res].split("-");
                                 i[res] = [parseInt(val[0]), val[1]];
-                                console.log(raw[res], val, i);
                             }
+                        }
 
                         let total = 0;
                         let modifiable = 0;
@@ -1291,7 +1292,6 @@
                             }
                             total += i[res][0];
                         }
-                        console.log(raw, total, modifiable);
 
                         const cell =
                             schedule_table.rows[new_day].cells[new_hour];
@@ -1309,6 +1309,7 @@
                                     window.reserve_params["laptop_num"] - total
                                 } lliures\n<p style="font-weight: bold;">Editar</p></button>`;
                             }
+                            // reserving
                         } else {
                             if (total == window.reserve_params["laptop_num"]) {
                                 cell.innerHTML = "OCUPATS";
