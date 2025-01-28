@@ -1309,12 +1309,11 @@
                                     window.reserve_params["laptop_num"] - total
                                 } lliures\n<p style="font-weight: bold;">Editar</p></button>`;
                             }
-                            // reserving
                         } else {
                             if (total == window.reserve_params["laptop_num"]) {
                                 cell.innerHTML = "OCUPATS";
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win((${i}, ${day}, ${hour}, ${total})">${
+                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win((${i}, ${day}, ${hour}, ${total}, false)">${
                                     window.reserve_params["laptop_num"] - total
                                 } lliures</button>`;
                             }
@@ -1337,7 +1336,8 @@
         var reserve_day;
         var reserve_hour;
 
-        function load_reserve(i, day, hour, total, edit = false) {
+        function load_reserve(i, day, hour, total) {
+            return;
             let reserve_day_date = new Date(window.currentMonday);
             reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
             let reserve_day_str = reserve_day_date.toLocaleDateString("ca-ES", {
