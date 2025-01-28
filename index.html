@@ -245,6 +245,12 @@
                             >
                                 Cancelar
                             </button>
+                            <button
+                                class="reserve-btn reserve-cancel-reserve-btn"
+                                id="reserve-cancel-reserve-btn"
+                            >
+                                Cancelar Reserva
+                            </button>
                             <button class="reserve-btn" id="reserve-btn">
                                 Reservar
                             </button>
@@ -628,12 +634,30 @@
             border-radius: 10px;
             border: 1px solid black;
             position: relative;
-            height: 25px;
-            width: 50px;
+            height: 40px;
         }
 
         .app .reservations table .reservation-cell-btn-edit:hover {
             background-color: var(--accent-color);
+            color: transparent;
+        }
+
+        .app .reservations table .reservation-cell-btn-edit:hover::after {
+            opacity: 1;
+        }
+
+        .app .reservations table .reservation-cell-btn-edit::after {
+            content: "Editar";
+            position: absolute;
+            top: 30%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: black; /* Match your button's text color */
+            text-align: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease; /* Smooth transition */
         }
 
         /* #endregion */
@@ -699,6 +723,10 @@
             padding: 10px 20px;
             margin-left: 10px;
             margin-right: 10px;
+        }
+
+        .app .reservations .reserve .content .btns .reserve-cancel-reserve-btn {
+            display: none;
         }
 
         .reserve_overlay {
@@ -1246,6 +1274,8 @@
         window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
         window.reload_ddmmyy();
 
+        var schedules_reserve_i;
+
         async function reload_schedule() {
             // Get the occupied devices for date
             const docSnap = await getDoc(
@@ -1275,12 +1305,14 @@
                         let raw = reservations_data[`${day}${h}`];
                         if (raw == undefined) {
                             i = [[0, ""]];
+                            schedules_reserve_i = [];
                         } else {
                             let rawi = raw.split("/");
                             for (let res in rawi) {
                                 let val = rawi[res].split("-");
                                 i[res] = [parseInt(val[0]), val[1]];
                             }
+                            schedules_reserve_i = i;
                         }
 
                         let total = 0;
@@ -1293,8 +1325,6 @@
                             total += i[res][0];
                         }
 
-                        console.log(i, total, modifiable);
-
                         const cell =
                             schedule_table.rows[new_day].cells[new_hour];
 
@@ -1304,18 +1334,19 @@
                         cell.style.backgroundSize = `${100 - percentage}% 100%`;
 
                         if (modifiable > 0) {
-                            if (total == window.reserve_params["laptop_num"]) {
-                                cell.innerHTML = `OCUPATS<br><button class="reservation-cell-btn-edit" onclick="reserve_open_win(${i}, ${day}, ${hour}, ${total}, true)">Editar</button>`;
+                            if (
+                                modifiable ==
+                                window.reserve_params["laptop_num"]
+                            ) {
+                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true)">TOTS <p style="font-weight: bold;">reservats</p></button>`;
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i}, ${day}, ${hour}, ${total}, true)">${
-                                    window.reserve_params["laptop_num"] - total
-                                } lliures\n<p style="font-weight: bold;">Editar</p></button>`;
+                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true)">${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
                             }
                         } else {
                             if (total == window.reserve_params["laptop_num"]) {
                                 cell.innerHTML = "OCUPATS";
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i}, ${day}, ${hour}, ${total}, false)">${
+                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, false)">${
                                     window.reserve_params["laptop_num"] - total
                                 } lliures</button>`;
                             }
@@ -1338,7 +1369,8 @@
         var reserve_day;
         var reserve_hour;
 
-        function load_reserve(i, day, hour, total) {
+        function load_reserve(day, hour, total, modifiable, edit) {
+            // add show cancel reserve button (.reserve-cancel-reserve-btn) on edit reserve
             let reserve_day_date = new Date(window.currentMonday);
             reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
             let reserve_day_str = reserve_day_date.toLocaleDateString("ca-ES", {
@@ -1347,14 +1379,21 @@
                 month: "long", // Full month name
             });
 
-            if (edit) {
-                reserve_num.max = editable;
+            if (edit == true) {
+                reserve_num.max =
+                    window.reserve_params["laptop_num"] - (total - modifiable);
+                reserve_num.value = modifiable;
                 reserve_text.innerText = `Editar reserva per al ${reserve_day_str}`;
+                reserve_max.innerText = `Màx. ${
+                    window.reserve_params["laptop_num"] - (total - modifiable)
+                }`;
             } else {
                 reserve_num.max = window.reserve_params["laptop_num"] - total;
                 reserve_text.innerText = `Reservar per al ${reserve_day_str}`;
+                reserve_max.innerText = `Màx. ${
+                    window.reserve_params["laptop_num"] - total
+                }`;
             }
-            reserve_max.innerText = `Màx. ${editable}`;
 
             reserve_day = day;
             reserve_hour = hour;
@@ -1368,12 +1407,35 @@
 
             reserve_content.style.display = "none";
 
-            let i = String(reserve_day) + String(reserve_hour + 1);
+            let found = false;
+            for (let res in schedules_reserve_i) {
+                if (schedules_reserve_i[res][1] == account_email) {
+                    schedules_reserve_i[res][0] += reserved;
+                    found = true;
+                }
+            }
+
+            if (found == false) {
+                schedules_reserve_i.push([reserved, account_email]);
+            }
+
+            let raw = [];
+            for (let res in schedules_reserve_i) {
+                raw[res] =
+                    schedules_reserve_i[res][0] +
+                    "-" +
+                    schedules_reserve_i[res][1];
+            }
+            raw = raw.join("/");
+            time_text.innerText = raw;
+
+            let element = String(reserve_day) + String(reserve_hour + 1);
+
             // Reserve
             await setDoc(
                 doc(db, "reservations", schedules_ddmmyy),
                 {
-                    [i]: reserved,
+                    [element]: raw,
                 },
                 { merge: true }
             );
@@ -1688,10 +1750,10 @@
         const reserve_win = document.getElementById("reserve");
         const reserve_overlay = document.getElementById("reserve_overlay");
 
-        function reserve_open_win(i, day, hour, total, edit) {
+        function reserve_open_win(day, hour, total, modifiable, edit) {
             reserve_win.style.display = "flex";
             reserve_overlay.style.display = "flex";
-            window.load_reserve(i, day, hour, total, edit);
+            window.load_reserve(day, hour, total, modifiable, edit);
         }
 
         function reserve_close_win() {
