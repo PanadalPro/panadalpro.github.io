@@ -1293,6 +1293,8 @@
                             total += i[res][0];
                         }
 
+                        console.log(i, total, modifiable);
+
                         const cell =
                             schedule_table.rows[new_day].cells[new_hour];
 
@@ -1305,7 +1307,7 @@
                             if (total == window.reserve_params["laptop_num"]) {
                                 cell.innerHTML = `OCUPATS<br><button class="reservation-cell-btn-edit" onclick="reserve_open_win(${i}, ${day}, ${hour}, ${total}, true)">Editar</button>`;
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win((${i}, ${day}, ${hour}, ${total}, true)">${
+                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i}, ${day}, ${hour}, ${total}, true)">${
                                     window.reserve_params["laptop_num"] - total
                                 } lliures\n<p style="font-weight: bold;">Editar</p></button>`;
                             }
@@ -1313,7 +1315,7 @@
                             if (total == window.reserve_params["laptop_num"]) {
                                 cell.innerHTML = "OCUPATS";
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win((${i}, ${day}, ${hour}, ${total}, false)">${
+                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${i}, ${day}, ${hour}, ${total}, false)">${
                                     window.reserve_params["laptop_num"] - total
                                 } lliures</button>`;
                             }
@@ -1337,7 +1339,6 @@
         var reserve_hour;
 
         function load_reserve(i, day, hour, total) {
-            return;
             let reserve_day_date = new Date(window.currentMonday);
             reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
             let reserve_day_str = reserve_day_date.toLocaleDateString("ca-ES", {
@@ -1687,7 +1688,7 @@
         const reserve_win = document.getElementById("reserve");
         const reserve_overlay = document.getElementById("reserve_overlay");
 
-        function reserve_open_win(i, day, hour, total, edit = false) {
+        function reserve_open_win(i, day, hour, total, edit) {
             reserve_win.style.display = "flex";
             reserve_overlay.style.display = "flex";
             window.load_reserve(i, day, hour, total, edit);
