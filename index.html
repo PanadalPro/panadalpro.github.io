@@ -1307,14 +1307,12 @@
                         let raw = reservations_data[`${day}${h}`];
                         if (raw == undefined) {
                             i = [[0, ""]];
-                            schedules_reserve_i = [];
                         } else {
                             let rawi = raw.split("/");
                             for (let res in rawi) {
                                 let val = rawi[res].split("-");
                                 i[res] = [parseInt(val[0]), val[1]];
                             }
-                            schedules_reserve_i = i;
                         }
 
                         let total = 0;
@@ -1340,15 +1338,21 @@
                                 modifiable ==
                                 window.reserve_params["laptop_num"]
                             ) {
-                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true)">TOTS <p style="font-weight: bold;">reservats</p></button>`;
+                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${JSON.stringify(
+                                    i
+                                )})">TOTS <p style="font-weight: bold;">reservats</p></button>`;
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true)">${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
+                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${JSON.stringify(
+                                    i
+                                )})">${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
                             }
                         } else {
                             if (total == window.reserve_params["laptop_num"]) {
                                 cell.innerHTML = "OCUPATS";
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, false)">${
+                                cell.innerHTML = `<button class="reservation-cell-btn" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, false, ${JSON.stringify(
+                                    i
+                                )})">${
                                     window.reserve_params["laptop_num"] - total
                                 } lliures</button>`;
                             }
@@ -1374,8 +1378,9 @@
         var reserve_day;
         var reserve_hour;
 
-        function load_reserve(day, hour, total, modifiable, edit) {
-            // add show cancel reserve button (.reserve-cancel-reserve-btn) on edit reserve
+        function load_reserve(day, hour, total, modifiable, edit, i) {
+            schedules_reserve_i = i;
+
             let reserve_day_date = new Date(window.currentMonday);
             reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
             let reserve_day_str = reserve_day_date.toLocaleDateString("ca-ES", {
@@ -1415,54 +1420,51 @@
         async function reserve_ok(cancel) {
             reserve_content.style.display = "none";
 
-            //#region Normal Reserve
-            if (cancel == false) {
-                let reserved = parseInt(reserve_num.value);
-
-                let found = false;
-                for (let res in schedules_reserve_i) {
-                    if (schedules_reserve_i[res][1] == account_email) {
-                        schedules_reserve_i[res][0] += reserved;
-                        found = true;
-                    }
+            let reserved = parseInt(reserve_num.value);
+            time_text.innerText = schedules_reserve_i;
+            let found = false;
+            for (let res in schedules_reserve_i) {
+                if (schedules_reserve_i[res][1] == account_email) {
+                    schedules_reserve_i[res][0] += reserved;
+                    found = true;
                 }
-
-                if (found == false) {
-                    schedules_reserve_i.push([reserved, account_email]);
-                }
-
-                let raw = [];
-                for (let res in schedules_reserve_i) {
-                    raw[res] =
-                        schedules_reserve_i[res][0] +
-                        "-" +
-                        schedules_reserve_i[res][1];
-                }
-                raw = raw.join("/");
-
-                let element = String(reserve_day) + String(reserve_hour + 1);
-
-                // Reserve
-                await setDoc(
-                    doc(db, "reservations", schedules_ddmmyy),
-                    {
-                        [element]: raw,
-                    },
-                    { merge: true }
-                );
             }
-            //#endregion
-            else {
-                let new_i = [];
-                for (let res in schedules_reserve_i) {
-                    if (schedules_reserve_i[res][1] != account_email) {
-                        new_i.push(schedules_reserve_i[res]);
-                    }
-                }
 
-                time_text.innerText = new_i;
-                console.log(schedules_reserve_i, new_i);
+            if (found == false) {
+                schedules_reserve_i.push([reserved, account_email]);
             }
+
+            let raw = [];
+            for (let res in schedules_reserve_i) {
+                raw[res] =
+                    schedules_reserve_i[res][0] +
+                    "-" +
+                    schedules_reserve_i[res][1];
+            }
+            raw = raw.join("/");
+
+            let element = String(reserve_day) + String(reserve_hour + 1);
+
+            // Reserve
+            await setDoc(
+                doc(db, "reservations", schedules_ddmmyy),
+                {
+                    [element]: raw,
+                },
+                { merge: true }
+            );
+
+            // else {
+            //     let new_i = [];
+            //     for (let res in schedules_reserve_i) {
+            //         if (schedules_reserve_i[res][1] != account_email) {
+            //             new_i.push(schedules_reserve_i[res]);
+            //         }
+            //     }
+
+            //     time_text.innerText = new_i;
+            //     console.log(schedules_reserve_i, new_i);
+            // }
 
             // Add tick animation
             const tickContainer = document.createElement("div");
