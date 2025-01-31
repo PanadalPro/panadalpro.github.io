@@ -1276,7 +1276,7 @@
         window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
         window.reload_ddmmyy();
 
-        var schedules_reserve_i;
+        var schedules_reserve_i = [];
 
         async function reload_schedule() {
             // Get the occupied devices for date
@@ -1407,10 +1407,10 @@
         }
 
         const reserve_btn = document.getElementById("reserve-btn");
-        reserve_btn.addEventListener("click", reserve_ok, [false]);
-        reserve_cancel_reserve_btn.addEventListener("click", reserve_ok, [
-            true,
-        ]);
+        reserve_btn.addEventListener("click", () => reserve_ok(false));
+        reserve_cancel_reserve_btn.addEventListener("click", () =>
+            reserve_ok(true)
+        );
 
         async function reserve_ok(cancel) {
             reserve_content.style.display = "none";
@@ -1460,6 +1460,7 @@
                     }
                 }
 
+                time_text.innerText = new_i;
                 console.log(schedules_reserve_i, new_i);
             }
 
