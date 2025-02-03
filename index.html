@@ -1721,12 +1721,16 @@
 
         /* #region Reservations Data Check */
         let i = String(window.reserve_params["last_check"]);
+        let itoday = new Date();
         let idate = new Date(
-            parseInt(i.substring(4, 6)),
+            parseInt(
+                String(itoday.getFullYear()).substring(0, 2) + i.substring(4, 6)
+            ),
             parseInt(i.substring(2, 4)),
             parseInt(i.substring(0, 2))
         );
         console.log(idate);
+        console.log(today);
         /* #endregion */
     </script>
     <script>
