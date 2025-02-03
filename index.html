@@ -1341,10 +1341,12 @@
                                 cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${JSON.stringify(
                                     i
                                 )})">TOTS <p style="font-weight: bold;">reservats</p></button>`;
+                                console.log(cell.innerHTML);
                             } else {
                                 cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${JSON.stringify(
                                     i
                                 )})">${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
+                                console.log(cell.innerHTML);
                             }
                         } else {
                             if (total == window.reserve_params["laptop_num"]) {
@@ -1355,6 +1357,7 @@
                                 )})">${
                                     window.reserve_params["laptop_num"] - total
                                 } lliures</button>`;
+                                console.log(cell.innerHTML);
                             }
                         }
                     }
