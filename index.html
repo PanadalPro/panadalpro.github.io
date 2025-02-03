@@ -1276,8 +1276,6 @@
         window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
         window.reload_ddmmyy();
 
-        var schedules_reserve_i;
-
         async function reload_schedule() {
             // Get the occupied devices for date
             const docSnap = await getDoc(
@@ -1305,9 +1303,7 @@
                         let h = parseInt(hour) + 1;
                         let i = [];
                         let raw = reservations_data[`${day}${h}`];
-                        if (raw == undefined) {
-                            i = [[0, ""]];
-                        } else {
+                        if (raw != undefined) {
                             let rawi = raw.split("/");
                             for (let res in rawi) {
                                 let val = rawi[res].split("-");
@@ -1380,8 +1376,7 @@
         window.schedules_reserve_data = [];
 
         async function load_reserve(day, hour, total, modifiable, edit, i) {
-            window.schedules_reserve_data = i.replace("&quot;", '"');
-            console.log(i, window.schedules_reserve_data);
+            window.schedules_reserve_data = i;
 
             let reserve_day_date = new Date(window.currentMonday);
             reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
