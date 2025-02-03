@@ -1,5 +1,7 @@
 <!-- TODO: Forgot Password -->
-<!-- 1091 -->
+<!-- Make Setting for Laptop_Num -->
+<!-- Auto Delete Docs (add check in client) -->
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -1090,6 +1092,9 @@
         }
 
         /* #endregion */
+
+        /* #region Reservations Data Check */
+        /* #endregion */
     </style>
 
     <!-- Scripts -->
@@ -1339,10 +1344,8 @@
                                 window.reserve_params["laptop_num"]
                             ) {
                                 cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>TOTS <p style="font-weight: bold;">reservats</p></button>`;
-                                console.log(cell.innerHTML);
                             } else {
                                 cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
-                                console.log(cell.innerHTML);
                             }
                         } else {
                             if (total == window.reserve_params["laptop_num"]) {
@@ -1351,7 +1354,6 @@
                                 cell.innerHTML = `<button class="reservation-cell-btn" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, false, ${i_str})'>${
                                     window.reserve_params["laptop_num"] - total
                                 } lliures</button>`;
-                                console.log(cell.innerHTML, i);
                             }
                         }
                     }
@@ -1432,9 +1434,7 @@
                     }
                 }
 
-                console.log(raw);
-
-                if (raw == []) {
+                if (raw.length == 0) {
                     // Delete the doc
                     await deleteDoc(doc(db, "reservations", schedules_ddmmyy));
                 } else {
@@ -1454,7 +1454,7 @@
                     await setDoc(
                         doc(db, "reservations", schedules_ddmmyy),
                         {
-                            [element]: raw,
+                            [element]: text,
                         },
                         { merge: true }
                     );
