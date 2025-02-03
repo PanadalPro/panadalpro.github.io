@@ -1276,7 +1276,7 @@
         window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
         window.reload_ddmmyy();
 
-        var schedules_reserve_i = [];
+        var schedules_reserve_i;
 
         async function reload_schedule() {
             // Get the occupied devices for date
@@ -1380,9 +1380,11 @@
 
         var reserve_day;
         var reserve_hour;
+        window.schedules_reserve_data = [];
 
-        function load_reserve(day, hour, total, modifiable, edit, i) {
-            schedules_reserve_i = i;
+        async function load_reserve(day, hour, total, modifiable, edit, i) {
+            console.log(i);
+            window.schedules_reserve_data = i;
 
             let reserve_day_date = new Date(window.currentMonday);
             reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
@@ -1424,25 +1426,25 @@
             reserve_content.style.display = "none";
 
             let reserved = parseInt(reserve_num.value);
-            time_text.innerText = schedules_reserve_i;
+            time_text.innerText = window.schedules_reserve_data;
             let found = false;
-            for (let res in schedules_reserve_i) {
-                if (schedules_reserve_i[res][1] == account_email) {
-                    schedules_reserve_i[res][0] += reserved;
+            for (let res in window.schedules_reserve_data) {
+                if (window.schedules_reserve_data[res][1] == account_email) {
+                    window.schedules_reserve_data[res][0] += reserved;
                     found = true;
                 }
             }
 
             if (found == false) {
-                schedules_reserve_i.push([reserved, account_email]);
+                window.schedules_reserve_data.push([reserved, account_email]);
             }
 
             let raw = [];
-            for (let res in schedules_reserve_i) {
+            for (let res in window.schedules_reserve_data) {
                 raw[res] =
-                    schedules_reserve_i[res][0] +
+                    window.schedules_reserve_data[res][0] +
                     "-" +
-                    schedules_reserve_i[res][1];
+                    window.schedules_reserve_data[res][1];
             }
             raw = raw.join("/");
 
@@ -1459,14 +1461,14 @@
 
             // else {
             //     let new_i = [];
-            //     for (let res in schedules_reserve_i) {
-            //         if (schedules_reserve_i[res][1] != account_email) {
-            //             new_i.push(schedules_reserve_i[res]);
+            //     for (let res in window.schedules_reserve_data) {
+            //         if (window.schedules_reserve_data[res][1] != account_email) {
+            //             new_i.push(window.schedules_reserve_data[res]);
             //         }
             //     }
 
             //     time_text.innerText = new_i;
-            //     console.log(schedules_reserve_i, new_i);
+            //     console.log(window.schedules_reserve_data, new_i);
             // }
 
             // Add tick animation
