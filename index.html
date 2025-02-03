@@ -1333,28 +1333,25 @@
 
                         cell.style.backgroundSize = `${100 - percentage}% 100%`;
 
+                        let i_str = JSON.stringify(i);
+                        console.log(i_str);
+
                         if (modifiable > 0) {
                             if (
                                 modifiable ==
                                 window.reserve_params["laptop_num"]
                             ) {
-                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${JSON.stringify(
-                                    i
-                                )})">TOTS <p style="font-weight: bold;">reservats</p></button>`;
+                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})">TOTS <p style="font-weight: bold;">reservats</p></button>`;
                                 console.log(cell.innerHTML);
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${JSON.stringify(
-                                    i
-                                )})">${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
+                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})">${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
                                 console.log(cell.innerHTML);
                             }
                         } else {
                             if (total == window.reserve_params["laptop_num"]) {
                                 cell.innerHTML = "OCUPATS";
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, false, ${JSON.stringify(
-                                    i
-                                )})'>${
+                                cell.innerHTML = `<button class="reservation-cell-btn" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, false, ${i_str})'>${
                                     window.reserve_params["laptop_num"] - total
                                 } lliures</button>`;
                                 console.log(cell.innerHTML, i);
@@ -1383,8 +1380,8 @@
         window.schedules_reserve_data = [];
 
         async function load_reserve(day, hour, total, modifiable, edit, i) {
-            console.log(i);
-            window.schedules_reserve_data = i;
+            window.schedules_reserve_data = i.replace("&quot;", '"');
+            console.log(i, window.schedules_reserve_data);
 
             let reserve_day_date = new Date(window.currentMonday);
             reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
