@@ -1112,6 +1112,7 @@
             doc,
             getDoc,
             setDoc,
+            deleteDoc,
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
@@ -1337,10 +1338,10 @@
                                 modifiable ==
                                 window.reserve_params["laptop_num"]
                             ) {
-                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})">TOTS <p style="font-weight: bold;">reservats</p></button>`;
+                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>TOTS <p style="font-weight: bold;">reservats</p></button>`;
                                 console.log(cell.innerHTML);
                             } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick="reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})">${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
+                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
                                 console.log(cell.innerHTML);
                             }
                         } else {
@@ -1417,51 +1418,87 @@
         async function reserve_ok(cancel) {
             reserve_content.style.display = "none";
 
-            let reserved = parseInt(reserve_num.value);
-            time_text.innerText = window.schedules_reserve_data;
-            let found = false;
-            for (let res in window.schedules_reserve_data) {
-                if (window.schedules_reserve_data[res][1] == account_email) {
-                    window.schedules_reserve_data[res][0] += reserved;
-                    found = true;
+            if (cancel == true) {
+                let found = false;
+                let raw = [];
+
+                for (let res in window.schedules_reserve_data) {
+                    if (
+                        window.schedules_reserve_data[res][1] == account_email
+                    ) {
+                        found = true;
+                    } else {
+                        raw.push(window.schedules_reserve_data[res]);
+                    }
                 }
+
+                console.log(raw);
+
+                if (raw == []) {
+                    // Delete the doc
+                    await deleteDoc(doc(db, "reservations", schedules_ddmmyy));
+                } else {
+                    let text = [];
+                    for (let res in raw) {
+                        text[res] =
+                            window.schedules_reserve_data[res][0] +
+                            "-" +
+                            window.schedules_reserve_data[res][1];
+                    }
+                    text = text.join("/");
+
+                    let element =
+                        String(reserve_day) + String(reserve_hour + 1);
+
+                    // Save
+                    await setDoc(
+                        doc(db, "reservations", schedules_ddmmyy),
+                        {
+                            [element]: raw,
+                        },
+                        { merge: true }
+                    );
+                }
+            } else {
+                let reserved = parseInt(reserve_num.value);
+
+                let found = false;
+                for (let res in window.schedules_reserve_data) {
+                    if (
+                        window.schedules_reserve_data[res][1] == account_email
+                    ) {
+                        window.schedules_reserve_data[res][0] = reserved;
+                        found = true;
+                    }
+                }
+
+                if (found == false) {
+                    window.schedules_reserve_data.push([
+                        reserved,
+                        account_email,
+                    ]);
+                }
+
+                let raw = [];
+                for (let res in window.schedules_reserve_data) {
+                    raw[res] =
+                        window.schedules_reserve_data[res][0] +
+                        "-" +
+                        window.schedules_reserve_data[res][1];
+                }
+                raw = raw.join("/");
+
+                let element = String(reserve_day) + String(reserve_hour + 1);
+
+                // Save
+                await setDoc(
+                    doc(db, "reservations", schedules_ddmmyy),
+                    {
+                        [element]: raw,
+                    },
+                    { merge: true }
+                );
             }
-
-            if (found == false) {
-                window.schedules_reserve_data.push([reserved, account_email]);
-            }
-
-            let raw = [];
-            for (let res in window.schedules_reserve_data) {
-                raw[res] =
-                    window.schedules_reserve_data[res][0] +
-                    "-" +
-                    window.schedules_reserve_data[res][1];
-            }
-            raw = raw.join("/");
-
-            let element = String(reserve_day) + String(reserve_hour + 1);
-
-            // Reserve
-            await setDoc(
-                doc(db, "reservations", schedules_ddmmyy),
-                {
-                    [element]: raw,
-                },
-                { merge: true }
-            );
-
-            // else {
-            //     let new_i = [];
-            //     for (let res in window.schedules_reserve_data) {
-            //         if (window.schedules_reserve_data[res][1] != account_email) {
-            //             new_i.push(window.schedules_reserve_data[res]);
-            //         }
-            //     }
-
-            //     time_text.innerText = new_i;
-            //     console.log(window.schedules_reserve_data, new_i);
-            // }
 
             // Add tick animation
             const tickContainer = document.createElement("div");
