@@ -1092,9 +1092,6 @@
         }
 
         /* #endregion */
-
-        /* #region Reservations Data Check */
-        /* #endregion */
     </style>
 
     <!-- Scripts -->
@@ -1721,6 +1718,16 @@
         //#endregion
 
         //#endregion
+
+        /* #region Reservations Data Check */
+        let i = String(window.reserve_params["last_check"]);
+        let idate = new Date(
+            parseInt(i.substring(4, 6)),
+            parseInt(i.substring(2, 4)),
+            parseInt(i.substring(0, 2))
+        );
+        console.log(idate);
+        /* #endregion */
     </script>
     <script>
         //#region Login
