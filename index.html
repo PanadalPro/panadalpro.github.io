@@ -1778,10 +1778,10 @@
         const reserve_win = document.getElementById("reserve");
         const reserve_overlay = document.getElementById("reserve_overlay");
 
-        function reserve_open_win(day, hour, total, modifiable, edit) {
+        function reserve_open_win(day, hour, total, modifiable, edit, i) {
             reserve_win.style.display = "flex";
             reserve_overlay.style.display = "flex";
-            window.load_reserve(day, hour, total, modifiable, edit);
+            window.load_reserve(day, hour, total, modifiable, edit, i);
         }
 
         function reserve_close_win() {
