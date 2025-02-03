@@ -1723,16 +1723,18 @@
         let i = String(window.reserve_params["last_check"]);
         let itoday = new Date();
         itoday.setHours(0, 0, 0, 0);
+        time_text.innerText = parseInt(i.substring(2, 4));
         let idate = new Date(
             parseInt(
                 String(itoday.getFullYear()).substring(0, 2) + i.substring(4, 6)
             ),
-            parseInt(i.substring(2, 4)),
+            parseInt(i.substring(2, 4)) - 1,
             parseInt(i.substring(0, 2))
         );
         if (idate < itoday) {
             console.log("update");
         }
+        time_text.innerText = idate;
         console.log(idate);
         console.log(itoday);
         /* #endregion */
