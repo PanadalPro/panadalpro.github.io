@@ -1,6 +1,5 @@
 <!-- TODO: Forgot Password -->
 <!-- Make Setting for Laptop_Num -->
-<!-- Auto Delete Docs (add check in client) -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -385,6 +384,14 @@
                         class="bx bx-chevron-left"
                         id="config-schedules-back-button"
                     ></i>
+                </div>
+                <!-- #endregion -->
+
+                <!-- #region Laptop Num -->
+                <div class="valueprompt" id="config-laptopnum">
+                    <h3>Número de Portàtils:</h3>
+                    <input type="number" id="config-laptopnum-num" />
+                    <button>OK</button>
                 </div>
                 <!-- #endregion -->
             </div>
@@ -956,6 +963,32 @@
         }
         /* #endregion */
 
+        .app .config .valueprompt {
+            display: flex;
+            flex-direction: row;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .app .config .valueprompt h3 {
+            margin: auto 10px;
+        }
+
+        .app .config .valueprompt input {
+            border-radius: 10px;
+            padding: 7px;
+            margin: 10px;
+            border: 1px solid black;
+            width: 70px;
+            text-align: center;
+        }
+
+        .app .config .valueprompt button {
+            padding: 5px 10px; /* togo here */
+            border-radius: 10px;
+            border: 1px solid black;
+        }
+
         /* #endregion */
 
         /* #region Menubar */
@@ -1220,6 +1253,16 @@
         });
         //#endregion
 
+        //#region Function - to_ddmmyy
+        function to_ddmmyy(date) {
+            const formattedDate = date.toISOString().slice(0, 10).split("-");
+            return `${formattedDate[2]}${
+                formattedDate[1]
+            }${formattedDate[0].slice(-2)}`;
+        }
+        window.to_ddmmyy = to_ddmmyy;
+        //#endregion
+
         //#region Reservations - Schedules
         // Init Database
         const db = getFirestore(app);
@@ -1268,13 +1311,7 @@
         subject_select.addEventListener("change", class_subject);
 
         function reload_ddmmyy() {
-            const formattedDate = window.currentMonday
-                .toISOString()
-                .slice(0, 10)
-                .split("-");
-            schedules_ddmmyy = `${formattedDate[2]}${
-                formattedDate[1]
-            }${formattedDate[0].slice(-2)}`;
+            schedules_ddmmyy = to_ddmmyy(window.currentMonday);
 
             reload_schedule();
         }
@@ -1721,7 +1758,7 @@
 
         //#endregion
 
-        /* #region Reservations Data Check */
+        //#region Reservations Data Check
         let i = String(window.reserve_params["last_check"]);
         let itoday = new Date();
         itoday.setHours(0, 0, 0, 0);
@@ -1735,8 +1772,7 @@
         if (idate < itoday) {
             await getDocs(collection(db, "reservations")).then((query) => {
                 query.forEach((doc) => {
-                    if (!isNan(doc.id)) {
-                        console.log(doc.id);
+                    if (!isNaN(doc.id)) {
                         let split = doc.id.match(/.{1,2}/g);
                         let day = parseInt(split[0]);
                         let month = parseInt(split[1]) - 1; // Months are 0-based in JavaScript
@@ -1752,13 +1788,20 @@
 
                         if (iidate < thisMonday) {
                             deleteDoc(doc.ref);
-                            console.log("deleted");
                         }
                     }
                 });
             });
+            await setDoc(
+                doc(db, "reservations", "params"),
+                {
+                    last_check: to_ddmmyy(itoday),
+                },
+                { merge: true }
+            );
         }
-        /* #endregion */
+
+        //#endregion
     </script>
     <script>
         //#region Login
@@ -1770,12 +1813,14 @@
 
         //#endregion
 
+        //#region Calculate Current Window
         let today = new Date();
         let dayOfWeek = today.getDay();
         let diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
         window.thisMonday = new Date(today);
         window.thisMonday.setDate(today.getDate() + diffToMonday);
         window.thisMonday.setHours(0, 0, 0, 0);
+        //#endregion
 
         //#region Reservations
 
