@@ -1735,22 +1735,25 @@
         if (idate < itoday) {
             await getDocs(collection(db, "reservations")).then((query) => {
                 query.forEach((doc) => {
-                    console.log(doc.id);
-                    let split = doc.id.match(/.{1,2}/g);
-                    let day = parseInt(split[0]);
-                    let month = parseInt(split[1]) - 1; // Months are 0-based in JavaScript
-                    let year = parseInt(split[2]);
+                    if (!isNan(doc.id)) {
+                        console.log(doc.id);
+                        let split = doc.id.match(/.{1,2}/g);
+                        let day = parseInt(split[0]);
+                        let month = parseInt(split[1]) - 1; // Months are 0-based in JavaScript
+                        let year = parseInt(split[2]);
 
-                    // Adjust the year to be in the correct century
-                    let currentYear = today.getFullYear();
-                    let century = Math.floor(currentYear / 100) * 100;
-                    year += century;
+                        // Adjust the year to be in the correct century
+                        let currentYear = today.getFullYear();
+                        let century = Math.floor(currentYear / 100) * 100;
+                        year += century;
 
-                    let iidate = new Date(year, month, day, 0, 0, 0, 0);
-                    console.log(iidate, thisMonday);
+                        let iidate = new Date(year, month, day, 0, 0, 0, 0);
+                        console.log(iidate, thisMonday);
 
-                    if (iidate < thisMonday) {
-                        console.log("delete");
+                        if (iidate < thisMonday) {
+                            deleteDoc(doc.ref);
+                            console.log("deleted");
+                        }
                     }
                 });
             });
