@@ -1112,7 +1112,9 @@
         import {
             getFirestore,
             doc,
+            collection,
             getDoc,
+            getDocs,
             setDoc,
             deleteDoc,
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
@@ -1719,6 +1721,12 @@
 
         //#endregion
 
+        let today = new Date();
+        let dayOfWeek = today.getDay();
+        let diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        window.thisMonday = new Date(today);
+        window.thisMonday.setDate(today.getDate() + diffToMonday);
+
         /* #region Reservations Data Check */
         let i = String(window.reserve_params["last_check"]);
         let itoday = new Date();
@@ -1731,10 +1739,28 @@
             parseInt(i.substring(0, 2))
         );
         if (idate < itoday) {
-            console.log("update");
+            await getDocs(collection(db, "reservations")).then((query) => {
+                query.forEach((doc) => {
+                    console.log(doc.id);
+                    let split = doc.id.match(/.{1,2}/g);
+                    let day = parseInt(split[0]);
+                    let month = parseInt(split[1]) - 1; // Months are 0-based in JavaScript
+                    let year = parseInt(split[2]);
+
+                    // Adjust the year to be in the correct century
+                    let currentYear = today.getFullYear();
+                    let century = Math.floor(currentYear / 100) * 100;
+                    year += century;
+
+                    let iidate = new Date(year, month, day);
+                    console.log(iidate, thisMonday);
+
+                    if (iidate < thisMonday) {
+                        console.log("delete");
+                    }
+                });
+            });
         }
-        console.log(idate);
-        console.log(itoday);
         /* #endregion */
     </script>
     <script>
@@ -1754,14 +1780,8 @@
 
         var minMonday;
 
-        const today = new Date();
-        const dayOfWeek = today.getDay();
-        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        const thisMonday = new Date(today);
-        thisMonday.setDate(today.getDate() + diffToMonday);
-
         function getCurrentWeek() {
-            window.currentMonday = new Date(thisMonday);
+            window.currentMonday = new Date(window.thisMonday);
 
             const sunday = new Date(window.currentMonday);
             sunday.setDate(window.currentMonday.getDate() + 6);
@@ -1785,7 +1805,7 @@
             const today = new Date();
 
             // Check if the new Monday is in the past
-            if (newMonday < thisMonday) {
+            if (newMonday < window.thisMonday) {
                 return;
             }
 
