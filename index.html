@@ -1746,7 +1746,7 @@
                     let century = Math.floor(currentYear / 100) * 100;
                     year += century;
 
-                    let iidate = new Date(year, month, day);
+                    let iidate = new Date(year, month, day, 0, 0, 0, 0);
                     console.log(iidate, thisMonday);
 
                     if (iidate < thisMonday) {
@@ -1772,6 +1772,7 @@
         let diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
         window.thisMonday = new Date(today);
         window.thisMonday.setDate(today.getDate() + diffToMonday);
+        window.thisMonday.setHours(0, 0, 0, 0);
 
         //#region Reservations
 
