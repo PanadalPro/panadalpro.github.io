@@ -1721,12 +1721,6 @@
 
         //#endregion
 
-        let today = new Date();
-        let dayOfWeek = today.getDay();
-        let diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        window.thisMonday = new Date(today);
-        window.thisMonday.setDate(today.getDate() + diffToMonday);
-
         /* #region Reservations Data Check */
         let i = String(window.reserve_params["last_check"]);
         let itoday = new Date();
@@ -1772,6 +1766,12 @@
         }
 
         //#endregion
+
+        let today = new Date();
+        let dayOfWeek = today.getDay();
+        let diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        window.thisMonday = new Date(today);
+        window.thisMonday.setDate(today.getDate() + diffToMonday);
 
         //#region Reservations
 
