@@ -391,7 +391,7 @@
                 <div class="valueprompt" id="config-laptopnum">
                     <h3>Número de Portàtils:</h3>
                     <input type="number" id="config-laptopnum-num" />
-                    <button>OK</button>
+                    <button id="config-laptopnum-btn">OK</button>
                 </div>
                 <!-- #endregion -->
             </div>
@@ -995,6 +995,10 @@
         .app .config .valueprompt button:hover {
             background-color: var(--accent-color);
         }
+
+        .app .config .valueprompt button .success {
+            background-color: green;
+        }
         /* #endregion */
 
         /* #endregion */
@@ -1282,6 +1286,9 @@
         const laptop_num_setting = document.getElementById(
             "config-laptopnum-num"
         );
+        const laptop_num_setting_btn = document.getElementById(
+            "config-laptopnum-btn"
+        );
 
         //#region Get Params / Settings File
         let paramsSnap = await getDoc(doc(db, "reservations", "params"));
@@ -1293,21 +1300,23 @@
             console.log("Unable to fetch Reservations Params File!");
         }
 
-        document
-            .getElementById("config-laptopnum-btn")
-            .addEventListener("click", async () => {
-                let laptop_num = parseInt(laptop_num_setting.value);
+        laptop_num_setting_btn.addEventListener("click", async () => {
+            let laptop_num = parseInt(laptop_num_setting.value);
 
-                if (laptop_num > 0) {
-                    window.reserve_params["laptop_num"] = laptop_num;
-                    await setDoc(
-                        doc(db, "reservations", "params"),
-                        window.reserve_params
-                    );
-                } else {
-                    alert("Please enter a valid number of laptops");
-                }
-            });
+            if (laptop_num > 0) {
+                window.reserve_params["laptop_num"] = laptop_num;
+                await setDoc(
+                    doc(db, "reservations", "params"),
+                    window.reserve_params
+                );
+                laptop_num_setting_btn.classList.add("success");
+                setTimeout(() => {
+                    laptop_num_setting_btn.classList.remove("success");
+                }, 1000);
+            } else {
+                alert("Please enter a valid number of laptops");
+            }
+        });
 
         //#endregion
 
