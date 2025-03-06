@@ -69,7 +69,7 @@
             <!-- #region Account -->
             <button class="account">
                 <i class="bx bxs-user"></i>
-                <p id="account-text">Nico</p>
+                <p id="account-text"></p>
             </button>
             <div class="account-menu">
                 <button class="account-logout" id="account-logout">
@@ -81,6 +81,10 @@
 
             <!-- #region Menubar -->
             <div class="menubar">
+                <div class="element" id="home-elemeny">
+                    <i class="bx bx-home" onclick="home()"></i>
+                    <p onclick="home()">Inici</p>
+                </div>
                 <div class="element" id="reservations-element">
                     <i class="bx bxs-calendar" onclick="reservations()"></i>
                     <p onclick="reservations()">Reservar</p>
@@ -115,7 +119,7 @@
                             <option value="6a">6è A</option>
                             <option value="6b">6è B</option>
                             <option value="6c">6è C</option>
-                            <option value="other">Altres</option>
+                            <option value="all">Totes</option>
                         </select>
                     </div>
 
@@ -134,6 +138,7 @@
                             <option value="6">Valors / Tutoria</option>
                             <option value="7">Laboratori</option>
                             <option value="8">Altres</option>
+                            <option value="all">Totes</option>
                         </select>
                     </div>
                 </div>
@@ -497,6 +502,10 @@
             font-weight: bold;
             font-size: 15px;
         }
+        /* #endregion */
+
+        /* #region App - Home */
+        /* TODO HERE */
         /* #endregion */
 
         /* #region App - Reservations */
@@ -982,6 +991,7 @@
             border: 1px solid black;
             width: 70px;
             text-align: center;
+            transition: background-color 0.5s ease;
         }
 
         .app .config .valueprompt button {
@@ -996,7 +1006,7 @@
             background-color: var(--accent-color);
         }
 
-        .app .config .valueprompt button .success {
+        .app .config .valueprompt .success {
             background-color: green;
         }
         /* #endregion */
@@ -1006,7 +1016,7 @@
         /* #region Menubar */
         .menubar {
             /* width: 60%; */
-            width: 400px;
+            width: 500px;
             height: 60px;
             background: #edd3a6;
             display: flex;
@@ -1021,6 +1031,7 @@
         }
 
         .menubar .element {
+            margin: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1309,10 +1320,10 @@
                     doc(db, "reservations", "params"),
                     window.reserve_params
                 );
-                laptop_num_setting_btn.classList.add("success");
+                laptop_num_setting.classList.add("success");
                 setTimeout(() => {
-                    laptop_num_setting_btn.classList.remove("success");
-                }, 1000);
+                    laptop_num_setting.classList.remove("success");
+                }, 2000);
             } else {
                 alert("Please enter a valid number of laptops");
             }
@@ -1333,14 +1344,55 @@
             if (class_val != "" && subject_val != "") {
                 const docSnap = await getDoc(doc(db, "schedules", class_val));
 
+                schedule_table.innerHTML = EMPTY_SCHEDULE;
+                schedules_subject = subject_val;
                 if (docSnap.exists()) {
-                    schedule_table.innerHTML = EMPTY_SCHEDULE;
                     schedules_data = docSnap.data();
-                    schedules_subject = subject_val;
-                    reload_schedule();
                 } else {
-                    console.log("Unable to fetch Schedule Data!");
+                    schedules_data = {
+                        1: {
+                            0: 0,
+                            1: 0,
+                            2: 0,
+                            3: 0,
+                            4: 0,
+                            5: 0,
+                        },
+                        2: {
+                            0: 0,
+                            1: 0,
+                            2: 0,
+                            3: 0,
+                            4: 0,
+                            5: 0,
+                        },
+                        3: {
+                            0: 0,
+                            1: 0,
+                            2: 0,
+                            3: 0,
+                            4: 0,
+                            5: 0,
+                        },
+                        4: {
+                            0: 0,
+                            1: 0,
+                            2: 0,
+                            3: 0,
+                            4: 0,
+                            5: 0,
+                        },
+                        5: {
+                            0: 0,
+                            1: 0,
+                            2: 0,
+                            3: 0,
+                            4: 0,
+                            5: 0,
+                        },
+                    };
                 }
+                reload_schedule();
             }
         }
 
@@ -1371,7 +1423,10 @@
             for (let day in schedules_data) {
                 for (let hour in schedules_data[day]) {
                     if (
-                        String(schedules_data[day][hour]) === schedules_subject
+                        String(schedules_data[day][hour]) ===
+                            schedules_subject ||
+                        schedules_subject === "all" ||
+                        String(schedules_data[day][hour]) === "0"
                     ) {
                         let new_hour = parseInt(hour);
                         new_hour +=
@@ -1948,11 +2003,13 @@
 
         //#region Menubar
         // Windows
+        const home_win = document.getElementById("home");
         const reservations_win = document.getElementById("reservations");
         const screens_win = document.getElementById("screens");
         const config_win = document.getElementById("config");
 
         // Elements
+        const home_element = document.getElementById("home-element");
         const reservations_element = document.getElementById(
             "reservations-element"
         );
@@ -1991,8 +2048,8 @@
             screens_element.style.color = "black";
         }
 
-        //reservations();
-        config();
+        reservations();
+        //config();
 
         //#endregion
     </script>
