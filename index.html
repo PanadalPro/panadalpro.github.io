@@ -963,6 +963,7 @@
         }
         /* #endregion */
 
+        /* #region Config - Value (Number) Prompt */
         .app .config .valueprompt {
             display: flex;
             flex-direction: row;
@@ -984,10 +985,17 @@
         }
 
         .app .config .valueprompt button {
-            padding: 5px 10px; /* togo here */
+            margin: 10px;
+            width: 40px;
+            height: 30px;
             border-radius: 10px;
             border: 1px solid black;
         }
+
+        .app .config .valueprompt button:hover {
+            background-color: var(--accent-color);
+        }
+        /* #endregion */
 
         /* #endregion */
 
@@ -1271,15 +1279,35 @@
         const schedule_table = document.getElementById("schedule");
         const class_select = document.getElementById("class");
         const subject_select = document.getElementById("subject");
+        const laptop_num_setting = document.getElementById(
+            "config-laptopnum-num"
+        );
 
         //#region Get Params / Settings File
         let paramsSnap = await getDoc(doc(db, "reservations", "params"));
 
         if (paramsSnap.exists()) {
             window.reserve_params = paramsSnap.data();
+            laptop_num_setting.value = window.reserve_params["laptop_num"];
         } else {
             console.log("Unable to fetch Reservations Params File!");
         }
+
+        document
+            .getElementById("config-laptopnum-btn")
+            .addEventListener("click", async () => {
+                let laptop_num = parseInt(laptop_num_setting.value);
+
+                if (laptop_num > 0) {
+                    window.reserve_params["laptop_num"] = laptop_num;
+                    await setDoc(
+                        doc(db, "reservations", "params"),
+                        window.reserve_params
+                    );
+                } else {
+                    alert("Please enter a valid number of laptops");
+                }
+            });
 
         //#endregion
 
@@ -1954,8 +1982,8 @@
             screens_element.style.color = "black";
         }
 
-        reservations();
-        // config();
+        //reservations();
+        config();
 
         //#endregion
     </script>
