@@ -81,7 +81,7 @@
 
             <!-- #region Menubar -->
             <div class="menubar">
-                <div class="element" id="home-elemeny">
+                <div class="element" id="home-element">
                     <i class="bx bx-home" onclick="home()"></i>
                     <p onclick="home()">Inici</p>
                 </div>
@@ -97,6 +97,64 @@
                     <i class="bx bx-cog" onclick="config()"></i>
                     <p onclick="config()">Configuració</p>
                 </div>
+            </div>
+            <!-- #endregion -->
+
+            <!-- #region Home Page -->
+            <div class="home" id="home">
+                <h1>TecnoThau</h1>
+                <svg viewBox="0 0 100 100" width="200" height="200">
+                    <!-- Background circle -->
+                    <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#ddd"
+                        stroke-width="10"
+                        fill="none"
+                    />
+
+                    <!-- Gauge segments -->
+                    <circle
+                        id="greenSegment"
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="green"
+                        stroke-width="10"
+                        fill="none"
+                        stroke-dasharray="0 251.2"
+                        stroke-dashoffset="0"
+                        stroke-linecap="round"
+                        transform="rotate(-90,50,50)"
+                    />
+                    <circle
+                        id="redSegment"
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="red"
+                        stroke-width="10"
+                        fill="none"
+                        stroke-dasharray="0 251.2"
+                        stroke-dashoffset="0"
+                        stroke-linecap="round"
+                        transform="rotate(-90,50,50)"
+                    />
+                    <circle
+                        id="graySegment"
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="gray"
+                        stroke-width="10"
+                        fill="none"
+                        stroke-dasharray="0 251.2"
+                        stroke-dashoffset="0"
+                        stroke-linecap="round"
+                        transform="rotate(-90,50,50)"
+                    />
+                </svg>
             </div>
             <!-- #endregion -->
 
@@ -505,7 +563,12 @@
         /* #endregion */
 
         /* #region App - Home */
-        /* TODO HERE */
+        .app .home {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
         /* #endregion */
 
         /* #region App - Reservations */
@@ -2021,36 +2084,93 @@
             .getComputedStyle(document.querySelector(".menubar"))
             .getPropertyValue("--accent-color");
 
+        function home() {
+            home_win.style.display = "initial";
+            reservations_win.style.display = "none";
+            screens_win.style.display = "none";
+            config_win.style.display = "none";
+
+            home_element.style.color = accent_color;
+            reservations_element.style.color = "black";
+            screens_element.style.color = "black";
+            config_element.style.color = "black";
+        }
+
         function reservations() {
+            home_win.style.display = "none";
             reservations_win.style.display = "initial";
             screens_win.style.display = "none";
             config_win.style.display = "none";
+
+            home_element.style.color = "black";
             reservations_element.style.color = accent_color;
             screens_element.style.color = "black";
             config_element.style.color = "black";
         }
 
         function screens() {
+            home_win.style.display = "none";
             screens_win.style.display = "initial";
             config_win.style.display = "none";
             reservations_win.style.display = "none";
+
+            home_element.style.color = "black";
             screens_element.style.color = accent_color;
             config_element.style.color = "black";
             reservations_element.style.color = "black";
         }
 
         function config() {
+            home_win.style.display = "none";
             config_win.style.display = "initial";
             reservations_win.style.display = "none";
             screens_win.style.display = "none";
+
+            home_element.style.color = "black";
             config_element.style.color = accent_color;
             reservations_element.style.color = "black";
             screens_element.style.color = "black";
         }
 
-        reservations();
+        home();
+        //reservations();
         //config();
 
+        //#endregion
+
+        //#region Home Gauge
+        function updateGauge(green, red, gray) {
+            const total = green + red + gray;
+            const circumference = 2 * Math.PI * 40; // 40 is the radius
+
+            const greenOffset = (1 - green / total) * circumference;
+            const redOffset = (1 - (green + red) / total) * circumference;
+            const grayOffset =
+                (1 - (green + red + gray) / total) * circumference;
+
+            document.getElementById("greenSegment").style.strokeDasharray = `${
+                (green / total) * circumference
+            } ${circumference}`;
+            document.getElementById("greenSegment").style.strokeDashoffset =
+                greenOffset;
+
+            document.getElementById("redSegment").style.strokeDasharray = `${
+                (red / total) * circumference
+            } ${circumference}`;
+            document.getElementById("redSegment").style.strokeDashoffset =
+                redOffset;
+
+            document.getElementById("graySegment").style.strokeDasharray = `${
+                (gray / total) * circumference
+            } ${circumference}`;
+            document.getElementById("graySegment").style.strokeDashoffset =
+                grayOffset;
+        }
+
+        // Example: Update values after 2 seconds
+        setTimeout(() => {
+            updateGauge(30, 40, 30);
+        }, 2000);
         //#endregion
     </script>
 </html>
