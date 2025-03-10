@@ -103,7 +103,14 @@
             <!-- #region Home Page -->
             <div class="home" id="home">
                 <h1>TecnoThau</h1>
-                <svg viewBox="0 0 100 100" width="200" height="200">
+
+                <!-- #region Gauge -->
+                <svg
+                    viewBox="0 0 100 100"
+                    width="200"
+                    height="200"
+                    id="computer-gauge"
+                >
                     <!-- Background circle -->
                     <circle
                         cx="50"
@@ -116,18 +123,18 @@
 
                     <!-- Gauge segments -->
                     <circle
-                        id="greenSegment"
+                        id="graySegment"
                         cx="50"
                         cy="50"
                         r="40"
-                        stroke="green"
+                        stroke="gray"
                         stroke-width="10"
                         fill="none"
                         stroke-dasharray="0 251.2"
                         stroke-dashoffset="0"
-                        stroke-linecap="round"
                         transform="rotate(-90,50,50)"
                     />
+
                     <circle
                         id="redSegment"
                         cx="50"
@@ -138,23 +145,34 @@
                         fill="none"
                         stroke-dasharray="0 251.2"
                         stroke-dashoffset="0"
-                        stroke-linecap="round"
                         transform="rotate(-90,50,50)"
                     />
+
                     <circle
-                        id="graySegment"
+                        id="greenSegment"
                         cx="50"
                         cy="50"
                         r="40"
-                        stroke="gray"
+                        stroke="green"
                         stroke-width="10"
                         fill="none"
                         stroke-dasharray="0 251.2"
                         stroke-dashoffset="0"
-                        stroke-linecap="round"
                         transform="rotate(-90,50,50)"
                     />
+
+                    <!-- Centered text -->
+                    <text
+                        id="gaugeText"
+                        x="50"
+                        y="55"
+                        font-size="10"
+                        text-anchor="middle"
+                        fill="black"
+                        font-family="Arial"
+                    ></text>
                 </svg>
+                <!-- #endregion -->
             </div>
             <!-- #endregion -->
 
@@ -568,6 +586,11 @@
             justify-content: center;
             align-items: center;
             padding: 10px;
+        }
+
+        .app .home svg circle {
+            transition: stroke-dasharray 0.8s ease-in-out,
+                stroke-dashoffset 0.8s ease-in-out;
         }
         /* #endregion */
 
@@ -2139,38 +2162,51 @@
         //#endregion
 
         //#region Home Gauge
-        function updateGauge(green, red, gray) {
+        const computer_gauge = document.getElementById("computer-gauge");
+
+        function updateGauge(gauge, green, red, gray) {
             const total = green + red + gray;
             const circumference = 2 * Math.PI * 40; // 40 is the radius
 
-            const greenOffset = (1 - green / total) * circumference;
-            const redOffset = (1 - (green + red) / total) * circumference;
-            const grayOffset =
-                (1 - (green + red + gray) / total) * circumference;
+            const greenArc = (green / total) * circumference;
+            const redArc = (red / total) * circumference;
+            const grayArc = (gray / total) * circumference;
 
-            document.getElementById("greenSegment").style.strokeDasharray = `${
-                (green / total) * circumference
-            } ${circumference}`;
-            document.getElementById("greenSegment").style.strokeDashoffset =
-                greenOffset;
+            const green_segment = gauge.getElementById("greenSegment");
+            const red_segment = gauge.getElementById("redSegment");
+            const gray_segment = gauge.getElementById("graySegment");
 
-            document.getElementById("redSegment").style.strokeDasharray = `${
-                (red / total) * circumference
-            } ${circumference}`;
-            document.getElementById("redSegment").style.strokeDashoffset =
-                redOffset;
+            // Set green segment
+            green_segment.style.strokeDasharray = `${greenArc} ${circumference}`;
+            green_segment.style.strokeDashoffset = 0;
 
-            document.getElementById("graySegment").style.strokeDasharray = `${
-                (gray / total) * circumference
-            } ${circumference}`;
-            document.getElementById("graySegment").style.strokeDashoffset =
-                grayOffset;
+            // Set red segment (starts where green ends)
+            red_segment.style.strokeDasharray = `${redArc} ${circumference}`;
+            red_segment.style.strokeDashoffset = -greenArc;
+
+            // Set gray segment (starts where red ends)
+            gray_segment.style.strokeDasharray = `${grayArc} ${circumference}`;
+            gray_segment.style.strokeDashoffset = -(greenArc + redArc);
+
+            // Typewriter effect on text
+            let current = 0;
+            const target = Math.round((green / total) * 100); // Show % of green segment
+            const textElement = document.getElementById("gaugeText");
+
+            const interval = setInterval(() => {
+                if (current >= target) {
+                    clearInterval(interval);
+                } else {
+                    current++;
+                    textElement.textContent = current + " disponibles";
+                }
+            }, 20); // Adjust typing speed
         }
 
-        // Example: Update values after 2 seconds
+        // Example: Update values smoothly after 2 seconds
         setTimeout(() => {
             updateGauge(30, 40, 30);
-        }, 2000);
+        }, 500);
         //#endregion
     </script>
 </html>
