@@ -298,7 +298,6 @@
                             </option>
                             <option value="1">iPads</option>
                             <option value="2">Portàtils</option>
-                            <!-- TODO HERE -->
                         </select>
                     </div>
                 </div>
@@ -1242,22 +1241,24 @@
 
         /* #region Menubar */
         .menubar {
-            width: 380px;
+            width: 100%; /* Adjust to full width */
+            max-width: 360px; /* Maximum width */
             height: 60px;
             background: #edd3a6;
             display: flex;
             flex-direction: row;
+            justify-content: space-between; /* Distribute space evenly */
+            align-items: center; /* Center items vertically */
             text-align: center;
-            justify-content: center;
             left: 50%;
             transform: translateX(-50%);
             position: fixed;
             bottom: 0;
             border-radius: 20px;
+            padding: 0 10px; /* Add some padding */
         }
 
         .menubar .element {
-            margin: -12px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1267,13 +1268,12 @@
 
         .menubar .element i {
             font-size: 30px;
-            margin-left: 50px;
-            margin-right: 50px;
-            padding: 60px -10px;
+            margin-bottom: 5px; /* Add some space between icon and text */
         }
 
         .menubar .element p {
             cursor: default;
+            margin: 0; /* Remove default margin */
         }
 
         /* #endregion */
@@ -1525,6 +1525,7 @@
         const schedule_table = document.getElementById("schedule");
         const class_select = document.getElementById("class");
         const subject_select = document.getElementById("subject");
+        const device_select = document.getElementById("device");
         const laptop_num_setting = document.getElementById(
             "config-laptopnum-num"
         );
@@ -1533,11 +1534,15 @@
         );
 
         //#region Get Params / Settings File
-        let paramsSnap = await getDoc(doc(db, "reservations", "params"));
+        let paramsLaptops = await getDoc(doc(db, "laptops", "params"));
+        let paramsiPads = await getDoc(doc(db, "ipads", "params"));
 
-        if (paramsSnap.exists()) {
-            window.reserve_params = paramsSnap.data();
-            laptop_num_setting.value = window.reserve_params["laptop_num"];
+        if (paramsLaptops.exists() && paramsiPads.exists()) {
+            window.reserve_params = {
+                laptops: paramsLaptops.data(),
+                ipads: paramsiPads.data(),
+            };
+            laptop_num_setting.value = window.reserve_params["laptops"]["num"];
         } else {
             console.log("Unable to fetch Reservations Params File!");
         }
@@ -1546,10 +1551,10 @@
             let laptop_num = parseInt(laptop_num_setting.value);
 
             if (laptop_num > 0) {
-                window.reserve_params["laptop_num"] = laptop_num;
+                window.reserve_params["laptops"]["num"] = laptop_num;
                 await setDoc(
-                    doc(db, "reservations", "params"),
-                    window.reserve_params
+                    doc(db, "laptops", "params"),
+                    window.reserve_params["laptops"]
                 );
                 laptop_num_setting.classList.add("success");
                 setTimeout(() => {
@@ -1567,10 +1572,12 @@
         var schedules_data;
         var schedules_subject;
         var schedules_ddmmyy;
+        var schedules_device;
 
         async function class_subject() {
             let class_val = class_select.value;
             let subject_val = subject_select.value;
+            let schedules_device = device_select.value.toLowerCase();
 
             if (class_val != "" && subject_val != "") {
                 const docSnap = await getDoc(doc(db, "schedules", class_val));
@@ -1629,6 +1636,7 @@
 
         class_select.addEventListener("change", class_subject);
         subject_select.addEventListener("change", class_subject);
+        device_select.addEventListener("change", class_subject);
 
         function reload_ddmmyy() {
             schedules_ddmmyy = to_ddmmyy(window.currentMonday);
@@ -1641,7 +1649,7 @@
         async function reload_schedule() {
             // Get the occupied devices for date
             const docSnap = await getDoc(
-                doc(db, "reservations", schedules_ddmmyy)
+                doc(db, schedules_device, schedules_ddmmyy)
             );
 
             let reservations_data;
@@ -1690,7 +1698,8 @@
                             schedule_table.rows[new_day].cells[new_hour];
 
                         let percentage =
-                            (total * 100) / window.reserve_params["laptop_num"];
+                            (total * 100) /
+                            window.reserve_params[schedules_device]["num"];
 
                         cell.style.backgroundSize = `${100 - percentage}% 100%`;
 
@@ -1700,18 +1709,23 @@
                         if (modifiable > 0) {
                             if (
                                 modifiable ==
-                                window.reserve_params["laptop_num"]
+                                window.reserve_params[schedules_device]["num"]
                             ) {
                                 cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>TOTS <p style="font-weight: bold;">reservats</p></button>`;
                             } else {
                                 cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
                             }
                         } else {
-                            if (total == window.reserve_params["laptop_num"]) {
+                            if (
+                                total ==
+                                window.reserve_params[schedules_device]["num"]
+                            ) {
                                 cell.innerHTML = "OCUPATS";
                             } else {
                                 cell.innerHTML = `<button class="reservation-cell-btn" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, false, ${i_str})'>${
-                                    window.reserve_params["laptop_num"] - total
+                                    window.reserve_params[schedules_device][
+                                        "num"
+                                    ] - total
                                 } lliures</button>`;
                             }
                         }
@@ -1751,18 +1765,21 @@
             if (edit == true) {
                 reserve_cancel_reserve_btn.style.display = "flex";
                 reserve_num.max =
-                    window.reserve_params["laptop_num"] - (total - modifiable);
+                    window.reserve_params[schedules_device]["num"] -
+                    (total - modifiable);
                 reserve_num.value = modifiable;
                 reserve_text.innerText = `Editar reserva per al ${reserve_day_str}`;
                 reserve_max.innerText = `Màx. ${
-                    window.reserve_params["laptop_num"] - (total - modifiable)
+                    window.reserve_params[schedules_device]["num"] -
+                    (total - modifiable)
                 }`;
             } else {
                 reserve_cancel_reserve_btn.style.display = "none";
-                reserve_num.max = window.reserve_params["laptop_num"] - total;
+                reserve_num.max =
+                    window.reserve_params[schedules_device]["num"] - total;
                 reserve_text.innerText = `Reservar per al ${reserve_day_str}`;
                 reserve_max.innerText = `Màx. ${
-                    window.reserve_params["laptop_num"] - total
+                    window.reserve_params[schedules_device]["num"] - total
                 }`;
             }
 
@@ -1795,7 +1812,9 @@
 
                 if (raw.length == 0) {
                     // Delete the doc
-                    await deleteDoc(doc(db, "reservations", schedules_ddmmyy));
+                    await deleteDoc(
+                        doc(db, schedules_device, schedules_ddmmyy)
+                    );
                 } else {
                     let text = [];
                     for (let res in raw) {
@@ -1811,7 +1830,7 @@
 
                     // Save
                     await setDoc(
-                        doc(db, "reservations", schedules_ddmmyy),
+                        doc(db, schedules_device, schedules_ddmmyy),
                         {
                             [element]: text,
                         },
@@ -1851,7 +1870,7 @@
 
                 // Save
                 await setDoc(
-                    doc(db, "reservations", schedules_ddmmyy),
+                    doc(db, schedules_device, schedules_ddmmyy),
                     {
                         [element]: raw,
                     },
@@ -2082,47 +2101,50 @@
         //#endregion
 
         //#region Reservations Data Check
-        let i = String(window.reserve_params["last_check"]);
-        let itoday = new Date();
-        itoday.setHours(0, 0, 0, 0);
-        let idate = new Date(
-            parseInt(
-                String(itoday.getFullYear()).substring(0, 2) + i.substring(4, 6)
-            ),
-            parseInt(i.substring(2, 4)) - 1,
-            parseInt(i.substring(0, 2))
-        );
-        if (idate < itoday) {
-            await getDocs(collection(db, "reservations")).then((query) => {
-                query.forEach((doc) => {
-                    if (!isNaN(doc.id)) {
-                        let split = doc.id.match(/.{1,2}/g);
-                        let day = parseInt(split[0]);
-                        let month = parseInt(split[1]) - 1; // Months are 0-based in JavaScript
-                        let year = parseInt(split[2]);
-
-                        // Adjust the year to be in the correct century
-                        let currentYear = today.getFullYear();
-                        let century = Math.floor(currentYear / 100) * 100;
-                        year += century;
-
-                        let iidate = new Date(year, month, day, 0, 0, 0, 0);
-                        console.log(iidate, thisMonday);
-
-                        if (iidate < thisMonday) {
-                            deleteDoc(doc.ref);
-                        }
-                    }
-                });
-            });
-            await setDoc(
-                doc(db, "reservations", "params"),
-                {
-                    last_check: to_ddmmyy(itoday),
-                },
-                { merge: true }
+        ["ipads", "laptops"].forEach(async (device) => {
+            let i = String(window.reserve_params[device]["last_check"]);
+            let itoday = new Date();
+            itoday.setHours(0, 0, 0, 0);
+            let idate = new Date(
+                parseInt(
+                    String(itoday.getFullYear()).substring(0, 2) +
+                        i.substring(4, 6)
+                ),
+                parseInt(i.substring(2, 4)) - 1,
+                parseInt(i.substring(0, 2))
             );
-        }
+            if (idate < itoday) {
+                await getDocs(collection(db, device)).then((query) => {
+                    query.forEach((doc) => {
+                        if (!isNaN(doc.id)) {
+                            let split = doc.id.match(/.{1,2}/g);
+                            let day = parseInt(split[0]);
+                            let month = parseInt(split[1]) - 1; // Months are 0-based in JavaScript
+                            let year = parseInt(split[2]);
+
+                            // Adjust the year to be in the correct century
+                            let currentYear = today.getFullYear();
+                            let century = Math.floor(currentYear / 100) * 100;
+                            year += century;
+
+                            let iidate = new Date(year, month, day, 0, 0, 0, 0);
+                            console.log(iidate, thisMonday);
+
+                            if (iidate < thisMonday) {
+                                deleteDoc(doc.ref);
+                            }
+                        }
+                    });
+                });
+                await setDoc(
+                    doc(db, device, "params"),
+                    {
+                        last_check: to_ddmmyy(itoday),
+                    },
+                    { merge: true }
+                );
+            }
+        });
 
         //#endregion
     </script>
