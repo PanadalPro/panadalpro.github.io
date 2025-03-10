@@ -641,6 +641,7 @@
             width: 50px; /* Smaller width by default */
             overflow: hidden; /* Hide overflow content */
             transition: width 0.5s ease-in-out; /* Smooth transition for width */
+            z-index: 999;
         }
 
         .app .account i {
@@ -680,6 +681,7 @@
             padding: 10px;
             transform: translateX(100%); /* Start off-screen */
             transition: transform 0.5s ease-in-out;
+            z-index: 999;
         }
 
         .app .account-menu.show {
@@ -1255,7 +1257,7 @@
         }
 
         .menubar .element {
-            margin: -17px;
+            margin: -12px;
             display: flex;
             flex-direction: column;
             justify-content: center;
