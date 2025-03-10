@@ -296,8 +296,8 @@
                             <option value="" disabled selected>
                                 Selecciona
                             </option>
-                            <option value="1">iPads</option>
-                            <option value="2">Portàtils</option>
+                            <option value="ipads">iPads</option>
+                            <option value="laptops">Portàtils</option>
                         </select>
                     </div>
                 </div>
@@ -1579,7 +1579,11 @@
             let subject_val = subject_select.value;
             let schedules_device = device_select.value.toLowerCase();
 
-            if (class_val != "" && subject_val != "") {
+            if (
+                class_val != "" &&
+                subject_val != "" &&
+                schedules_device != ""
+            ) {
                 const docSnap = await getDoc(doc(db, "schedules", class_val));
 
                 schedule_table.innerHTML = EMPTY_SCHEDULE;
