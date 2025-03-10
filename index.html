@@ -63,6 +63,7 @@
 
         <div class="reserve_overlay" id="reserve_overlay"></div>
         <div class="config_overlay" id="config_overlay"></div>
+        <div class="account_overlay" id="account_overlay"></div>
 
         <!-- #region App -->
         <div class="app fade-out" id="app">
@@ -102,14 +103,84 @@
 
             <!-- #region Home Page -->
             <div class="home" id="home">
-                <h1>TecnoThau</h1>
-
-                <!-- #region Gauge -->
+                <!-- #region Computer Gauge -->
+                <h2>Ordinadors Actualment Disponibles:</h2>
                 <svg
                     viewBox="0 0 100 100"
                     width="200"
                     height="200"
                     id="computer-gauge"
+                >
+                    <!-- Background circle -->
+                    <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#ddd"
+                        stroke-width="10"
+                        fill="none"
+                    />
+
+                    <!-- Gauge segments -->
+                    <circle
+                        id="graySegment"
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="gray"
+                        stroke-width="10"
+                        fill="none"
+                        stroke-dasharray="0 251.2"
+                        stroke-dashoffset="0"
+                        transform="rotate(-90,50,50)"
+                    />
+
+                    <circle
+                        id="redSegment"
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="red"
+                        stroke-width="10"
+                        fill="none"
+                        stroke-dasharray="0 251.2"
+                        stroke-dashoffset="0"
+                        transform="rotate(-90,50,50)"
+                    />
+
+                    <circle
+                        id="greenSegment"
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="green"
+                        stroke-width="10"
+                        fill="none"
+                        stroke-dasharray="0 251.2"
+                        stroke-dashoffset="0"
+                        transform="rotate(-90,50,50)"
+                    />
+
+                    <!-- Centered text -->
+                    <text
+                        id="gaugeText"
+                        x="50"
+                        y="55"
+                        font-size="10"
+                        text-anchor="middle"
+                        fill="black"
+                        font-family="Arial"
+                    ></text>
+                </svg>
+                <!-- #endregion -->
+
+                <!-- #region iPad Gauge -->
+                <h2>iPads Actualment Disponibles:</h2>
+                <svg
+                    viewBox="0 0 100 100"
+                    width="200"
+                    height="200"
+                    id="ipad-gauge"
                 >
                     <!-- Background circle -->
                     <circle
@@ -215,6 +286,19 @@
                             <option value="7">Laboratori</option>
                             <option value="8">Altres</option>
                             <option value="all">Totes</option>
+                        </select>
+                    </div>
+
+                    <div class="device-select">
+                        <label for="device">Portàtils/iPads</label>
+                        <br />
+                        <select class="device" id="device">
+                            <option value="" disabled selected>
+                                Selecciona
+                            </option>
+                            <option value="1">iPads</option>
+                            <option value="2">Portàtils</option>
+                            <!-- TODO HERE -->
                         </select>
                     </div>
                 </div>
@@ -530,6 +614,19 @@
         /* #endregion */
 
         /* #region App - Account */
+        /* Overlay for darkening the window */
+        .account_overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            z-index: 998; /* Below the account menu */
+            display: none; /* Hidden by default */
+        }
+
+        /* Default state: hide email and make the div smaller */
         .app .account {
             position: fixed;
             top: 10px;
@@ -541,15 +638,53 @@
             height: 35px;
             display: flex;
             flex-direction: row;
+            width: 50px; /* Smaller width by default */
+            overflow: hidden; /* Hide overflow content */
+            transition: width 0.5s ease-in-out; /* Smooth transition for width */
         }
 
         .app .account i {
-            font-size: 15px;
-            margin-right: 10px;
+            font-size: 20px; /* Ensure the icon size remains consistent */
         }
 
         .app .account p {
-            font-size: 15px;
+            opacity: 0; /* Hide email by default */
+            transition: opacity 0.5s ease-in-out; /* Smooth transition for opacity */
+            font-size: 14px; /* Ensure the text size remains consistent */
+            margin-left: 10px; /* Add some space between the icon and the text */
+        }
+
+        /* Hover state: show email and expand the div */
+        .app .account:hover {
+            width: 200px; /* Expand width on hover */
+        }
+
+        .app .account:hover p {
+            opacity: 1; /* Show email on hover */
+        }
+
+        /* Menu open state: show email and expand the div */
+        .app .account.menu-open {
+            width: 200px; /* Expand width when menu is open */
+        }
+
+        .app .account.menu-open p {
+            opacity: 1; /* Show email when menu is open */
+        }
+
+        .app .account-menu {
+            display: none;
+            position: fixed;
+            top: 40px;
+            right: 5px;
+            padding: 10px;
+            transform: translateX(100%); /* Start off-screen */
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .app .account-menu.show {
+            display: block;
+            transform: translateX(0); /* Slide to its position */
         }
 
         .app .account-menu {
@@ -586,6 +721,10 @@
             justify-content: center;
             align-items: center;
             padding: 10px;
+        }
+
+        .app .home h2 {
+            margin-top: 35px;
         }
 
         .app .home svg circle {
@@ -1101,8 +1240,7 @@
 
         /* #region Menubar */
         .menubar {
-            /* width: 60%; */
-            width: 500px;
+            width: 380px;
             height: 60px;
             background: #edd3a6;
             display: flex;
@@ -1117,7 +1255,7 @@
         }
 
         .menubar .element {
-            margin: 0;
+            margin: -17px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1333,17 +1471,22 @@
         //#region App - Account
         const account = document.querySelector(".app .account");
         const account_menu = document.querySelector(".app .account-menu");
+        const account_overlay = document.getElementById("account_overlay");
 
         function account_menu_toggle() {
             if (account_menu.classList.contains("show")) {
                 account_menu.classList.remove("show");
+                account.classList.remove("menu-open");
                 account.style.backgroundColor = "transparent";
+                account_overlay.style.display = "none"; // Hide overlay
                 setTimeout(() => {
                     account_menu.style.display = "none";
                 }, 500); // Match the duration of the transition
             } else {
                 account_menu.style.display = "block";
+                account.classList.add("menu-open");
                 account.style.backgroundColor = "var(--accent-color)";
+                account_overlay.style.display = "block"; // Show overlay
                 setTimeout(() => {
                     account_menu.classList.add("show");
                 }, 10); // Small delay to ensure the display change is applied
@@ -2161,8 +2304,9 @@
 
         //#endregion
 
-        //#region Home Gauge
+        //#region Home Gauges
         const computer_gauge = document.getElementById("computer-gauge");
+        const ipad_gauge = document.getElementById("ipad-gauge");
 
         function updateGauge(gauge, green, red, gray) {
             const total = green + red + gray;
@@ -2175,6 +2319,7 @@
             const green_segment = gauge.getElementById("greenSegment");
             const red_segment = gauge.getElementById("redSegment");
             const gray_segment = gauge.getElementById("graySegment");
+            const text = gauge.getElementById("gaugeText");
 
             // Set green segment
             green_segment.style.strokeDasharray = `${greenArc} ${circumference}`;
@@ -2190,22 +2335,21 @@
 
             // Typewriter effect on text
             let current = 0;
-            const target = Math.round((green / total) * 100); // Show % of green segment
-            const textElement = document.getElementById("gaugeText");
 
             const interval = setInterval(() => {
-                if (current >= target) {
+                if (current >= green) {
                     clearInterval(interval);
                 } else {
                     current++;
-                    textElement.textContent = current + " disponibles";
+                    text.textContent = current + " disponibles";
                 }
             }, 20); // Adjust typing speed
         }
 
         // Example: Update values smoothly after 2 seconds
         setTimeout(() => {
-            updateGauge(30, 40, 30);
+            updateGauge(computer_gauge, 30, 5, 5);
+            updateGauge(ipad_gauge, 30, 5, 5);
         }, 500);
         //#endregion
     </script>
