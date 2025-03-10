@@ -393,7 +393,7 @@
                     <div class="content">
                         <h2 class="reserve-text" id="reserve-text"></h2>
                         <div class="num-select">
-                            <h3>Número de portàtils:</h3>
+                            <h3 id="reserve-number-devices"></h3>
                             <input
                                 type="number"
                                 class="reserve-num"
@@ -1577,7 +1577,7 @@
         async function class_subject() {
             let class_val = class_select.value;
             let subject_val = subject_select.value;
-            let schedules_device = device_select.value.toLowerCase();
+            schedules_device = device_select.value.toLowerCase();
 
             if (
                 class_val != "" &&
@@ -1750,6 +1750,9 @@
         const reserve_cancel_reserve_btn = document.getElementById(
             "reserve-cancel-reserve-btn"
         );
+        const reserve_number_devices = document.getElementById(
+            "reserve-number-devices"
+        );
 
         var reserve_day;
         var reserve_hour;
@@ -1786,6 +1789,9 @@
                     window.reserve_params[schedules_device]["num"] - total
                 }`;
             }
+
+            reserve_number_devices.innerText = `Número de ${schedules_device}`;
+            // TODO HERE
 
             reserve_day = day;
             reserve_hour = hour;
