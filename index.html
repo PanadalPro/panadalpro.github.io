@@ -109,7 +109,9 @@
                     Manteniment...
                 </button>
 
-                <div class="service-devices-win" id="service-devices-win"></div>
+                <div class="service-devices-win" id="service-devices-win">
+                    <h2>Ordinadors No Disponibles</h2>
+                </div>
                 <!-- #endregion -->
 
                 <!-- #region Laptop Gauge -->
@@ -1802,6 +1804,10 @@
         window.reload_ddmmyy();
 
         async function reload_schedule() {
+            if (schedules_device == "") {
+                return;
+            }
+
             // Get the occupied devices for date
             const docSnap = await getDoc(
                 doc(db, schedules_device, schedules_ddmmyy)
@@ -2547,7 +2553,7 @@
         const service_overlay = document.getElementById("service_overlay");
 
         service_btn.addEventListener("click", () => {
-            service_win.style.display = "flex";
+            service_win.style.display = "initial";
             service_overlay.style.display = "flex";
         });
 
