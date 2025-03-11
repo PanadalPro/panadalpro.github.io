@@ -64,6 +64,7 @@
         <div class="reserve_overlay" id="reserve_overlay"></div>
         <div class="config_overlay" id="config_overlay"></div>
         <div class="account_overlay" id="account_overlay"></div>
+        <div class="service_overlay" id="service_overlay"></div>
 
         <!-- #region App -->
         <div class="app fade-out" id="app">
@@ -103,146 +104,190 @@
 
             <!-- #region Home Page -->
             <div class="home" id="home">
-                <!-- #region Computer Gauge -->
-                <h2>Ordinadors Actualment Disponibles:</h2>
-                <svg
-                    viewBox="0 0 100 100"
-                    width="200"
-                    height="200"
-                    id="computer-gauge"
-                >
-                    <!-- Background circle -->
-                    <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="#ddd"
-                        stroke-width="10"
-                        fill="none"
-                    />
+                <!-- #region Service Devices -->
+                <button class="service-devices" id="service-devices">
+                    Manteniment...
+                </button>
 
-                    <!-- Gauge segments -->
-                    <circle
-                        id="graySegment"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="gray"
-                        stroke-width="10"
-                        fill="none"
-                        stroke-dasharray="0 251.2"
-                        stroke-dashoffset="0"
-                        transform="rotate(-90,50,50)"
-                    />
+                <div class="service-devices-win" id="service-devices-win"></div>
+                <!-- #endregion -->
 
-                    <circle
-                        id="redSegment"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="red"
-                        stroke-width="10"
-                        fill="none"
-                        stroke-dasharray="0 251.2"
-                        stroke-dashoffset="0"
-                        transform="rotate(-90,50,50)"
-                    />
+                <!-- #region Laptop Gauge -->
+                <h2>Portàtils Actualment Disponibles:</h2>
+                <div class="gauge-container">
+                    <svg
+                        viewBox="0 0 100 100"
+                        width="200"
+                        height="200"
+                        id="computer-gauge"
+                    >
+                        <!-- Background circle -->
+                        <circle
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="#ddd"
+                            stroke-width="10"
+                            fill="none"
+                        />
 
-                    <circle
-                        id="greenSegment"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="green"
-                        stroke-width="10"
-                        fill="none"
-                        stroke-dasharray="0 251.2"
-                        stroke-dashoffset="0"
-                        transform="rotate(-90,50,50)"
-                    />
+                        <!-- Gauge segments -->
+                        <circle
+                            id="graySegment"
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="gray"
+                            stroke-width="10"
+                            fill="none"
+                            stroke-dasharray="0 251.2"
+                            stroke-dashoffset="0"
+                            transform="rotate(-90,50,50)"
+                        />
 
-                    <!-- Centered text -->
-                    <text
-                        id="gaugeText"
-                        x="50"
-                        y="55"
-                        font-size="10"
-                        text-anchor="middle"
-                        fill="black"
-                        font-family="Arial"
-                    ></text>
-                </svg>
+                        <circle
+                            id="redSegment"
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="red"
+                            stroke-width="10"
+                            fill="none"
+                            stroke-dasharray="0 251.2"
+                            stroke-dashoffset="0"
+                            transform="rotate(-90,50,50)"
+                        />
+
+                        <circle
+                            id="greenSegment"
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="green"
+                            stroke-width="10"
+                            fill="none"
+                            stroke-dasharray="0 251.2"
+                            stroke-dashoffset="0"
+                            transform="rotate(-90,50,50)"
+                        />
+
+                        <!-- Centered text -->
+                        <text
+                            id="gaugeText"
+                            x="50"
+                            y="55"
+                            font-size="10"
+                            text-anchor="middle"
+                            fill="black"
+                            font-family="Arial"
+                        ></text>
+                    </svg>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div
+                                class="legend-color"
+                                style="background-color: red"
+                            ></div>
+                            <p>Ocupats</p>
+                        </div>
+                        <div class="legend-item">
+                            <div
+                                class="legend-color"
+                                style="background-color: gray"
+                            ></div>
+                            <p>No disponibles</p>
+                        </div>
+                    </div>
+                </div>
                 <!-- #endregion -->
 
                 <!-- #region iPad Gauge -->
                 <h2>iPads Actualment Disponibles:</h2>
-                <svg
-                    viewBox="0 0 100 100"
-                    width="200"
-                    height="200"
-                    id="ipad-gauge"
-                >
-                    <!-- Background circle -->
-                    <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="#ddd"
-                        stroke-width="10"
-                        fill="none"
-                    />
+                <div class="gauge-container">
+                    <svg
+                        viewBox="0 0 100 100"
+                        width="200"
+                        height="200"
+                        id="ipad-gauge"
+                    >
+                        <!-- Background circle -->
+                        <circle
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="#ddd"
+                            stroke-width="10"
+                            fill="none"
+                        />
 
-                    <!-- Gauge segments -->
-                    <circle
-                        id="graySegment"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="gray"
-                        stroke-width="10"
-                        fill="none"
-                        stroke-dasharray="0 251.2"
-                        stroke-dashoffset="0"
-                        transform="rotate(-90,50,50)"
-                    />
+                        <!-- Gauge segments -->
+                        <circle
+                            id="graySegment"
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="gray"
+                            stroke-width="10"
+                            fill="none"
+                            stroke-dasharray="0 251.2"
+                            stroke-dashoffset="0"
+                            transform="rotate(-90,50,50)"
+                        />
 
-                    <circle
-                        id="redSegment"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="red"
-                        stroke-width="10"
-                        fill="none"
-                        stroke-dasharray="0 251.2"
-                        stroke-dashoffset="0"
-                        transform="rotate(-90,50,50)"
-                    />
+                        <circle
+                            id="redSegment"
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="red"
+                            stroke-width="10"
+                            fill="none"
+                            stroke-dasharray="0 251.2"
+                            stroke-dashoffset="0"
+                            transform="rotate(-90,50,50)"
+                        />
 
-                    <circle
-                        id="greenSegment"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="green"
-                        stroke-width="10"
-                        fill="none"
-                        stroke-dasharray="0 251.2"
-                        stroke-dashoffset="0"
-                        transform="rotate(-90,50,50)"
-                    />
+                        <circle
+                            id="greenSegment"
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="green"
+                            stroke-width="10"
+                            fill="none"
+                            stroke-dasharray="0 251.2"
+                            stroke-dashoffset="0"
+                            transform="rotate(-90,50,50)"
+                        />
 
-                    <!-- Centered text -->
-                    <text
-                        id="gaugeText"
-                        x="50"
-                        y="55"
-                        font-size="10"
-                        text-anchor="middle"
-                        fill="black"
-                        font-family="Arial"
-                    ></text>
-                </svg>
+                        <!-- Centered text -->
+                        <text
+                            id="gaugeText"
+                            x="50"
+                            y="55"
+                            font-size="10"
+                            text-anchor="middle"
+                            fill="black"
+                            font-family="Arial"
+                        ></text>
+                    </svg>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div
+                                class="legend-color"
+                                style="background-color: red"
+                            ></div>
+                            <p>Ocupats</p>
+                        </div>
+                        <div class="legend-item">
+                            <div
+                                class="legend-color"
+                                style="background-color: gray"
+                            ></div>
+                            <p>No disponibles</p>
+                        </div>
+                    </div>
+                </div>
                 <!-- #endregion -->
             </div>
             <!-- #endregion -->
@@ -558,6 +603,14 @@
                     <button id="config-laptopnum-btn">OK</button>
                 </div>
                 <!-- #endregion -->
+
+                <!-- #region iPad Num -->
+                <div class="valueprompt" id="config-ipadnum">
+                    <h3>Número d'iPads:</h3>
+                    <input type="number" id="config-ipadnum-num" />
+                    <button id="config-ipadnum-btn">OK</button>
+                </div>
+                <!-- #endregion -->
             </div>
             <!-- #endregion -->
         </div>
@@ -613,7 +666,6 @@
         /* #endregion */
 
         /* #region App - Account */
-        /* Overlay for darkening the window */
         .account_overlay {
             position: fixed;
             top: 0;
@@ -728,10 +780,83 @@
             margin-top: 35px;
         }
 
+        /* #region Service Devices */
+        .service_overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            z-index: 998; /* Below the account menu */
+            display: none; /* Hidden by default */
+        }
+
+        .app .home .service-devices {
+            border: 1px solid black;
+            border-radius: 10px;
+            width: 110px;
+            height: 30px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .app .home .service-devices:hover {
+            background-color: var(--accent-color);
+        }
+
+        .app .home .service-devices-win {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 350px;
+            height: 200px;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 2px solid black;
+            z-index: 1000;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            transform: translate(-50%, -50%);
+        }
+        /* #endregion */
+
+        /* #region Gauge */
         .app .home svg circle {
             transition: stroke-dasharray 0.8s ease-in-out,
                 stroke-dashoffset 0.8s ease-in-out;
         }
+
+        .app .home .gauge-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .app .home .legend {
+            display: flex;
+            flex-direction: column;
+            margin-left: 20px;
+        }
+
+        .app .home .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .app .home .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        /* #endregion */
+
         /* #endregion */
 
         /* #region App - Reservations */
@@ -1532,6 +1657,9 @@
         const laptop_num_setting_btn = document.getElementById(
             "config-laptopnum-btn"
         );
+        const ipad_num_setting = document.getElementById("config-ipadnum-num");
+        const ipad_num_setting_btn =
+            document.getElementById("config-ipadnum-btn");
 
         //#region Get Params / Settings File
         let paramsLaptops = await getDoc(doc(db, "laptops", "params"));
@@ -1542,11 +1670,15 @@
                 laptops: paramsLaptops.data(),
                 ipads: paramsiPads.data(),
             };
+
+            // Laptop & iPad Num Settings
             laptop_num_setting.value = window.reserve_params["laptops"]["num"];
+            ipad_num_setting.value = window.reserve_params["ipads"]["num"];
         } else {
             console.log("Unable to fetch Reservations Params File!");
         }
 
+        // Laptop Num Setting
         laptop_num_setting_btn.addEventListener("click", async () => {
             let laptop_num = parseInt(laptop_num_setting.value);
 
@@ -1562,6 +1694,25 @@
                 }, 2000);
             } else {
                 alert("Please enter a valid number of laptops");
+            }
+        });
+
+        // iPad Num Settting
+        ipad_num_setting_btn.addEventListener("click", async () => {
+            let ipad_num = parseInt(ipad_num_setting.value);
+
+            if (ipad_num > 0) {
+                window.reserve_params["ipads"]["num"] = ipad_num;
+                await setDoc(
+                    doc(db, "ipads", "params"),
+                    window.reserve_params["ipads"]
+                );
+                ipad_num_setting.classList.add("success");
+                setTimeout(() => {
+                    ipad_num_setting.classList.remove("success");
+                }, 2000);
+            } else {
+                alert("Please enter a valid number of iPads");
             }
         });
 
@@ -1790,8 +1941,11 @@
                 }`;
             }
 
-            reserve_number_devices.innerText = `Número de ${schedules_device}`;
-            // TODO HERE
+            if (schedules_device == "ipads") {
+                reserve_number_devices.innerText = "Número d'iPads:";
+            } else {
+                reserve_number_devices.innerText = "Número de portàtils:";
+            }
 
             reserve_day = day;
             reserve_hour = hour;
@@ -2385,6 +2539,22 @@
             updateGauge(computer_gauge, 30, 5, 5);
             updateGauge(ipad_gauge, 30, 5, 5);
         }, 500);
+        //#endregion
+
+        //#region Home Service
+        const service_btn = document.getElementById("service-devices");
+        const service_win = document.getElementById("service-devices-win");
+        const service_overlay = document.getElementById("service_overlay");
+
+        service_btn.addEventListener("click", () => {
+            service_win.style.display = "flex";
+            service_overlay.style.display = "flex";
+        });
+
+        service_btn.addEventListener("click", () => {
+            service_win.style.display = "none";
+            service_overlay.style.display = "none";
+        });
         //#endregion
     </script>
 </html>
