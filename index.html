@@ -2232,10 +2232,69 @@
         const computer_gauge = document.getElementById("computer-gauge");
         const ipad_gauge = document.getElementById("ipad-gauge");
 
-        function home_update_gauges() {
-            console.log(to_ddmmyy(window.currentMonday));
+        function getCurrentScheduleTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const dayOfWeek = now.getDay(); // Sunday - Saturday : 0 - 6
 
-            window.updateGauge(computer_gauge, 30, 5);
+            let hourSlot = null;
+
+            if (
+                (hours === 8 && minutes >= 30) ||
+                (hours === 9 && minutes < 30)
+            ) {
+                hourSlot = 0;
+            } else if (
+                (hours === 9 && minutes >= 30) ||
+                (hours === 10 && minutes < 30)
+            ) {
+                hourSlot = 1;
+            } else if (hours === 11 && minutes < 60) {
+                hourSlot = 2;
+            } else if (hours === 12 && minutes < 60) {
+                hourSlot = 3;
+            } else if (
+                (hours === 14 && minutes >= 30) ||
+                (hours === 15 && minutes < 30)
+            ) {
+                hourSlot = 4;
+            } else if (
+                (hours === 15 && minutes >= 30) ||
+                (hours === 16 && minutes < 30)
+            ) {
+                hourSlot = 5;
+            }
+
+            // Return an object with both hourSlot and dayOfWeek
+            return {
+                hour: hourSlot,
+                day: dayOfWeek === 0 ? 7 : dayOfWeek, // Convert Sunday (0) to 7
+            };
+        }
+
+        async function home_update_gauges() {
+            let i = to_ddmmyy(window.currentMonday);
+            let time = getCurrentScheduleTime();
+            let hour = time["hour"];
+            let day = time["day"];
+            let laptops = await getDoc(doc(db, "laptops", i));
+            let data = laptops[hour][day];
+            console.log(data);
+            if (hour == null || data == null) {
+                window.updateGauge(
+                    computer_gauge,
+                    window.reserve_params["laptops"]["num"],
+                    0
+                );
+            } else {
+                window.updateGauge(
+                    computer_gauge,
+                    window.reserve_params["laptops"]["num"] - data,
+                    0
+                );
+            }
+
             window.updateGauge(ipad_gauge, 30, 5);
         }
         window.home_update_gauges = home_update_gauges;
