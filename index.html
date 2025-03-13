@@ -104,16 +104,6 @@
 
             <!-- #region Home Page -->
             <div class="home" id="home">
-                <!-- #region Service Devices -->
-                <button class="service-devices" id="service-devices">
-                    Manteniment...
-                </button>
-
-                <div class="service-devices-win" id="service-devices-win">
-                    <h2>Ordinadors No Disponibles</h2>
-                </div>
-                <!-- #endregion -->
-
                 <!-- #region Laptop Gauge -->
                 <h2>Portàtils Actualment Disponibles:</h2>
                 <div class="gauge-container">
@@ -134,19 +124,6 @@
                         />
 
                         <!-- Gauge segments -->
-                        <circle
-                            id="graySegment"
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            stroke="gray"
-                            stroke-width="10"
-                            fill="none"
-                            stroke-dasharray="0 251.2"
-                            stroke-dashoffset="0"
-                            transform="rotate(-90,50,50)"
-                        />
-
                         <circle
                             id="redSegment"
                             cx="50"
@@ -191,13 +168,6 @@
                                 style="background-color: red"
                             ></div>
                             <p>Ocupats</p>
-                        </div>
-                        <div class="legend-item">
-                            <div
-                                class="legend-color"
-                                style="background-color: gray"
-                            ></div>
-                            <p>No disponibles</p>
                         </div>
                     </div>
                 </div>
@@ -224,19 +194,6 @@
 
                         <!-- Gauge segments -->
                         <circle
-                            id="graySegment"
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            stroke="gray"
-                            stroke-width="10"
-                            fill="none"
-                            stroke-dasharray="0 251.2"
-                            stroke-dashoffset="0"
-                            transform="rotate(-90,50,50)"
-                        />
-
-                        <circle
                             id="redSegment"
                             cx="50"
                             cy="50"
@@ -280,13 +237,6 @@
                                 style="background-color: red"
                             ></div>
                             <p>Ocupats</p>
-                        </div>
-                        <div class="legend-item">
-                            <div
-                                class="legend-color"
-                                style="background-color: gray"
-                            ></div>
-                            <p>No disponibles</p>
                         </div>
                     </div>
                 </div>
@@ -675,7 +625,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-            z-index: 998; /* Below the account menu */
+            z-index: 990; /* Below the account menu */
             display: none; /* Hidden by default */
         }
 
@@ -694,7 +644,7 @@
             width: 50px; /* Smaller width by default */
             overflow: hidden; /* Hide overflow content */
             transition: width 0.5s ease-in-out; /* Smooth transition for width */
-            z-index: 999;
+            z-index: 991;
         }
 
         .app .account i {
@@ -781,51 +731,6 @@
         .app .home h2 {
             margin-top: 35px;
         }
-
-        /* #region Service Devices */
-        .service_overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-            z-index: 998; /* Below the account menu */
-            display: none; /* Hidden by default */
-        }
-
-        .app .home .service-devices {
-            border: 1px solid black;
-            border-radius: 10px;
-            width: 110px;
-            height: 30px;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-
-        .app .home .service-devices:hover {
-            background-color: var(--accent-color);
-        }
-
-        .app .home .service-devices-win {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 350px;
-            height: 200px;
-            background-color: #fff;
-            border-radius: 10px;
-            border: 2px solid black;
-            z-index: 1000;
-            text-align: center;
-            display: none;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-            transform: translate(-50%, -50%);
-        }
-        /* #endregion */
 
         /* #region Gauge */
         .app .home svg circle {
@@ -1653,6 +1558,8 @@
         const class_select = document.getElementById("class");
         const subject_select = document.getElementById("subject");
         const device_select = document.getElementById("device");
+
+        //#region Get Params / Settings File
         const laptop_num_setting = document.getElementById(
             "config-laptopnum-num"
         );
@@ -1663,7 +1570,6 @@
         const ipad_num_setting_btn =
             document.getElementById("config-ipadnum-btn");
 
-        //#region Get Params / Settings File
         let paramsLaptops = await getDoc(doc(db, "laptops", "params"));
         let paramsiPads = await getDoc(doc(db, "ipads", "params"));
 
@@ -2321,6 +2227,21 @@
         });
 
         //#endregion
+
+        //#region Home Gauges
+        const computer_gauge = document.getElementById("computer-gauge");
+        const ipad_gauge = document.getElementById("ipad-gauge");
+
+        function home_update_gauges() {
+            console.log(to_ddmmyy(window.currentMonday));
+
+            window.updateGauge(computer_gauge, 30, 5);
+            window.updateGauge(ipad_gauge, 30, 5);
+        }
+        window.home_update_gauges = home_update_gauges;
+
+        window.home_update_gauges();
+        //#endregion
     </script>
     <script>
         //#region Login
@@ -2428,6 +2349,41 @@
 
         //#endregion
 
+        //#region Home Gauges
+        function updateGauge(gauge, green, red) {
+            const total = green + red;
+            const circumference = 2 * Math.PI * 40; // 40 is the radius
+
+            const greenArc = (green / total) * circumference;
+            const redArc = (red / total) * circumference;
+
+            const green_segment = gauge.getElementById("greenSegment");
+            const red_segment = gauge.getElementById("redSegment");
+            const text = gauge.getElementById("gaugeText");
+
+            // Set green segment
+            green_segment.style.strokeDasharray = `${greenArc} ${circumference}`;
+            green_segment.style.strokeDashoffset = 0;
+
+            // Set red segment (starts where green ends)
+            red_segment.style.strokeDasharray = `${redArc} ${circumference}`;
+            red_segment.style.strokeDashoffset = -greenArc;
+
+            // Typewriter effect on text
+            let current = 0;
+
+            const interval = setInterval(() => {
+                if (current >= green) {
+                    clearInterval(interval);
+                } else {
+                    current++;
+                    text.textContent = current + " disponibles";
+                }
+            }, 20); // Adjust typing speed
+        }
+        window.updateGauge = updateGauge;
+        //#endregion
+
         //#region Menubar
         // Windows
         const home_win = document.getElementById("home");
@@ -2458,6 +2414,10 @@
             reservations_element.style.color = "black";
             screens_element.style.color = "black";
             config_element.style.color = "black";
+
+            if (window.home_update_gauges != undefined) {
+                window.home_update_gauges();
+            }
         }
 
         function reservations() {
@@ -2500,73 +2460,6 @@
         //reservations();
         //config();
 
-        //#endregion
-
-        //#region Home Gauges
-        const computer_gauge = document.getElementById("computer-gauge");
-        const ipad_gauge = document.getElementById("ipad-gauge");
-
-        function updateGauge(gauge, green, red, gray) {
-            const total = green + red + gray;
-            const circumference = 2 * Math.PI * 40; // 40 is the radius
-
-            const greenArc = (green / total) * circumference;
-            const redArc = (red / total) * circumference;
-            const grayArc = (gray / total) * circumference;
-
-            const green_segment = gauge.getElementById("greenSegment");
-            const red_segment = gauge.getElementById("redSegment");
-            const gray_segment = gauge.getElementById("graySegment");
-            const text = gauge.getElementById("gaugeText");
-
-            // Set green segment
-            green_segment.style.strokeDasharray = `${greenArc} ${circumference}`;
-            green_segment.style.strokeDashoffset = 0;
-
-            // Set red segment (starts where green ends)
-            red_segment.style.strokeDasharray = `${redArc} ${circumference}`;
-            red_segment.style.strokeDashoffset = -greenArc;
-
-            // Set gray segment (starts where red ends)
-            gray_segment.style.strokeDasharray = `${grayArc} ${circumference}`;
-            gray_segment.style.strokeDashoffset = -(greenArc + redArc);
-
-            // Typewriter effect on text
-            let current = 0;
-
-            const interval = setInterval(() => {
-                if (current >= green) {
-                    clearInterval(interval);
-                } else {
-                    current++;
-                    text.textContent = current + " disponibles";
-                }
-            }, 20); // Adjust typing speed
-        }
-
-        // Example: Update values smoothly after 2 seconds
-        setTimeout(() => {
-            updateGauge(computer_gauge, 30, 5, 5);
-            updateGauge(ipad_gauge, 30, 5, 5);
-        }, 500);
-        //#endregion
-
-        //#region Home Service
-
-        // TODO HERE doesn't work
-        const service_btn = document.getElementById("service-devices");
-        const service_win = document.getElementById("service-devices-win");
-        const service_overlay = document.getElementById("service_overlay");
-
-        service_btn.addEventListener("click", () => {
-            service_win.style.display = "initial";
-            service_overlay.style.display = "flex";
-        });
-
-        service_btn.addEventListener("click", () => {
-            service_win.style.display = "none";
-            service_overlay.style.display = "none";
-        });
         //#endregion
     </script>
 </html>
