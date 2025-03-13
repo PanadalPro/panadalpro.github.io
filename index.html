@@ -2279,9 +2279,8 @@
             let hour = time["hour"];
             let day = time["day"];
             let laptops = await getDoc(doc(db, "laptops", i));
-            let data = laptops[hour][day];
-            console.log(data);
-            if (hour == null || data == null) {
+            let data = laptops == undefined ? laptops[hour][day] : 0;
+            if (hour == null) {
                 window.updateGauge(
                     computer_gauge,
                     window.reserve_params["laptops"]["num"],
@@ -2291,7 +2290,7 @@
                 window.updateGauge(
                     computer_gauge,
                     window.reserve_params["laptops"]["num"] - data,
-                    0
+                    data
                 );
             }
 
