@@ -1,5 +1,5 @@
 <!-- TODO: Forgot Password -->
-<!-- Make Setting for Laptop_Num -->
+<!-- Reservations passed days as gray -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -1714,7 +1714,7 @@
             }
 
             console.log(`D: ${schedules_device}.`);
-            console.log(`DDMMYY: ${schedules_ddmmyyy}.`);
+            console.log(`DDMMYY: ${schedules_ddmmyy}.`);
 
             // Get the occupied devices for date
             const docSnap = await getDoc(
@@ -2274,29 +2274,37 @@
         }
 
         async function home_update_gauges() {
-            let i = to_ddmmyy(window.currentMonday);
+            let ddmmyy = to_ddmmyy(window.currentMonday);
             let time = getCurrentScheduleTime();
-            let hour = time["hour"];
             let day = time["day"];
-            let laptops = await getDoc(doc(db, "laptops", i));
-            let data = laptops == undefined ? laptops[hour][day] : 0;
-            if (hour == null) {
-                window.updateGauge(
-                    computer_gauge,
-                    window.reserve_params["laptops"]["num"],
-                    0
-                );
-            } else {
-                window.updateGauge(
-                    computer_gauge,
-                    window.reserve_params["laptops"]["num"] - data,
-                    data
-                );
+            let hour = time["hour"];
+            let dayhour = day * 10 + hour; // to make DAY+HOUR integer
+            let laptops = await getDoc(doc(db, "laptops", ddmmyy));
+            let data = null;
+            if (laptops != undefined) {
+                let count = 0;
+                laptops[dayhour].split("/").forEach((element) => {
+                    count += element.split("-")[0];
+                });
+                console.log("total laptops: ", count);
             }
+            // if (hour == null) {
+            //     window.updateGauge(
+            //         computer_gauge,
+            //         window.reserve_params["laptops"]["num"],
+            //         0
+            //     );
+            // } else {
+            //     window.updateGauge(
+            //         computer_gauge,
+            //         window.reserve_params["laptops"]["num"] - data,
+            //         data
+            //     );
+            // }
 
-            // TODO HERE
+            // // TODO HERE
 
-            window.updateGauge(ipad_gauge, 30, 5);
+            // window.updateGauge(ipad_gauge, 30, 5);
         }
         window.home_update_gauges = home_update_gauges;
 
