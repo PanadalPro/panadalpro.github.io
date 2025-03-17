@@ -2322,10 +2322,10 @@
         //#endregion
 
         //#region Calculate Current Monday
+        // Calculate Current Monday
         let today = new Date();
-        let dayOfWeek = today.getDay();
+        let dayOfWeek = today.getUTCDay(); // Use UTC method
         let diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        window.thisMonday = new Date(today);
         window.thisMonday = new Date(
             Date.UTC(
                 today.getUTCFullYear(),
@@ -2335,6 +2335,7 @@
         );
         // Set the time to 00:00:00 UTC
         window.thisMonday.setUTCHours(0, 0, 0, 0);
+        console.log(window.thisMonday);
         //#endregion
 
         //#region Reservations
