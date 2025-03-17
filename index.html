@@ -2321,13 +2321,20 @@
 
         //#endregion
 
-        //#region Calculate Current Window
+        //#region Calculate Current Monday
         let today = new Date();
         let dayOfWeek = today.getDay();
         let diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
         window.thisMonday = new Date(today);
-        window.thisMonday.setDate(today.getDate() + diffToMonday);
-        window.thisMonday.setHours(0, 0, 0, 0);
+        window.thisMonday = new Date(
+            Date.UTC(
+                today.getUTCFullYear(),
+                today.getUTCMonth(),
+                today.getUTCDate() + diffToMonday
+            )
+        );
+        // Set the time to 00:00:00 UTC
+        window.thisMonday.setUTCHours(0, 0, 0, 0);
         //#endregion
 
         //#region Reservations
