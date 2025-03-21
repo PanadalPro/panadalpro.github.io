@@ -1541,10 +1541,16 @@
 
         //#region Function - to_ddmmyy
         function to_ddmmyy(date) {
-            const formattedDate = date.toISOString().slice(0, 10).split("-");
-            return `${formattedDate[2]}${
-                formattedDate[1]
-            }${formattedDate[0].slice(-2)}`;
+            let day = String(date.getDate());
+            if (day.length == 1) {
+                day = "0" + day;
+            }
+            let month = String(date.getMonth() + 1);
+            if (month.length == 1) {
+                month = "0" + month;
+            }
+            let year = String(date.getFullYear());
+            return day + month + year.slice(-2);
         }
         window.to_ddmmyy = to_ddmmyy;
         //#endregion
