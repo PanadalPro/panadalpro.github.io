@@ -2286,20 +2286,21 @@
             let hour = time["hour"];
             let dayhour = day * 10 + hour; // to make DAY+HOUR integer
             let laptops = await getDoc(doc(db, "laptops", ddmmyy));
-            let data = null;
-            if (laptops != undefined) {
-                let count = 0;
+            let count = 0;
+            console.log(laptops);
+            if (laptops != undefined && laptops[dayhour] != undefined) {
                 laptops[dayhour].split("/").forEach((element) => {
-                    count += element.split("-")[0];
+                    count += int(element.split("-")[0]);
                 });
-                console.log("total laptops: ", count);
+                time_text.innerText = "total laptops: " + String(count);
             }
+            window.updateGauge(
+                computer_gauge,
+                window.reserve_params["laptops"]["num"] - count,
+                count
+            );
             // if (hour == null) {
-            //     window.updateGauge(
-            //         computer_gauge,
-            //         window.reserve_params["laptops"]["num"],
-            //         0
-            //     );
+            //
             // } else {
             //     window.updateGauge(
             //         computer_gauge,
