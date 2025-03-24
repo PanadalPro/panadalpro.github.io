@@ -11,6 +11,7 @@
             href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
             rel="stylesheet"
         />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
     </head>
     <body>
         <!-- #region Login -->
@@ -437,7 +438,15 @@
 
             <!-- #region View Screens -->
             <div class="screens" id="screens">
-                <p>View Screens! Upcoming Feature...</p>
+                <div class="screen-select">
+                    <h2>Ordinador:</h2>
+                    <select id="screen-select-select">
+                        <option disabled selected value="">
+                            Selecciona...
+                        </option>
+                    </select>
+                </div>
+                <img id="screen" width="800" />
             </div>
             <!-- #endregion -->
 
@@ -1097,6 +1106,27 @@
         /* #endregion */
 
         /* #region App - Screens */
+        .app .screens .screen-select {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid black;
+        }
+
+        .app .screens .screen-select h2 {
+            margin-right: 20px;
+        }
+
+        .app .screens .screen-select select {
+            border-radius: 10px;
+            padding: 7px;
+            border: 1px solid black;
+        }
         /* #endregion */
 
         /* #region App - Config */
@@ -1461,97 +1491,6 @@
 
         //#endregion
 
-        //#region Home Gauges
-        const computer_gauge = document.getElementById("computer-gauge");
-        const ipad_gauge = document.getElementById("ipad-gauge");
-
-        function getCurrentScheduleTime() {
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const dayOfWeek = now.getDay(); // Sunday - Saturday : 0 - 6
-
-            let hourSlot = null;
-
-            if (
-                (hours === 8 && minutes >= 30) ||
-                (hours === 9 && minutes < 30)
-            ) {
-                hourSlot = 1;
-            } else if (
-                (hours === 9 && minutes >= 30) ||
-                (hours === 10 && minutes < 30)
-            ) {
-                hourSlot = 2;
-            } else if (hours === 11 && minutes < 60) {
-                hourSlot = 3;
-            } else if (hours === 12 && minutes < 60) {
-                hourSlot = 4;
-            } else if (
-                (hours === 14 && minutes >= 30) ||
-                (hours === 15 && minutes < 30)
-            ) {
-                hourSlot = 5;
-            } else if (
-                (hours === 15 && minutes >= 30) ||
-                (hours === 16 && minutes < 30)
-            ) {
-                hourSlot = 6;
-            }
-
-            // Return an object with both hourSlot and dayOfWeek
-            return {
-                hour: hourSlot,
-                day: dayOfWeek === 0 ? 7 : dayOfWeek, // Convert Sunday (0) to 7
-            };
-        }
-
-        async function home_update_gauges() {
-            let ddmmyy = to_ddmmyy(window.currentMonday);
-            let time = getCurrentScheduleTime();
-            let dayhour = time["day"] * 10 + time["hour"]; // to make DAY+HOUR integer
-
-            //#region Laptops
-            const laptops = await getDoc(doc(db, "laptops", ddmmyy));
-            let count = 0;
-            if (laptops.exists() == true) {
-                const data = laptops.data();
-                if (data[dayhour] != undefined) {
-                    data[dayhour].split("/").forEach((element) => {
-                        count += parseInt(element.split("-")[0]);
-                    });
-                }
-            }
-            window.updateGauge(
-                computer_gauge,
-                window.reserve_params["laptops"]["num"] - count,
-                count
-            );
-            //#endregion
-
-            //#region iPads
-            const ipads = await getDoc(doc(db, "ipads", ddmmyy));
-            count = 0;
-            if (ipads.exists() == true) {
-                const data = ipads.data();
-                if (data[dayhour] != undefined) {
-                    data[dayhour].split("/").forEach((element) => {
-                        count += parseInt(element.split("-")[0]);
-                    });
-                }
-            }
-            window.updateGauge(
-                ipad_gauge,
-                window.reserve_params["ipads"]["num"] - count,
-                count
-            );
-            //#endregion
-        }
-        window.home_update_gauges = home_update_gauges;
-
-        // it runs on the auth completed under the login part
-        //#endregion
-
         //#region Login
         const auth = getAuth(app);
         const email = document.getElementById("email");
@@ -1587,25 +1526,6 @@
         const account_text = document.getElementById("account-text");
 
         let account_email;
-
-        // Listen for auth state changes
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in, show the main application
-                login_win.style.display = "none";
-                app_win.style.display = "block";
-                app_win.classList.remove("fade-out");
-
-                account_email = user.email;
-                account_text.innerText = account_email;
-
-                window.home_update_gauges();
-            } else {
-                // No user is signed in, show the login screen
-                login_win.style.display = "initial";
-                app_win.style.display = "none";
-            }
-        });
         //#endregion
 
         //#region App - Account
@@ -2333,6 +2253,117 @@
         });
 
         //#endregion
+
+        //#region Home Gauges
+        const computer_gauge = document.getElementById("computer-gauge");
+        const ipad_gauge = document.getElementById("ipad-gauge");
+
+        function getCurrentScheduleTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const dayOfWeek = now.getDay(); // Sunday - Saturday : 0 - 6
+
+            let hourSlot = null;
+
+            if (
+                (hours === 8 && minutes >= 30) ||
+                (hours === 9 && minutes < 30)
+            ) {
+                hourSlot = 1;
+            } else if (
+                (hours === 9 && minutes >= 30) ||
+                (hours === 10 && minutes < 30)
+            ) {
+                hourSlot = 2;
+            } else if (hours === 11 && minutes < 60) {
+                hourSlot = 3;
+            } else if (hours === 12 && minutes < 60) {
+                hourSlot = 4;
+            } else if (
+                (hours === 14 && minutes >= 30) ||
+                (hours === 15 && minutes < 30)
+            ) {
+                hourSlot = 5;
+            } else if (
+                (hours === 15 && minutes >= 30) ||
+                (hours === 16 && minutes < 30)
+            ) {
+                hourSlot = 6;
+            }
+
+            // Return an object with both hourSlot and dayOfWeek
+            return {
+                hour: hourSlot,
+                day: dayOfWeek === 0 ? 7 : dayOfWeek, // Convert Sunday (0) to 7
+            };
+        }
+
+        async function home_update_gauges() {
+            let ddmmyy = to_ddmmyy(window.currentMonday);
+            let time = getCurrentScheduleTime();
+            let dayhour = time["day"] * 10 + time["hour"]; // to make DAY+HOUR integer
+
+            //#region Laptops
+            const laptops = await getDoc(doc(db, "laptops", ddmmyy));
+            let count = 0;
+            if (laptops.exists() == true) {
+                const data = laptops.data();
+                if (data[dayhour] != undefined) {
+                    data[dayhour].split("/").forEach((element) => {
+                        count += parseInt(element.split("-")[0]);
+                    });
+                }
+            }
+            window.updateGauge(
+                computer_gauge,
+                window.reserve_params["laptops"]["num"] - count,
+                count
+            );
+            //#endregion
+
+            //#region iPads
+            const ipads = await getDoc(doc(db, "ipads", ddmmyy));
+            count = 0;
+            if (ipads.exists() == true) {
+                const data = ipads.data();
+                if (data[dayhour] != undefined) {
+                    data[dayhour].split("/").forEach((element) => {
+                        count += parseInt(element.split("-")[0]);
+                    });
+                }
+            }
+            window.updateGauge(
+                ipad_gauge,
+                window.reserve_params["ipads"]["num"] - count,
+                count
+            );
+            //#endregion
+        }
+        window.home_update_gauges = home_update_gauges;
+
+        // it runs on the auth completed under the login part
+        //#endregion
+
+        //#region Login - AUTH - Listen for auth state changes
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, show the main application
+                login_win.style.display = "none";
+                app_win.style.display = "block";
+                app_win.classList.remove("fade-out");
+
+                account_email = user.email;
+                account_text.innerText = account_email;
+
+                window.home_update_gauges();
+            } else {
+                // No user is signed in, show the login screen
+                login_win.style.display = "initial";
+                app_win.style.display = "none";
+            }
+        });
+        //#endregion
     </script>
     <script>
         //#region Login
@@ -2554,10 +2585,32 @@
             screens_element.style.color = "black";
         }
 
-        home();
+        //home();
         //reservations();
         //config();
+        screens();
 
+        //#endregion
+
+        //#region View Screens
+        const select = document.getElementById("screen-select-select");
+
+        window.reservations_params["laptops"].forEach((element) => {
+            if (element == "last_check" || element == "num") {
+                return;
+            }
+            let option = document.createElement("option");
+            option.value = element;
+            option.text = element;
+            select.appendChild(option);
+        });
+
+        // var socket = io("http://192.168.201.111:5000");
+
+        // socket.on("screen_update", function (data) {
+        //     document.getElementById("screen").src =
+        //         "data:image/jpeg;base64," + data.image;
+        // });
         //#endregion
     </script>
 </html>
