@@ -2287,6 +2287,7 @@
             let dayhour = day * 10 + hour; // to make DAY+HOUR integer
             let laptops = await getDoc(doc(db, "laptops", ddmmyy));
             let count = 0;
+            console.log(laptops.exists(), laptops.data());
             if (laptops.exists()) {
                 laptops = laptops.data();
                 if (laptops[dayhour] != undefined) {
