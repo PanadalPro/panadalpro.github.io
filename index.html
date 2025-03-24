@@ -165,6 +165,13 @@
                         <div class="legend-item">
                             <div
                                 class="legend-color"
+                                style="background-color: green"
+                            ></div>
+                            <p>Disponibles</p>
+                        </div>
+                        <div class="legend-item">
+                            <div
+                                class="legend-color"
                                 style="background-color: red"
                             ></div>
                             <p>Ocupats</p>
@@ -231,6 +238,13 @@
                         ></text>
                     </svg>
                     <div class="legend">
+                        <div class="legend-item">
+                            <div
+                                class="legend-color"
+                                style="background-color: green"
+                            ></div>
+                            <p>Disponibles</p>
+                        </div>
                         <div class="legend-item">
                             <div
                                 class="legend-color"
@@ -2282,24 +2296,18 @@
         async function home_update_gauges() {
             let ddmmyy = to_ddmmyy(window.currentMonday);
             let time = getCurrentScheduleTime();
-            let day = time["day"];
-            let hour = time["hour"];
-            let dayhour = day * 10 + hour; // to make DAY+HOUR integer
+            let dayhour = time["day"] * 10 + time["hour"]; // to make DAY+HOUR integer
+
+            //#region Laptops
             const laptops = await getDoc(doc(db, "laptops", ddmmyy));
             let count = 0;
             console.log(laptops.exists(), laptops.data());
             if (laptops.exists() == true) {
                 const data = laptops.data();
                 if (data[dayhour] != undefined) {
-                    console.log(
-                        data[dayhour],
-                        dayhour,
-                        data[dayhour].split("/")
-                    );
                     data[dayhour].split("/").forEach((element) => {
-                        count += int(element.split("-")[0]);
+                        count += parseInt(element.split("-")[0]);
                     });
-                    time_text.innerText = "total laptops: " + String(count);
                 }
             }
             window.updateGauge(
@@ -2307,19 +2315,26 @@
                 window.reserve_params["laptops"]["num"] - count,
                 count
             );
-            // if (hour == null) {
-            //
-            // } else {
-            //     window.updateGauge(
-            //         computer_gauge,
-            //         window.reserve_params["laptops"]["num"] - data,
-            //         data
-            //     );
-            // }
+            //#endregion
 
-            // // TODO HERE
-
-            // window.updateGauge(ipad_gauge, 30, 5);
+            //#region iPads
+            const ipads = await getDoc(doc(db, "ipads", ddmmyy));
+            count = 0;
+            console.log(ipads.exists(), ipads.data());
+            if (ipads.exists() == true) {
+                const data = ipads.data();
+                if (data[dayhour] != undefined) {
+                    data[dayhour].split("/").forEach((element) => {
+                        count += parseInt(element.split("-")[0]);
+                    });
+                }
+            }
+            window.updateGauge(
+                ipad_gauge,
+                window.reserve_params["ipads"]["num"] - count,
+                count
+            );
+            //#endregion
         }
         window.home_update_gauges = home_update_gauges;
 
