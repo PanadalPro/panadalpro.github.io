@@ -2250,26 +2250,26 @@
                 (hours === 8 && minutes >= 30) ||
                 (hours === 9 && minutes < 30)
             ) {
-                hourSlot = 0;
+                hourSlot = 1;
             } else if (
                 (hours === 9 && minutes >= 30) ||
                 (hours === 10 && minutes < 30)
             ) {
-                hourSlot = 1;
-            } else if (hours === 11 && minutes < 60) {
                 hourSlot = 2;
-            } else if (hours === 12 && minutes < 60) {
+            } else if (hours === 11 && minutes < 60) {
                 hourSlot = 3;
+            } else if (hours === 12 && minutes < 60) {
+                hourSlot = 4;
             } else if (
                 (hours === 14 && minutes >= 30) ||
                 (hours === 15 && minutes < 30)
             ) {
-                hourSlot = 4;
+                hourSlot = 5;
             } else if (
                 (hours === 15 && minutes >= 30) ||
                 (hours === 16 && minutes < 30)
             ) {
-                hourSlot = 5;
+                hourSlot = 6;
             }
 
             // Return an object with both hourSlot and dayOfWeek
@@ -2290,8 +2290,12 @@
             console.log(laptops.exists(), laptops.data());
             if (laptops.exists() == true) {
                 const data = laptops.data();
-                console.log(data[dayhour], dayhour);
                 if (data[dayhour] != undefined) {
+                    console.log(
+                        data[dayhour],
+                        dayhour,
+                        data[dayhour].split("/")
+                    );
                     data[dayhour].split("/").forEach((element) => {
                         count += int(element.split("-")[0]);
                     });
