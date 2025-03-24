@@ -2285,7 +2285,7 @@
             let day = time["day"];
             let hour = time["hour"];
             let dayhour = day * 10 + hour; // to make DAY+HOUR integer
-            let laptops = await getDoc(doc(db, "laptops", ddmmyy));
+            let laptops = await getDoc(doc(db, "laptops", ddmmyy)).data();
             let count = 0;
             console.log(ddmmyy, laptops);
             console.log(laptops[dayhour]);
