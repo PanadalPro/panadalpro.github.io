@@ -2287,7 +2287,8 @@
             let dayhour = day * 10 + hour; // to make DAY+HOUR integer
             let laptops = await getDoc(doc(db, "laptops", ddmmyy));
             let count = 0;
-            console.log(laptops);
+            console.log(ddmmyy, laptops);
+            console.log(laptops[dayhour]);
             if (laptops != undefined && laptops[dayhour] != undefined) {
                 laptops[dayhour].split("/").forEach((element) => {
                     count += int(element.split("-")[0]);
