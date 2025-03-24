@@ -2285,13 +2285,14 @@
             let day = time["day"];
             let hour = time["hour"];
             let dayhour = day * 10 + hour; // to make DAY+HOUR integer
-            let laptops = await getDoc(doc(db, "laptops", ddmmyy));
+            const laptops = await getDoc(doc(db, "laptops", ddmmyy));
             let count = 0;
             console.log(laptops.exists(), laptops.data());
-            if (laptops.exists()) {
-                laptops = laptops.data();
-                if (laptops[dayhour] != undefined) {
-                    laptops[dayhour].split("/").forEach((element) => {
+            if (laptops.exists() == true) {
+                const data = laptops.data();
+                console.log(data[dayhour], dayhour);
+                if (data[dayhour] != undefined) {
+                    data[dayhour].split("/").forEach((element) => {
                         count += int(element.split("-")[0]);
                     });
                     time_text.innerText = "total laptops: " + String(count);
