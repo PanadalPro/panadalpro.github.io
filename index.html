@@ -2285,15 +2285,16 @@
             let day = time["day"];
             let hour = time["hour"];
             let dayhour = day * 10 + hour; // to make DAY+HOUR integer
-            let laptops = await getDoc(doc(db, "laptops", ddmmyy)).data();
+            let laptops = await getDoc(doc(db, "laptops", ddmmyy));
             let count = 0;
-            console.log(ddmmyy, laptops);
-            console.log(laptops[dayhour]);
-            if (laptops != undefined && laptops[dayhour] != undefined) {
-                laptops[dayhour].split("/").forEach((element) => {
-                    count += int(element.split("-")[0]);
-                });
-                time_text.innerText = "total laptops: " + String(count);
+            if (laptops.exists()) {
+                laptops = laptops.data();
+                if (laptops[dayhour] != undefined) {
+                    laptops[dayhour].split("/").forEach((element) => {
+                        count += int(element.split("-")[0]);
+                    });
+                    time_text.innerText = "total laptops: " + String(count);
+                }
             }
             window.updateGauge(
                 computer_gauge,
