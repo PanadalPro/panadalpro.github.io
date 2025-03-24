@@ -36,6 +36,13 @@
                         required
                     />
                     <i class="bx bxs-lock-alt"></i>
+                </div>
+
+                <div class="remember-forgot">
+                    <label
+                        ><input type="checkbox" id="remember" checked />
+                        Recorda'm</label
+                    >
                     <label
                         ><input
                             type="checkbox"
@@ -44,14 +51,6 @@
                         />
                         Mostrar Contrasenya</label
                     >
-                </div>
-
-                <div class="remember-forgot">
-                    <label
-                        ><input type="checkbox" id="remember" checked />
-                        Recorda'm</label
-                    >
-                    <a href="#">Has oblidat la contrasenya?</a>
                 </div>
 
                 <button type="submit" class="btn" id="login-btn">
@@ -1733,9 +1732,6 @@
                 return;
             }
 
-            console.log(`D: ${schedules_device}.`);
-            console.log(`DDMMYY: ${schedules_ddmmyy}.`);
-
             // Get the occupied devices for date
             const docSnap = await getDoc(
                 doc(db, schedules_device, schedules_ddmmyy)
@@ -1793,7 +1789,6 @@
                         cell.style.backgroundSize = `${100 - percentage}% 100%`;
 
                         let i_str = JSON.stringify(i);
-                        console.log(i_str);
 
                         if (modifiable > 0) {
                             if (
@@ -2088,9 +2083,6 @@
                         }
                     }
 
-                    console.log("Set Class", position, "to", new_schedule);
-                    console.log(position);
-
                     await setDoc(doc(db, "schedules", position), new_schedule);
 
                     //#endregion
@@ -2227,8 +2219,9 @@
                             let century = Math.floor(currentYear / 100) * 100;
                             year += century;
 
-                            let iidate = new Date(year, month, day, 0, 0, 0, 0);
-                            console.log(iidate, thisMonday);
+                            let iidate = new Date(
+                                Date.UTC(year, month, day, 0, 0, 0, 0)
+                            );
 
                             if (iidate < thisMonday) {
                                 deleteDoc(doc.ref);
@@ -2301,7 +2294,6 @@
             //#region Laptops
             const laptops = await getDoc(doc(db, "laptops", ddmmyy));
             let count = 0;
-            console.log(laptops.exists(), laptops.data());
             if (laptops.exists() == true) {
                 const data = laptops.data();
                 if (data[dayhour] != undefined) {
@@ -2320,7 +2312,6 @@
             //#region iPads
             const ipads = await getDoc(doc(db, "ipads", ddmmyy));
             count = 0;
-            console.log(ipads.exists(), ipads.data());
             if (ipads.exists() == true) {
                 const data = ipads.data();
                 if (data[dayhour] != undefined) {
