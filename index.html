@@ -2630,7 +2630,7 @@
             console.log(`Connected to the new socket at ${newIp}`);
 
             // Add a listener for the "screen_update" event
-            socket.on("screen_update", function (data) {
+            screen_socket.on("screen_update", function (data) {
                 document.getElementById("screen").src =
                     "data:image/jpeg;base64," + data.image;
             });
