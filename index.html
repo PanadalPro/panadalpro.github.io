@@ -2345,6 +2345,18 @@
         // it runs on the auth completed under the login part
         //#endregion
 
+        //#region View Screens
+        window.reserve_params["laptops"].forEach((element) => {
+            if (element == "last_check" || element == "num") {
+                return;
+            }
+            let option = document.createElement("option");
+            option.value = element;
+            option.text = element;
+            screen_select.appendChild(option);
+        });
+        //#endregion
+
         //#region Login - AUTH - Listen for auth state changes
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -2593,17 +2605,8 @@
         //#endregion
 
         //#region View Screens
-        const select = document.getElementById("screen-select-select");
-
-        window.reservations_params["laptops"].forEach((element) => {
-            if (element == "last_check" || element == "num") {
-                return;
-            }
-            let option = document.createElement("option");
-            option.value = element;
-            option.text = element;
-            select.appendChild(option);
-        });
+        const screen_select = document.getElementById("screen-select-select");
+        // time_text.innerText = window.reservations_
 
         // var socket = io("http://192.168.201.111:5000");
 
