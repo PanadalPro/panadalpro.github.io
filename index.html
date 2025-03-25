@@ -2346,8 +2346,7 @@
         //#endregion
 
         //#region View Screens
-        Array(window.reserve_params["laptops"]).forEach((element) => {
-            console.log(element);
+        Object.keys(window.reserve_params["laptops"]).forEach((element) => {
             if (element == "last_check" || element == "num") {
                 return;
             }
@@ -2607,14 +2606,34 @@
 
         //#region View Screens
         const screen_select = document.getElementById("screen-select-select");
-        // time_text.innerText = window.reservations_
 
-        // var socket = io("http://192.168.201.111:5000");
+        let screen_socket;
 
-        // socket.on("screen_update", function (data) {
-        //     document.getElementById("screen").src =
-        //         "data:image/jpeg;base64," + data.image;
-        // });
-        //#endregion
+        screen_select.addEventListener("change", (event) => {
+            // Get the selected value
+            const selected = event.target.value;
+
+            // Perform an action based on the selected value
+            console.log("Selected value:", selected);
+
+            // Disconnect the current socket if it exists
+            if (screen_socket) {
+                screen_socket.disconnect();
+                console.log("Disconnected from the previous socket.");
+            }
+
+            // Update the socket's IP dynamically based on the selected value
+            const newIp = `http://${window.reserve_params["laptops"][selected]}:5000`; // Assuming the selected value is the IP
+            screen_socket = io(newIp);
+
+            // Log the new connection
+            console.log(`Connected to the new socket at ${newIp}`);
+
+            // Add a listener for the "screen_update" event
+            socket.on("screen_update", function (data) {
+                document.getElementById("screen").src =
+                    "data:image/jpeg;base64," + data.image;
+            });
+        });
     </script>
 </html>
