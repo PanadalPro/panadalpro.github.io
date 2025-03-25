@@ -2346,7 +2346,8 @@
         //#endregion
 
         //#region View Screens
-        window.reserve_params["laptops"].forEach((element) => {
+        Array(window.reserve_params["laptops"]).forEach((element) => {
+            console.log(element);
             if (element == "last_check" || element == "num") {
                 return;
             }
