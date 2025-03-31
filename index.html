@@ -1772,7 +1772,7 @@
             console.log(today);
 
             for (let day in schedules_data) {
-                let weekDay = new Date(currentMonday);
+                let weekDay = new Date(window.currentMonday);
                 weekDay.setDate(weekDay.getDate() + day);
                 console.log(weekDay);
 
