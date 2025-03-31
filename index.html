@@ -2617,27 +2617,39 @@
             // Perform an action based on the selected value
             console.log("Selected value:", selected);
 
-            // Disconnect the current socket if it exists
+            // Disconnect the current WebSocket if it exists
             if (screen_socket) {
-                screen_socket.disconnect();
-                console.log("Disconnected from the previous socket.");
+                screen_socket.close();
+                console.log("Disconnected from the previous WebSocket.");
             }
 
-            // Update the socket's IP dynamically based on the selected value
-            const newIp = `https://${window.reserve_params["laptops"][selected]}:5000`; // Assuming the selected value is the IP
-            screen_socket = io(newIp, {
-                secure: true,
-                transports: ["websocket"],
-            });
+            // Update the WebSocket's IP dynamically based on the selected value
+            const newIp = `ws://${window.reserve_params["laptops"][selected]}:5000`; // Assuming the selected value is the IP
+            screen_socket = new WebSocket(newIp);
 
             // Log the new connection
-            console.log(`Connected to the new socket at ${newIp}`);
+            console.log(`Connecting to the new WebSocket at ${newIp}`);
 
-            // Add a listener for the "screen_update" event
-            screen_socket.on("screen_update", function (data) {
+            // Handle WebSocket events
+            screen_socket.onopen = () => {
+                console.log(`Connected to the WebSocket at ${newIp}`);
+            };
+
+            screen_socket.onmessage = (event) => {
+                // Handle incoming messages (e.g., screen updates)
+                const data = JSON.parse(event.data); // Assuming the server sends JSON
                 document.getElementById("screen").src =
                     "data:image/jpeg;base64," + data.image;
-            });
+                console.log("Screen updated with new data.");
+            };
+
+            screen_socket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+            };
+
+            screen_socket.onclose = () => {
+                console.log("WebSocket connection closed.");
+            };
         });
     </script>
 </html>
