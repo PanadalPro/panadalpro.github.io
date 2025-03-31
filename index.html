@@ -2421,11 +2421,14 @@
             Date.UTC(
                 today.getUTCFullYear(),
                 today.getUTCMonth(),
-                today.getUTCDate() + diffToMonday
+                today.getUTCDate() + diffToMonday,
+                0,
+                0,
+                0,
+                0
             )
         );
-        // Set the time to 00:00:00 UTC
-        window.thisMonday.setUTCHours(0, 0, 0, 0);
+        console.log("TM", window.thisMonday);
         //#endregion
 
         //#region Reservations
@@ -2449,15 +2452,16 @@
             const sundayFormatted = sunday.toLocaleDateString("ca-ES", options);
 
             time_text.innerHTML = `${mondayFormatted} - ${sundayFormatted}`;
+
+            console.log(window.currentMonday);
         }
 
         function changeWeek(offset) {
             // Calculate the potential new Monday for the week change
             const newMonday = new Date(window.currentMonday);
-            newMonday.setDate(window.currentMonday.getDate() + offset * 7);
-
-            // Get the current date and ensure we can't navigate past it
-            const today = new Date();
+            newMonday.setUTCDate(
+                window.currentMonday.getUTCDate() + offset * 7
+            );
 
             // Check if the new Monday is in the past
             if (newMonday < window.thisMonday) {
@@ -2465,9 +2469,7 @@
             }
 
             // Update the current Monday to the new calculated week
-            window.currentMonday.setDate(
-                window.currentMonday.getDate() + offset * 7
-            );
+            window.currentMonday = new Date(newMonday);
 
             const sunday = new Date(window.currentMonday);
             sunday.setDate(window.currentMonday.getDate() + 6);
