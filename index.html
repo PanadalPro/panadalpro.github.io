@@ -1772,7 +1772,12 @@
             console.log(today);
 
             for (let day in schedules_data) {
-                let weekDay = new Date(window.currentMonday);
+                let weekDay = new Date(
+                    Date
+                        .UTC
+                        // TODO HERE for grayed passed days
+                        ()
+                );
                 weekDay.setUTCDate(weekDay.getUTCDate() + day);
                 console.log(weekDay);
 
