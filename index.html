@@ -1773,7 +1773,7 @@
 
             for (let day in schedules_data) {
                 let weekDay = new Date(window.currentMonday);
-                weekDay.setDate(weekDay.getDate() + day);
+                weekDay.setUTCDate(weekDay.getUTCDate() + day);
                 console.log(weekDay);
 
                 if (today > weekDay) {
@@ -2428,7 +2428,6 @@
                 0
             )
         );
-        console.log("TM", window.thisMonday);
         //#endregion
 
         //#region Reservations
@@ -2452,8 +2451,6 @@
             const sundayFormatted = sunday.toLocaleDateString("ca-ES", options);
 
             time_text.innerHTML = `${mondayFormatted} - ${sundayFormatted}`;
-
-            console.log(window.currentMonday);
         }
 
         function changeWeek(offset) {
