@@ -2347,15 +2347,37 @@
         //#endregion
 
         //#region View Screens
-        Object.keys(window.reserve_params["laptops"]).forEach((element) => {
-            if (element == "last_check" || element == "num") {
-                return;
+        let new_params = window.reserve_params["laptops"];
+
+        Object.keys(window.reserve_params["laptops"]).forEach(
+            async (element) => {
+                if (element == "last_check" || element == "num") {
+                    return;
+                }
+
+                const serverUrl = `http://${window.reserve_params["laptops"][element]}`;
+
+                try {
+                    // Attempt to ping the server by sending a fetch request
+                    const response = await fetch(serverUrl, {
+                        method: "HEAD",
+                        mode: "no-cors",
+                    });
+
+                    // If the fetch succeeds, add the option to the dropdown
+                    let option = document.createElement("option");
+                    option.value = element;
+                    option.text = element;
+                    screen_select.appendChild(option);
+                } catch (error) {
+                    console.log(`Server ${serverUrl} is not reachable.`);
+                    delete new_params[element];
+                }
             }
-            let option = document.createElement("option");
-            option.value = element;
-            option.text = element;
-            screen_select.appendChild(option);
-        });
+        );
+        if (new_params != window.reserve_params) {
+            await setDoc(doc(db, "laptops", "params"), new_params);
+        }
         //#endregion
 
         //#region Login - AUTH - Listen for auth state changes
@@ -2624,5 +2646,6 @@
 
             screen_select.selectedIndex = 0;
         });
+        //#endregion
     </script>
 </html>
