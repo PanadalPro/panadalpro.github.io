@@ -1678,7 +1678,6 @@
             ) {
                 const docSnap = await getDoc(doc(db, "schedules", class_val));
 
-                schedule_table.innerHTML = EMPTY_SCHEDULE;
                 schedules_subject = subject_val;
                 if (docSnap.exists()) {
                     schedules_data = docSnap.data();
@@ -1746,6 +1745,8 @@
                 return;
             }
 
+            schedule_table.innerHTML = EMPTY_SCHEDULE;
+
             // Get the occupied devices for date
             const docSnap = await getDoc(
                 doc(db, schedules_device, schedules_ddmmyy)
@@ -1758,7 +1759,27 @@
                 reservations_data = {};
             }
 
+            const today = new Date(
+                Date.UTC(
+                    new Date().getUTCFullYear(),
+                    new Date().getUTCMonth(),
+                    new Date().getUTCDate(),
+                    new Date().getUTCHours(),
+                    new Date().getUTCMinutes(),
+                    new Date().getUTCSeconds()
+                )
+            );
+            console.log(today);
+
             for (let day in schedules_data) {
+                let weekDay = new Date(currentMonday);
+                weekDay.setDate(weekDay.getDate() + day);
+                console.log(weekDay);
+
+                if (today > weekDay) {
+                    continue;
+                }
+
                 for (let hour in schedules_data[day]) {
                     if (
                         String(schedules_data[day][hour]) ===
@@ -2347,37 +2368,18 @@
         //#endregion
 
         //#region View Screens
-        let new_params = window.reserve_params["laptops"];
-
         Object.keys(window.reserve_params["laptops"]).forEach(
             async (element) => {
                 if (element == "last_check" || element == "num") {
                     return;
                 }
 
-                const serverUrl = `http://${window.reserve_params["laptops"][element]}`;
-
-                try {
-                    // Attempt to ping the server by sending a fetch request
-                    const response = await fetch(serverUrl, {
-                        method: "HEAD",
-                        mode: "no-cors",
-                    });
-
-                    // If the fetch succeeds, add the option to the dropdown
-                    let option = document.createElement("option");
-                    option.value = element;
-                    option.text = element;
-                    screen_select.appendChild(option);
-                } catch (error) {
-                    console.log(`Server ${serverUrl} is not reachable.`);
-                    delete new_params[element];
-                }
+                let option = document.createElement("option");
+                option.value = element;
+                option.text = element;
+                screen_select.appendChild(option);
             }
         );
-        if (new_params != window.reserve_params) {
-            await setDoc(doc(db, "laptops", "params"), new_params);
-        }
         //#endregion
 
         //#region Login - AUTH - Listen for auth state changes
@@ -2621,9 +2623,9 @@
         }
 
         //home();
-        //reservations();
+        reservations();
         //config();
-        screens();
+        //screens();
 
         //#endregion
 
