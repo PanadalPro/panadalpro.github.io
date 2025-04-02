@@ -1999,30 +1999,34 @@
                 }
                 console.log("RAW", raw);
 
-                if (raw.length == 0) {
+                let ddmmyy_data = await getDoc(
+                    doc(db, schedules_device, schedules_ddmmyy)
+                );
+
+                let element = String(reserve_day) + String(reserve_hour + 1);
+
+                let text = [];
+                for (let res in raw) {
+                    text[res] =
+                        window.schedules_reserve_data[res][0] +
+                        "-" +
+                        window.schedules_reserve_data[res][1];
+                }
+                text = text.join("/");
+
+                ddmmyy_data[element] = text;
+                console.log(ddmmyy_data);
+
+                if (ddmmyy_data.length == 0) {
                     // Delete the doc
                     await deleteDoc(
                         doc(db, schedules_device, schedules_ddmmyy)
                     );
                 } else {
-                    let text = [];
-                    for (let res in raw) {
-                        text[res] =
-                            window.schedules_reserve_data[res][0] +
-                            "-" +
-                            window.schedules_reserve_data[res][1];
-                    }
-                    text = text.join("/");
-
-                    let element =
-                        String(reserve_day) + String(reserve_hour + 1);
-
                     // Save
                     await setDoc(
                         doc(db, schedules_device, schedules_ddmmyy),
-                        {
-                            [element]: text,
-                        },
+                        ddmmyy_data,
                         { merge: true }
                     );
                 }
