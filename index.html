@@ -2002,7 +2002,7 @@
                 let ddmmyy_data = await getDoc(
                     doc(db, schedules_device, schedules_ddmmyy)
                 );
-                if (ddmmyy.exists()) ddmmyy_data = ddmmyy.data();
+                if (ddmmyy_data.exists()) ddmmyy_data = ddmmyy_data.data();
                 else ddmmyy_data = {};
 
                 let element = String(reserve_day) + String(reserve_hour + 1);
@@ -2017,6 +2017,9 @@
                 text = text.join("/");
 
                 ddmmyy_data[element] = text;
+
+                if (text == "") delete ddmmyy_data[element];
+
                 console.log(ddmmyy_data);
 
                 if (ddmmyy_data.length == 0) {
