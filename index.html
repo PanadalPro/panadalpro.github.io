@@ -1,5 +1,4 @@
 <!-- TODO: Forgot Password -->
-<!-- Reservations passed days as gray -->
 <!-- when cancelling reserves it cancels the entire week -->
 
 <!DOCTYPE html>
@@ -1582,6 +1581,49 @@
         window.to_ddmmyy = to_ddmmyy;
         //#endregion
 
+        //#region Funtion - getCurrentScheduleTime
+        function getCurrentScheduleTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const dayOfWeek = now.getDay(); // Sunday - Saturday : 0 - 6
+
+            let hourSlot = null;
+
+            if (
+                (hours === 8 && minutes >= 30) ||
+                (hours === 9 && minutes < 30)
+            ) {
+                hourSlot = 1;
+            } else if (
+                (hours === 9 && minutes >= 30) ||
+                (hours === 10 && minutes < 30)
+            ) {
+                hourSlot = 2;
+            } else if (hours === 11 && minutes < 60) {
+                hourSlot = 3;
+            } else if (hours === 12 && minutes < 60) {
+                hourSlot = 4;
+            } else if (
+                (hours === 14 && minutes >= 30) ||
+                (hours === 15 && minutes < 30)
+            ) {
+                hourSlot = 5;
+            } else if (
+                (hours === 15 && minutes >= 30) ||
+                (hours === 16 && minutes < 30)
+            ) {
+                hourSlot = 6;
+            }
+
+            // Return an object with both hourSlot and dayOfWeek
+            return {
+                hour: hourSlot,
+                day: dayOfWeek === 0 ? 7 : dayOfWeek, // Convert Sunday (0) to 7
+            };
+        }
+        //#endregion
+
         //#region Reservations - Schedules
         // Init Database
         const db = getFirestore(app);
@@ -1764,41 +1806,45 @@
                     new Date().getUTCFullYear(),
                     new Date().getUTCMonth(),
                     new Date().getUTCDate(),
-                    new Date().getUTCHours(),
-                    new Date().getUTCMinutes(),
-                    new Date().getUTCSeconds()
+                    0,
+                    0,
+                    0
                 )
             );
-            console.log(today);
+
+            const current_hour = getCurrentScheduleTime()["hour"];
 
             for (let day in schedules_data) {
-                let weekDay = new Date(
-                    Date.UTC(
-                        window.currentMonday.getUTCFullYear(),
-                        window.currentMonday.getUTCMonth(),
-                        window.currentMonday.getUTCDate() + day,
-                        0,
-                        0,
-                        0
-                    )
+                const weekDay = new Date(window.currentMonday);
+                weekDay.setUTCDate(
+                    window.currentMonday.getUTCDate() + parseInt(day) - 1
                 );
-                console.log(weekDay);
 
                 if (today > weekDay) {
+                    const row = schedule_table.rows[parseInt(day)];
+                    if (row) {
+                        row.style.backgroundColor = "gray";
+                    }
                     continue;
                 }
 
                 for (let hour in schedules_data[day]) {
+                    let new_hour = parseInt(hour);
+                    new_hour +=
+                        1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
+                    if (parseInt(hour) < current_hour - 1) {
+                        const cell = schedule_table.rows[day].cells[new_hour];
+                        if (cell) {
+                            cell.style.backgroundColor = "gray";
+                        }
+                        continue;
+                    }
                     if (
                         String(schedules_data[day][hour]) ===
                             schedules_subject ||
                         schedules_subject === "all" ||
                         String(schedules_data[day][hour]) === "0"
                     ) {
-                        let new_hour = parseInt(hour);
-                        new_hour +=
-                            1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
-
                         let new_day = parseInt(day);
 
                         let h = parseInt(hour) + 1;
@@ -1938,6 +1984,7 @@
                 let found = false;
                 let raw = [];
 
+                console.log("DATA", window.schedules_reserve_data);
                 for (let res in window.schedules_reserve_data) {
                     if (
                         window.schedules_reserve_data[res][1] == account_email
@@ -1947,6 +1994,7 @@
                         raw.push(window.schedules_reserve_data[res]);
                     }
                 }
+                console.log("RAW", raw);
 
                 if (raw.length == 0) {
                     // Delete the doc
@@ -2287,47 +2335,6 @@
         //#region Home Gauges
         const computer_gauge = document.getElementById("computer-gauge");
         const ipad_gauge = document.getElementById("ipad-gauge");
-
-        function getCurrentScheduleTime() {
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const dayOfWeek = now.getDay(); // Sunday - Saturday : 0 - 6
-
-            let hourSlot = null;
-
-            if (
-                (hours === 8 && minutes >= 30) ||
-                (hours === 9 && minutes < 30)
-            ) {
-                hourSlot = 1;
-            } else if (
-                (hours === 9 && minutes >= 30) ||
-                (hours === 10 && minutes < 30)
-            ) {
-                hourSlot = 2;
-            } else if (hours === 11 && minutes < 60) {
-                hourSlot = 3;
-            } else if (hours === 12 && minutes < 60) {
-                hourSlot = 4;
-            } else if (
-                (hours === 14 && minutes >= 30) ||
-                (hours === 15 && minutes < 30)
-            ) {
-                hourSlot = 5;
-            } else if (
-                (hours === 15 && minutes >= 30) ||
-                (hours === 16 && minutes < 30)
-            ) {
-                hourSlot = 6;
-            }
-
-            // Return an object with both hourSlot and dayOfWeek
-            return {
-                hour: hourSlot,
-                day: dayOfWeek === 0 ? 7 : dayOfWeek, // Convert Sunday (0) to 7
-            };
-        }
 
         async function home_update_gauges() {
             let ddmmyy = to_ddmmyy(window.currentMonday);
