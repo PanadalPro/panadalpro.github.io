@@ -1832,8 +1832,10 @@
                     let new_hour = parseInt(hour);
                     new_hour +=
                         1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
-                    console.log(today, weekDay);
-                    if (parseInt(hour) < current_hour - 1 && today == weekDay) {
+                    if (
+                        parseInt(hour) < current_hour - 1 &&
+                        today.toDateString() == weekDay.toDateString()
+                    ) {
                         const cell = schedule_table.rows[day].cells[new_hour];
                         if (cell) {
                             cell.style.backgroundColor = "gray";
