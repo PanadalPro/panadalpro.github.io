@@ -1773,12 +1773,15 @@
 
             for (let day in schedules_data) {
                 let weekDay = new Date(
-                    Date
-                        .UTC
-                        // TODO HERE for grayed passed days
-                        ()
+                    Date.UTC(
+                        window.currentMonday.getUTCFullYear(),
+                        window.currentMonday.getUTCMonth(),
+                        window.currentMonday.getUTCDate() + day,
+                        0,
+                        0,
+                        0
+                    )
                 );
-                weekDay.setUTCDate(weekDay.getUTCDate() + day);
                 console.log(weekDay);
 
                 if (today > weekDay) {
