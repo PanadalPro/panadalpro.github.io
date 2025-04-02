@@ -2002,6 +2002,8 @@
                 let ddmmyy_data = await getDoc(
                     doc(db, schedules_device, schedules_ddmmyy)
                 );
+                if (ddmmyy.exists()) ddmmyy_data = ddmmyy.data();
+                else ddmmyy_data = {};
 
                 let element = String(reserve_day) + String(reserve_hour + 1);
 
