@@ -2392,7 +2392,11 @@
         //#region View Screens
         Object.keys(window.reserve_params["laptops"]).forEach(
             async (element) => {
-                if (element == "last_check" || element == "num") {
+                if (
+                    element == "last_check" ||
+                    element == "num" ||
+                    element == "password"
+                ) {
                     return;
                 }
 
