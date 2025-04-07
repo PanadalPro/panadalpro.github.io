@@ -1525,888 +1525,924 @@
         let account_email;
         //#endregion
 
-        //#region App - Account
-        const account = document.querySelector(".app .account");
-        const account_menu = document.querySelector(".app .account-menu");
-        const account_overlay = document.getElementById("account_overlay");
+        async function load_module() {
+            //#region App - Account
+            const account = document.querySelector(".app .account");
+            const account_menu = document.querySelector(".app .account-menu");
+            const account_overlay = document.getElementById("account_overlay");
 
-        function account_menu_toggle() {
-            if (account_menu.classList.contains("show")) {
-                account_menu.classList.remove("show");
-                account.classList.remove("menu-open");
-                account.style.backgroundColor = "transparent";
-                account_overlay.style.display = "none"; // Hide overlay
-                setTimeout(() => {
-                    account_menu.style.display = "none";
-                }, 500); // Match the duration of the transition
-            } else {
-                account_menu.style.display = "block";
-                account.classList.add("menu-open");
-                account.style.backgroundColor = "var(--accent-color)";
-                account_overlay.style.display = "block"; // Show overlay
-                setTimeout(() => {
-                    account_menu.classList.add("show");
-                }, 10); // Small delay to ensure the display change is applied
-            }
-        }
-
-        account.addEventListener("click", account_menu_toggle);
-
-        const account_logout = document.getElementById("account-logout");
-        account_logout.addEventListener("click", function () {
-            account_menu_toggle();
-            app_win.classList.add("fade-out");
-            setTimeout(() => {
-                signOut(auth);
-            }, 500);
-        });
-        //#endregion
-
-        //#region Function - to_ddmmyy
-        function to_ddmmyy(date) {
-            let day = String(date.getDate());
-            if (day.length == 1) {
-                day = "0" + day;
-            }
-            let month = String(date.getMonth() + 1);
-            if (month.length == 1) {
-                month = "0" + month;
-            }
-            let year = String(date.getFullYear());
-            return day + month + year.slice(-2);
-        }
-        window.to_ddmmyy = to_ddmmyy;
-        //#endregion
-
-        //#region Funtion - getCurrentScheduleTime
-        function getCurrentScheduleTime() {
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const dayOfWeek = now.getDay(); // Sunday - Saturday : 0 - 6
-
-            let hourSlot = null;
-
-            if (
-                (hours === 8 && minutes >= 30) ||
-                (hours === 9 && minutes < 30)
-            ) {
-                hourSlot = 1;
-            } else if (
-                (hours === 9 && minutes >= 30) ||
-                (hours === 10 && minutes < 30)
-            ) {
-                hourSlot = 2;
-            } else if (hours === 11 && minutes < 60) {
-                hourSlot = 3;
-            } else if (hours === 12 && minutes < 60) {
-                hourSlot = 4;
-            } else if (
-                (hours === 14 && minutes >= 30) ||
-                (hours === 15 && minutes < 30)
-            ) {
-                hourSlot = 5;
-            } else if (
-                (hours === 15 && minutes >= 30) ||
-                (hours === 16 && minutes < 30)
-            ) {
-                hourSlot = 6;
-            }
-
-            // Return an object with both hourSlot and dayOfWeek
-            return {
-                hour: hourSlot,
-                day: dayOfWeek === 0 ? 7 : dayOfWeek, // Convert Sunday (0) to 7
-            };
-        }
-        //#endregion
-
-        //#region Reservations - Schedules
-        // Init Database
-        const db = getFirestore(app);
-
-        // Get Elements
-        const schedule_table = document.getElementById("schedule");
-        const class_select = document.getElementById("class");
-        const subject_select = document.getElementById("subject");
-        const device_select = document.getElementById("device");
-
-        //#region Get Params / Settings File
-        const laptop_num_setting = document.getElementById(
-            "config-laptopnum-num"
-        );
-        const laptop_num_setting_btn = document.getElementById(
-            "config-laptopnum-btn"
-        );
-        const ipad_num_setting = document.getElementById("config-ipadnum-num");
-        const ipad_num_setting_btn =
-            document.getElementById("config-ipadnum-btn");
-
-        let paramsLaptops = await getDoc(doc(db, "laptops", "params"));
-        let paramsiPads = await getDoc(doc(db, "ipads", "params"));
-
-        if (paramsLaptops.exists() && paramsiPads.exists()) {
-            window.reserve_params = {
-                laptops: paramsLaptops.data(),
-                ipads: paramsiPads.data(),
-            };
-
-            // Laptop & iPad Num Settings
-            laptop_num_setting.value = window.reserve_params["laptops"]["num"];
-            ipad_num_setting.value = window.reserve_params["ipads"]["num"];
-        } else {
-            console.log("Unable to fetch Reservations Params File!");
-        }
-
-        // Laptop Num Setting
-        laptop_num_setting_btn.addEventListener("click", async () => {
-            let laptop_num = parseInt(laptop_num_setting.value);
-
-            if (laptop_num > 0) {
-                window.reserve_params["laptops"]["num"] = laptop_num;
-                await setDoc(
-                    doc(db, "laptops", "params"),
-                    window.reserve_params["laptops"]
-                );
-                laptop_num_setting.classList.add("success");
-                setTimeout(() => {
-                    laptop_num_setting.classList.remove("success");
-                }, 2000);
-            } else {
-                alert("Please enter a valid number of laptops");
-            }
-        });
-
-        // iPad Num Settting
-        ipad_num_setting_btn.addEventListener("click", async () => {
-            let ipad_num = parseInt(ipad_num_setting.value);
-
-            if (ipad_num > 0) {
-                window.reserve_params["ipads"]["num"] = ipad_num;
-                await setDoc(
-                    doc(db, "ipads", "params"),
-                    window.reserve_params["ipads"]
-                );
-                ipad_num_setting.classList.add("success");
-                setTimeout(() => {
-                    ipad_num_setting.classList.remove("success");
-                }, 2000);
-            } else {
-                alert("Please enter a valid number of iPads");
-            }
-        });
-
-        //#endregion
-
-        const EMPTY_SCHEDULE = schedule_table.innerHTML;
-
-        var schedules_data;
-        var schedules_subject;
-        var schedules_ddmmyy;
-        var schedules_device = "";
-
-        async function class_subject() {
-            let class_val = class_select.value;
-            let subject_val = subject_select.value;
-            schedules_device = device_select.value.toLowerCase();
-
-            if (
-                class_val != "" &&
-                subject_val != "" &&
-                schedules_device != ""
-            ) {
-                const docSnap = await getDoc(doc(db, "schedules", class_val));
-
-                schedules_subject = subject_val;
-                if (docSnap.exists()) {
-                    schedules_data = docSnap.data();
+            function account_menu_toggle() {
+                if (account_menu.classList.contains("show")) {
+                    account_menu.classList.remove("show");
+                    account.classList.remove("menu-open");
+                    account.style.backgroundColor = "transparent";
+                    account_overlay.style.display = "none"; // Hide overlay
+                    setTimeout(() => {
+                        account_menu.style.display = "none";
+                    }, 500); // Match the duration of the transition
                 } else {
-                    schedules_data = {
-                        1: {
-                            0: 0,
-                            1: 0,
-                            2: 0,
-                            3: 0,
-                            4: 0,
-                            5: 0,
-                        },
-                        2: {
-                            0: 0,
-                            1: 0,
-                            2: 0,
-                            3: 0,
-                            4: 0,
-                            5: 0,
-                        },
-                        3: {
-                            0: 0,
-                            1: 0,
-                            2: 0,
-                            3: 0,
-                            4: 0,
-                            5: 0,
-                        },
-                        4: {
-                            0: 0,
-                            1: 0,
-                            2: 0,
-                            3: 0,
-                            4: 0,
-                            5: 0,
-                        },
-                        5: {
-                            0: 0,
-                            1: 0,
-                            2: 0,
-                            3: 0,
-                            4: 0,
-                            5: 0,
-                        },
-                    };
-                }
-                reload_schedule();
-            }
-        }
-
-        class_select.addEventListener("change", class_subject);
-        subject_select.addEventListener("change", class_subject);
-        device_select.addEventListener("change", class_subject);
-
-        function reload_ddmmyy() {
-            schedules_ddmmyy = to_ddmmyy(window.currentMonday);
-
-            reload_schedule();
-        }
-        window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
-
-        async function reload_schedule() {
-            if (schedules_device == "") {
-                return;
-            }
-
-            schedule_table.innerHTML = EMPTY_SCHEDULE;
-
-            // Get the occupied devices for date
-            const docSnap = await getDoc(
-                doc(db, schedules_device, schedules_ddmmyy)
-            );
-
-            let reservations_data;
-            if (docSnap.exists()) {
-                reservations_data = docSnap.data();
-            } else {
-                reservations_data = {};
-            }
-
-            const today = new Date(
-                Date.UTC(
-                    new Date().getUTCFullYear(),
-                    new Date().getUTCMonth(),
-                    new Date().getUTCDate(),
-                    0,
-                    0,
-                    0
-                )
-            );
-
-            const current_hour = getCurrentScheduleTime()["hour"];
-
-            for (let day in schedules_data) {
-                const weekDay = new Date(window.currentMonday);
-                weekDay.setUTCDate(
-                    window.currentMonday.getUTCDate() + parseInt(day) - 1
-                );
-
-                if (today > weekDay) {
-                    const row = schedule_table.rows[parseInt(day)];
-                    if (row) {
-                        row.style.backgroundColor = "gray";
-                    }
-                    continue;
-                }
-
-                for (let hour in schedules_data[day]) {
-                    let new_hour = parseInt(hour);
-                    new_hour +=
-                        1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
-                    if (
-                        parseInt(hour) < current_hour - 1 &&
-                        today.toDateString() == weekDay.toDateString()
-                    ) {
-                        const cell = schedule_table.rows[day].cells[new_hour];
-                        if (cell) {
-                            cell.style.backgroundColor = "gray";
-                        }
-                        continue;
-                    }
-                    if (
-                        String(schedules_data[day][hour]) ===
-                            schedules_subject ||
-                        schedules_subject === "all" ||
-                        String(schedules_data[day][hour]) === "0"
-                    ) {
-                        let new_day = parseInt(day);
-
-                        let h = parseInt(hour) + 1;
-                        let i = [];
-                        let raw = reservations_data[`${day}${h}`];
-                        if (raw != undefined) {
-                            let rawi = raw.split("/");
-                            for (let res in rawi) {
-                                let val = rawi[res].split("-");
-                                i[res] = [parseInt(val[0]), val[1]];
-                            }
-                        }
-
-                        let total = 0;
-                        let modifiable = 0;
-
-                        for (let res in i) {
-                            if (i[res][1] == account_email) {
-                                modifiable += i[res][0];
-                            }
-                            total += i[res][0];
-                        }
-
-                        const cell =
-                            schedule_table.rows[new_day].cells[new_hour];
-
-                        let percentage =
-                            (total * 100) /
-                            window.reserve_params[schedules_device]["num"];
-
-                        cell.style.backgroundSize = `${100 - percentage}% 100%`;
-
-                        let i_str = JSON.stringify(i);
-
-                        if (modifiable > 0) {
-                            if (
-                                modifiable ==
-                                window.reserve_params[schedules_device]["num"]
-                            ) {
-                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>TOTS <p style="font-weight: bold;">reservats</p></button>`;
-                            } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
-                            }
-                        } else {
-                            if (
-                                total ==
-                                window.reserve_params[schedules_device]["num"]
-                            ) {
-                                cell.innerHTML = "OCUPATS";
-                            } else {
-                                cell.innerHTML = `<button class="reservation-cell-btn" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, false, ${i_str})'>${
-                                    window.reserve_params[schedules_device][
-                                        "num"
-                                    ] - total
-                                } lliures</button>`;
-                            }
-                        }
-                    }
+                    account_menu.style.display = "block";
+                    account.classList.add("menu-open");
+                    account.style.backgroundColor = "var(--accent-color)";
+                    account_overlay.style.display = "block"; // Show overlay
+                    setTimeout(() => {
+                        account_menu.classList.add("show");
+                    }, 10); // Small delay to ensure the display change is applied
                 }
             }
-        }
 
-        window.reload_ddmmyy();
+            account.addEventListener("click", account_menu_toggle);
 
-        const reserve_num = document.getElementById("reserve-num");
-        const reserve_text = document.getElementById("reserve-text");
-        const reserve_max = document.querySelector(
-            ".app .reservations .reserve .num-select #max"
-        );
-        const reserve_content = document.querySelector(
-            ".app .reservations .reserve .content"
-        );
-        const reserve_win_ = document.getElementById("reserve");
-        const reserve_cancel_reserve_btn = document.getElementById(
-            "reserve-cancel-reserve-btn"
-        );
-        const reserve_number_devices = document.getElementById(
-            "reserve-number-devices"
-        );
-
-        var reserve_day;
-        var reserve_hour;
-        window.schedules_reserve_data = [];
-
-        async function load_reserve(day, hour, total, modifiable, edit, i) {
-            window.schedules_reserve_data = i;
-
-            let reserve_day_date = new Date(window.currentMonday);
-            reserve_day_date.setDate(reserve_day_date.getDate() + (day - 1));
-            let reserve_day_str = reserve_day_date.toLocaleDateString("ca-ES", {
-                weekday: "long", // Full weekday name
-                day: "numeric", // Day of the month
-                month: "long", // Full month name
+            const account_logout = document.getElementById("account-logout");
+            account_logout.addEventListener("click", function () {
+                account_menu_toggle();
+                app_win.classList.add("fade-out");
+                setTimeout(() => {
+                    signOut(auth);
+                }, 500);
             });
-
-            if (edit == true) {
-                reserve_cancel_reserve_btn.style.display = "flex";
-                reserve_num.max =
-                    window.reserve_params[schedules_device]["num"] -
-                    (total - modifiable);
-                reserve_num.value = modifiable;
-                reserve_text.innerText = `Editar reserva per al ${reserve_day_str}`;
-                reserve_max.innerText = `Màx. ${
-                    window.reserve_params[schedules_device]["num"] -
-                    (total - modifiable)
-                }`;
-            } else {
-                reserve_cancel_reserve_btn.style.display = "none";
-                reserve_num.max =
-                    window.reserve_params[schedules_device]["num"] - total;
-                reserve_text.innerText = `Reservar per al ${reserve_day_str}`;
-                reserve_max.innerText = `Màx. ${
-                    window.reserve_params[schedules_device]["num"] - total
-                }`;
-            }
-
-            if (schedules_device == "ipads") {
-                reserve_number_devices.innerText = "Número d'iPads:";
-            } else {
-                reserve_number_devices.innerText = "Número de portàtils:";
-            }
-
-            reserve_day = day;
-            reserve_hour = hour;
-        }
-
-        const reserve_btn = document.getElementById("reserve-btn");
-        reserve_btn.addEventListener("click", () => reserve_ok(false));
-        reserve_cancel_reserve_btn.addEventListener("click", () =>
-            reserve_ok(true)
-        );
-
-        async function reserve_ok(cancel) {
-            reserve_content.style.display = "none";
-
-            if (cancel == true) {
-                let found = false;
-                let raw = [];
-
-                console.log("DATA", window.schedules_reserve_data);
-                for (let res in window.schedules_reserve_data) {
-                    if (
-                        window.schedules_reserve_data[res][1] == account_email
-                    ) {
-                        found = true;
-                    } else {
-                        raw.push(window.schedules_reserve_data[res]);
-                    }
-                }
-                console.log("RAW", raw);
-
-                let ddmmyy_data = await getDoc(
-                    doc(db, schedules_device, schedules_ddmmyy)
-                );
-                if (ddmmyy_data.exists()) ddmmyy_data = ddmmyy_data.data();
-                else ddmmyy_data = {};
-
-                let element = String(reserve_day) + String(reserve_hour + 1);
-
-                let text = [];
-                for (let res in raw) {
-                    text[res] =
-                        window.schedules_reserve_data[res][0] +
-                        "-" +
-                        window.schedules_reserve_data[res][1];
-                }
-                text = text.join("/");
-
-                ddmmyy_data[element] = text;
-
-                if (text == "") delete ddmmyy_data[element];
-
-                if (ddmmyy_data.length == 0) {
-                    // Delete the doc
-                    await deleteDoc(
-                        doc(db, schedules_device, schedules_ddmmyy)
-                    );
-                } else {
-                    // Save
-                    await setDoc(
-                        doc(db, schedules_device, schedules_ddmmyy),
-                        ddmmyy_data
-                    );
-                }
-            } else {
-                let reserved = parseInt(reserve_num.value);
-
-                let found = false;
-                for (let res in window.schedules_reserve_data) {
-                    if (
-                        window.schedules_reserve_data[res][1] == account_email
-                    ) {
-                        window.schedules_reserve_data[res][0] = reserved;
-                        found = true;
-                    }
-                }
-
-                if (found == false) {
-                    window.schedules_reserve_data.push([
-                        reserved,
-                        account_email,
-                    ]);
-                }
-                console.log(window.schedules_reserve_data);
-
-                let raw = [];
-                for (let res in window.schedules_reserve_data) {
-                    raw[res] =
-                        window.schedules_reserve_data[res][0] +
-                        "-" +
-                        window.schedules_reserve_data[res][1];
-                }
-                raw = raw.join("/");
-
-                let element = String(reserve_day) + String(reserve_hour + 1);
-
-                // Save
-                await setDoc(
-                    doc(db, schedules_device, schedules_ddmmyy),
-                    {
-                        [element]: raw,
-                    },
-                    { merge: true }
-                );
-            }
-
-            // Add tick animation
-            const tickContainer = document.createElement("div");
-            tickContainer.classList.add("tick-container");
-            const tick = document.createElement("div");
-            tick.classList.add("tick");
-            tickContainer.appendChild(tick);
-            document.body.appendChild(tickContainer);
-
-            // Wait 3 secs to hide the tick and the reserve window
-            setTimeout(() => {
-                document.body.removeChild(tickContainer);
-                window.reserve_close_win();
-                reserve_content.style.display = "flex";
-                reload_schedule();
-            }, 3000);
-        }
-
-        window.load_reserve = load_reserve;
-        //#endregion
-
-        //#region Config - Schedules
-
-        // Dict ID - Name
-        const subjects_id_name = {
-            0: "None",
-            1: "Català",
-            2: "Castellà",
-            3: "Anglès",
-            4: "Medi",
-            5: "Mates",
-            6: "Valors / Tutoria",
-            7: "Laboratori",
-            8: "Altres",
-        };
-
-        // Reverse dict to have Name - ID
-        const subjects_name_id = Object.fromEntries(
-            Object.entries(subjects_id_name).map(([key, value]) => [value, key])
-        );
-
-        let position = "";
-
-        // Schedules Win
-        const schedules_win = document.getElementById("config-schedules");
-        schedules_win.style.display = "none";
-
-        const config_overlay = document.getElementById("config_overlay");
-
-        //#region Config Schedules Button
-        document
-            .getElementById("config-schedules-button")
-            .addEventListener("click", function () {
-                config_overlay.style.display = "flex";
-                schedules_win.style.display = "initial";
-            });
-        //#endregion
-
-        const config_schedule_table = document.getElementById(
-            "config-schedule-table"
-        );
-
-        const config_class_select = document.getElementById("select-class");
-
-        config_schedule_table.style.display = "none";
-
-        const cells = config_schedule_table.getElementsByTagName("td");
-
-        var config_edit_subject;
-
-        // Loop through each cell and add an event listener
-        for (let i = 0; i < cells.length; i++) {
-            if (cells[i].innerHTML == "") {
-                cells[i].innerHTML = "<button>None</button>";
-            }
-        }
-
-        //#region Config Schedules Back Button
-        document
-            .getElementById("config-schedules-back-button")
-            .addEventListener("click", async function () {
-                if (position == "") {
-                    config_overlay.style.display = "none";
-                    schedules_win.style.display = "none";
-                } else {
-                    //#region Save Schedule
-
-                    // New Schedule
-                    let new_schedule = {};
-                    let day_idx = 1;
-                    let day = new Array();
-
-                    // Get Cells in Table
-                    const cells =
-                        config_schedule_table.getElementsByTagName("td");
-
-                    // Loop through each cell
-                    for (let i = 0; i < cells.length; i++) {
-                        let btn = cells[i].querySelector("button");
-                        if (btn !== null) {
-                            // Contains a Button
-                            day.push(parseInt(subjects_name_id[btn.innerHTML]));
-
-                            if (day.length >= 6) {
-                                new_schedule[day_idx] = day;
-                                day_idx++;
-                                day = new Array();
-                            }
-                        }
-                    }
-
-                    await setDoc(doc(db, "schedules", position), new_schedule);
-
-                    //#endregion
-                    position = "";
-                    config_schedule_table.style.display = "none";
-                    config_class_select.style.display = "flex";
-                }
-            });
-        //#endregion
-
-        //#region Config Class Select Function
-        const config_class_elements =
-            document.querySelectorAll(".config-class");
-
-        // Iterate over each element
-        config_class_elements.forEach((element) => {
-            // Add an event listener to each element
-            element.addEventListener("click", (event) => {
-                config_class_select.style.display = "none";
-                config_schedule_table.style.display = "block";
-                position = event.target.id;
-
-                load_config_schedule(event.target.id);
-            });
-        });
-        //#endregion
-
-        //#region Load Schedule
-        const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
-
-        async function load_config_schedule(class_name) {
-            config_schedule_table.innerHTML = EMPTY_CONFIG_SCHEDULE;
-
-            const docRef = doc(db, "schedules", class_name);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-
-                for (let day in data) {
-                    for (let hour in data[day]) {
-                        // Offset the Hours (Columns) to match the table
-                        let new_hour = parseInt(hour);
-                        new_hour +=
-                            1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
-
-                        // Offset the Days (Rows) to match the table
-                        const new_day = parseInt(day);
-
-                        // Get the Cell Button
-                        const btn =
-                            config_schedule_table.rows[new_day].cells[
-                                new_hour
-                            ].getElementsByTagName("button")[0];
-
-                        // Assign the Button's Onclick
-                        btn.addEventListener("click", function (event) {
-                            edit_subject.style.display = "block";
-                            config_edit_subject = event.target;
-                        });
-
-                        // Assign the Class Name to the Cell
-                        const subject_id = data[day][hour];
-                        let result = (
-                            Array.isArray(subject_id)
-                                ? subject_id
-                                : [subject_id]
-                        ) // Convert to array if it's a single number
-                            .map(
-                                (num) =>
-                                    Array.from(num.toString()) // Convert each number to a string and split into characters
-                                        .map((digit) => subjects_id_name[digit]) // Map digits to their corresponding dictionary values
-                                        .join(" / ") // Join the values with ' / ' delimiter
-                            )
-                            .join(" / "); // Join multiple results with ' / ' delimiter
-
-                        btn.innerHTML = result;
-                    }
-                }
-            } else {
-                console.log("Error! No Schedule Data");
-            }
-        }
-        //#endregion
-
-        //#region Table Cells Click Function Edit
-        // Window
-        const edit_subject = document.getElementById("edit-subject");
-        edit_subject.style.display = "none";
-
-        const config_subject_select = edit_subject.querySelector("#subject");
-
-        // Close Button
-        document.getElementById("close-edit-subject").onclick = function (
-            event
-        ) {
-            if (config_subject_select.value != "") {
-                config_edit_subject.innerHTML =
-                    subjects_id_name[config_subject_select.value];
-
-                config_edit_subject = null;
-                edit_subject.style.display = "none";
-            }
-        };
-
-        //#endregion
-
-        //#endregion
-
-        //#region Reservations Data Check
-        ["ipads", "laptops"].forEach(async (device) => {
-            let i = String(window.reserve_params[device]["last_check"]);
-            let itoday = new Date();
-            itoday.setHours(0, 0, 0, 0);
-            let idate = new Date(
-                parseInt(
-                    String(itoday.getFullYear()).substring(0, 2) +
-                        i.substring(4, 6)
-                ),
-                parseInt(i.substring(2, 4)) - 1,
-                parseInt(i.substring(0, 2))
-            );
-            if (idate < itoday) {
-                await getDocs(collection(db, device)).then((query) => {
-                    query.forEach((doc) => {
-                        if (!isNaN(doc.id)) {
-                            let split = doc.id.match(/.{1,2}/g);
-                            let day = parseInt(split[0]);
-                            let month = parseInt(split[1]) - 1; // Months are 0-based in JavaScript
-                            let year = parseInt(split[2]);
-
-                            // Adjust the year to be in the correct century
-                            let currentYear = today.getFullYear();
-                            let century = Math.floor(currentYear / 100) * 100;
-                            year += century;
-
-                            let iidate = new Date(
-                                Date.UTC(year, month, day, 0, 0, 0, 0)
-                            );
-
-                            if (iidate < thisMonday) {
-                                deleteDoc(doc.ref);
-                            }
-                        }
-                    });
-                });
-                await setDoc(
-                    doc(db, device, "params"),
-                    {
-                        last_check: to_ddmmyy(itoday),
-                    },
-                    { merge: true }
-                );
-            }
-        });
-
-        //#endregion
-
-        //#region Home Gauges
-        const computer_gauge = document.getElementById("computer-gauge");
-        const ipad_gauge = document.getElementById("ipad-gauge");
-
-        async function home_update_gauges() {
-            let ddmmyy = to_ddmmyy(window.currentMonday);
-            let time = getCurrentScheduleTime();
-            let dayhour = time["day"] * 10 + time["hour"]; // to make DAY+HOUR integer
-
-            //#region Laptops
-            const laptops = await getDoc(doc(db, "laptops", ddmmyy));
-            let count = 0;
-            if (laptops.exists() == true) {
-                const data = laptops.data();
-                if (data[dayhour] != undefined) {
-                    data[dayhour].split("/").forEach((element) => {
-                        count += parseInt(element.split("-")[0]);
-                    });
-                }
-            }
-            window.updateGauge(
-                computer_gauge,
-                window.reserve_params["laptops"]["num"] - count,
-                count
-            );
             //#endregion
 
-            //#region iPads
-            const ipads = await getDoc(doc(db, "ipads", ddmmyy));
-            count = 0;
-            if (ipads.exists() == true) {
-                const data = ipads.data();
-                if (data[dayhour] != undefined) {
-                    data[dayhour].split("/").forEach((element) => {
-                        count += parseInt(element.split("-")[0]);
-                    });
+            //#region Function - to_ddmmyy
+            function to_ddmmyy(date) {
+                let day = String(date.getDate());
+                if (day.length == 1) {
+                    day = "0" + day;
                 }
+                let month = String(date.getMonth() + 1);
+                if (month.length == 1) {
+                    month = "0" + month;
+                }
+                let year = String(date.getFullYear());
+                return day + month + year.slice(-2);
             }
-            window.updateGauge(
-                ipad_gauge,
-                window.reserve_params["ipads"]["num"] - count,
-                count
-            );
+            window.to_ddmmyy = to_ddmmyy;
             //#endregion
-        }
-        window.home_update_gauges = home_update_gauges;
 
-        // it runs on the auth completed under the login part
-        //#endregion
+            //#region Funtion - getCurrentScheduleTime
+            function getCurrentScheduleTime() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const dayOfWeek = now.getDay(); // Sunday - Saturday : 0 - 6
 
-        //#region View Screens
-        Object.keys(window.reserve_params["laptops"]).forEach(
-            async (element) => {
+                let hourSlot = null;
+
                 if (
-                    element == "last_check" ||
-                    element == "num" ||
-                    element == "password"
+                    (hours === 8 && minutes >= 30) ||
+                    (hours === 9 && minutes < 30)
                 ) {
+                    hourSlot = 1;
+                } else if (
+                    (hours === 9 && minutes >= 30) ||
+                    (hours === 10 && minutes < 30)
+                ) {
+                    hourSlot = 2;
+                } else if (hours === 11 && minutes < 60) {
+                    hourSlot = 3;
+                } else if (hours === 12 && minutes < 60) {
+                    hourSlot = 4;
+                } else if (
+                    (hours === 14 && minutes >= 30) ||
+                    (hours === 15 && minutes < 30)
+                ) {
+                    hourSlot = 5;
+                } else if (
+                    (hours === 15 && minutes >= 30) ||
+                    (hours === 16 && minutes < 30)
+                ) {
+                    hourSlot = 6;
+                }
+
+                // Return an object with both hourSlot and dayOfWeek
+                return {
+                    hour: hourSlot,
+                    day: dayOfWeek === 0 ? 7 : dayOfWeek, // Convert Sunday (0) to 7
+                };
+            }
+            //#endregion
+
+            //#region Reservations - Schedules
+            // Init Database
+            const db = getFirestore(app);
+
+            // Get Elements
+            const schedule_table = document.getElementById("schedule");
+            const class_select = document.getElementById("class");
+            const subject_select = document.getElementById("subject");
+            const device_select = document.getElementById("device");
+
+            //#region Get Params / Settings File
+            const laptop_num_setting = document.getElementById(
+                "config-laptopnum-num"
+            );
+            const laptop_num_setting_btn = document.getElementById(
+                "config-laptopnum-btn"
+            );
+            const ipad_num_setting =
+                document.getElementById("config-ipadnum-num");
+            const ipad_num_setting_btn =
+                document.getElementById("config-ipadnum-btn");
+
+            let paramsLaptops = await getDoc(doc(db, "laptops", "params"));
+            let paramsiPads = await getDoc(doc(db, "ipads", "params"));
+
+            if (paramsLaptops.exists() && paramsiPads.exists()) {
+                window.reserve_params = {
+                    laptops: paramsLaptops.data(),
+                    ipads: paramsiPads.data(),
+                };
+
+                // Laptop & iPad Num Settings
+                laptop_num_setting.value =
+                    window.reserve_params["laptops"]["num"];
+                ipad_num_setting.value = window.reserve_params["ipads"]["num"];
+            } else {
+                console.log("Unable to fetch Reservations Params File!");
+            }
+
+            // Laptop Num Setting
+            laptop_num_setting_btn.addEventListener("click", async () => {
+                let laptop_num = parseInt(laptop_num_setting.value);
+
+                if (laptop_num > 0) {
+                    window.reserve_params["laptops"]["num"] = laptop_num;
+                    await setDoc(
+                        doc(db, "laptops", "params"),
+                        window.reserve_params["laptops"]
+                    );
+                    laptop_num_setting.classList.add("success");
+                    setTimeout(() => {
+                        laptop_num_setting.classList.remove("success");
+                    }, 2000);
+                } else {
+                    alert("Please enter a valid number of laptops");
+                }
+            });
+
+            // iPad Num Settting
+            ipad_num_setting_btn.addEventListener("click", async () => {
+                let ipad_num = parseInt(ipad_num_setting.value);
+
+                if (ipad_num > 0) {
+                    window.reserve_params["ipads"]["num"] = ipad_num;
+                    await setDoc(
+                        doc(db, "ipads", "params"),
+                        window.reserve_params["ipads"]
+                    );
+                    ipad_num_setting.classList.add("success");
+                    setTimeout(() => {
+                        ipad_num_setting.classList.remove("success");
+                    }, 2000);
+                } else {
+                    alert("Please enter a valid number of iPads");
+                }
+            });
+
+            //#endregion
+
+            const EMPTY_SCHEDULE = schedule_table.innerHTML;
+
+            var schedules_data;
+            var schedules_subject;
+            var schedules_ddmmyy;
+            var schedules_device = "";
+
+            async function class_subject() {
+                let class_val = class_select.value;
+                let subject_val = subject_select.value;
+                schedules_device = device_select.value.toLowerCase();
+
+                if (
+                    class_val != "" &&
+                    subject_val != "" &&
+                    schedules_device != ""
+                ) {
+                    const docSnap = await getDoc(
+                        doc(db, "schedules", class_val)
+                    );
+
+                    schedules_subject = subject_val;
+                    if (docSnap.exists()) {
+                        schedules_data = docSnap.data();
+                    } else {
+                        schedules_data = {
+                            1: {
+                                0: 0,
+                                1: 0,
+                                2: 0,
+                                3: 0,
+                                4: 0,
+                                5: 0,
+                            },
+                            2: {
+                                0: 0,
+                                1: 0,
+                                2: 0,
+                                3: 0,
+                                4: 0,
+                                5: 0,
+                            },
+                            3: {
+                                0: 0,
+                                1: 0,
+                                2: 0,
+                                3: 0,
+                                4: 0,
+                                5: 0,
+                            },
+                            4: {
+                                0: 0,
+                                1: 0,
+                                2: 0,
+                                3: 0,
+                                4: 0,
+                                5: 0,
+                            },
+                            5: {
+                                0: 0,
+                                1: 0,
+                                2: 0,
+                                3: 0,
+                                4: 0,
+                                5: 0,
+                            },
+                        };
+                    }
+                    reload_schedule();
+                }
+            }
+
+            class_select.addEventListener("change", class_subject);
+            subject_select.addEventListener("change", class_subject);
+            device_select.addEventListener("change", class_subject);
+
+            function reload_ddmmyy() {
+                schedules_ddmmyy = to_ddmmyy(window.currentMonday);
+
+                reload_schedule();
+            }
+            window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
+
+            async function reload_schedule() {
+                if (schedules_device == "") {
                     return;
                 }
 
-                let option = document.createElement("option");
-                option.value = element;
-                option.text = element;
-                screen_select.appendChild(option);
+                schedule_table.innerHTML = EMPTY_SCHEDULE;
+
+                // Get the occupied devices for date
+                const docSnap = await getDoc(
+                    doc(db, schedules_device, schedules_ddmmyy)
+                );
+
+                let reservations_data;
+                if (docSnap.exists()) {
+                    reservations_data = docSnap.data();
+                } else {
+                    reservations_data = {};
+                }
+
+                const today = new Date(
+                    Date.UTC(
+                        new Date().getUTCFullYear(),
+                        new Date().getUTCMonth(),
+                        new Date().getUTCDate(),
+                        0,
+                        0,
+                        0
+                    )
+                );
+
+                const current_hour = getCurrentScheduleTime()["hour"];
+
+                for (let day in schedules_data) {
+                    const weekDay = new Date(window.currentMonday);
+                    weekDay.setUTCDate(
+                        window.currentMonday.getUTCDate() + parseInt(day) - 1
+                    );
+
+                    if (today > weekDay) {
+                        const row = schedule_table.rows[parseInt(day)];
+                        if (row) {
+                            row.style.backgroundColor = "gray";
+                        }
+                        continue;
+                    }
+
+                    for (let hour in schedules_data[day]) {
+                        let new_hour = parseInt(hour);
+                        new_hour +=
+                            1 + (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
+                        if (
+                            parseInt(hour) < current_hour - 1 &&
+                            today.toDateString() == weekDay.toDateString()
+                        ) {
+                            const cell =
+                                schedule_table.rows[day].cells[new_hour];
+                            if (cell) {
+                                cell.style.backgroundColor = "gray";
+                            }
+                            continue;
+                        }
+                        if (
+                            String(schedules_data[day][hour]) ===
+                                schedules_subject ||
+                            schedules_subject === "all" ||
+                            String(schedules_data[day][hour]) === "0"
+                        ) {
+                            let new_day = parseInt(day);
+
+                            let h = parseInt(hour) + 1;
+                            let i = [];
+                            let raw = reservations_data[`${day}${h}`];
+                            if (raw != undefined) {
+                                let rawi = raw.split("/");
+                                for (let res in rawi) {
+                                    let val = rawi[res].split("-");
+                                    i[res] = [parseInt(val[0]), val[1]];
+                                }
+                            }
+
+                            let total = 0;
+                            let modifiable = 0;
+
+                            for (let res in i) {
+                                if (i[res][1] == account_email) {
+                                    modifiable += i[res][0];
+                                }
+                                total += i[res][0];
+                            }
+
+                            const cell =
+                                schedule_table.rows[new_day].cells[new_hour];
+
+                            let percentage =
+                                (total * 100) /
+                                window.reserve_params[schedules_device]["num"];
+
+                            cell.style.backgroundSize = `${
+                                100 - percentage
+                            }% 100%`;
+
+                            let i_str = JSON.stringify(i);
+
+                            if (modifiable > 0) {
+                                if (
+                                    modifiable ==
+                                    window.reserve_params[schedules_device][
+                                        "num"
+                                    ]
+                                ) {
+                                    cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>TOTS <p style="font-weight: bold;">reservats</p></button>`;
+                                } else {
+                                    cell.innerHTML = `<button class="reservation-cell-btn-edit" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, true, ${i_str})'>${modifiable} <p style="font-weight: bold;">reservats</p></button>`;
+                                }
+                            } else {
+                                if (
+                                    total ==
+                                    window.reserve_params[schedules_device][
+                                        "num"
+                                    ]
+                                ) {
+                                    cell.innerHTML = "OCUPATS";
+                                } else {
+                                    cell.innerHTML = `<button class="reservation-cell-btn" onclick='reserve_open_win(${day}, ${hour}, ${total}, ${modifiable}, false, ${i_str})'>${
+                                        window.reserve_params[schedules_device][
+                                            "num"
+                                        ] - total
+                                    } lliures</button>`;
+                                }
+                            }
+                        }
+                    }
+                }
             }
-        );
-        //#endregion
+
+            window.reload_ddmmyy();
+
+            const reserve_num = document.getElementById("reserve-num");
+            const reserve_text = document.getElementById("reserve-text");
+            const reserve_max = document.querySelector(
+                ".app .reservations .reserve .num-select #max"
+            );
+            const reserve_content = document.querySelector(
+                ".app .reservations .reserve .content"
+            );
+            const reserve_win_ = document.getElementById("reserve");
+            const reserve_cancel_reserve_btn = document.getElementById(
+                "reserve-cancel-reserve-btn"
+            );
+            const reserve_number_devices = document.getElementById(
+                "reserve-number-devices"
+            );
+
+            var reserve_day;
+            var reserve_hour;
+            window.schedules_reserve_data = [];
+
+            async function load_reserve(day, hour, total, modifiable, edit, i) {
+                window.schedules_reserve_data = i;
+
+                let reserve_day_date = new Date(window.currentMonday);
+                reserve_day_date.setDate(
+                    reserve_day_date.getDate() + (day - 1)
+                );
+                let reserve_day_str = reserve_day_date.toLocaleDateString(
+                    "ca-ES",
+                    {
+                        weekday: "long", // Full weekday name
+                        day: "numeric", // Day of the month
+                        month: "long", // Full month name
+                    }
+                );
+
+                if (edit == true) {
+                    reserve_cancel_reserve_btn.style.display = "flex";
+                    reserve_num.max =
+                        window.reserve_params[schedules_device]["num"] -
+                        (total - modifiable);
+                    reserve_num.value = modifiable;
+                    reserve_text.innerText = `Editar reserva per al ${reserve_day_str}`;
+                    reserve_max.innerText = `Màx. ${
+                        window.reserve_params[schedules_device]["num"] -
+                        (total - modifiable)
+                    }`;
+                } else {
+                    reserve_cancel_reserve_btn.style.display = "none";
+                    reserve_num.max =
+                        window.reserve_params[schedules_device]["num"] - total;
+                    reserve_text.innerText = `Reservar per al ${reserve_day_str}`;
+                    reserve_max.innerText = `Màx. ${
+                        window.reserve_params[schedules_device]["num"] - total
+                    }`;
+                }
+
+                if (schedules_device == "ipads") {
+                    reserve_number_devices.innerText = "Número d'iPads:";
+                } else {
+                    reserve_number_devices.innerText = "Número de portàtils:";
+                }
+
+                reserve_day = day;
+                reserve_hour = hour;
+            }
+
+            const reserve_btn = document.getElementById("reserve-btn");
+            reserve_btn.addEventListener("click", () => reserve_ok(false));
+            reserve_cancel_reserve_btn.addEventListener("click", () =>
+                reserve_ok(true)
+            );
+
+            async function reserve_ok(cancel) {
+                reserve_content.style.display = "none";
+
+                if (cancel == true) {
+                    let found = false;
+                    let raw = [];
+
+                    console.log("DATA", window.schedules_reserve_data);
+                    for (let res in window.schedules_reserve_data) {
+                        if (
+                            window.schedules_reserve_data[res][1] ==
+                            account_email
+                        ) {
+                            found = true;
+                        } else {
+                            raw.push(window.schedules_reserve_data[res]);
+                        }
+                    }
+                    console.log("RAW", raw);
+
+                    let ddmmyy_data = await getDoc(
+                        doc(db, schedules_device, schedules_ddmmyy)
+                    );
+                    if (ddmmyy_data.exists()) ddmmyy_data = ddmmyy_data.data();
+                    else ddmmyy_data = {};
+
+                    let element =
+                        String(reserve_day) + String(reserve_hour + 1);
+
+                    let text = [];
+                    for (let res in raw) {
+                        text[res] =
+                            window.schedules_reserve_data[res][0] +
+                            "-" +
+                            window.schedules_reserve_data[res][1];
+                    }
+                    text = text.join("/");
+
+                    ddmmyy_data[element] = text;
+
+                    if (text == "") delete ddmmyy_data[element];
+
+                    if (ddmmyy_data.length == 0) {
+                        // Delete the doc
+                        await deleteDoc(
+                            doc(db, schedules_device, schedules_ddmmyy)
+                        );
+                    } else {
+                        // Save
+                        await setDoc(
+                            doc(db, schedules_device, schedules_ddmmyy),
+                            ddmmyy_data
+                        );
+                    }
+                } else {
+                    let reserved = parseInt(reserve_num.value);
+
+                    let found = false;
+                    for (let res in window.schedules_reserve_data) {
+                        if (
+                            window.schedules_reserve_data[res][1] ==
+                            account_email
+                        ) {
+                            window.schedules_reserve_data[res][0] = reserved;
+                            found = true;
+                        }
+                    }
+
+                    if (found == false) {
+                        window.schedules_reserve_data.push([
+                            reserved,
+                            account_email,
+                        ]);
+                    }
+                    console.log(window.schedules_reserve_data);
+
+                    let raw = [];
+                    for (let res in window.schedules_reserve_data) {
+                        raw[res] =
+                            window.schedules_reserve_data[res][0] +
+                            "-" +
+                            window.schedules_reserve_data[res][1];
+                    }
+                    raw = raw.join("/");
+
+                    let element =
+                        String(reserve_day) + String(reserve_hour + 1);
+
+                    // Save
+                    await setDoc(
+                        doc(db, schedules_device, schedules_ddmmyy),
+                        {
+                            [element]: raw,
+                        },
+                        { merge: true }
+                    );
+                }
+
+                // Add tick animation
+                const tickContainer = document.createElement("div");
+                tickContainer.classList.add("tick-container");
+                const tick = document.createElement("div");
+                tick.classList.add("tick");
+                tickContainer.appendChild(tick);
+                document.body.appendChild(tickContainer);
+
+                // Wait 3 secs to hide the tick and the reserve window
+                setTimeout(() => {
+                    document.body.removeChild(tickContainer);
+                    window.reserve_close_win();
+                    reserve_content.style.display = "flex";
+                    reload_schedule();
+                }, 3000);
+            }
+
+            window.load_reserve = load_reserve;
+            //#endregion
+
+            //#region Config - Schedules
+
+            // Dict ID - Name
+            const subjects_id_name = {
+                0: "None",
+                1: "Català",
+                2: "Castellà",
+                3: "Anglès",
+                4: "Medi",
+                5: "Mates",
+                6: "Valors / Tutoria",
+                7: "Laboratori",
+                8: "Altres",
+            };
+
+            // Reverse dict to have Name - ID
+            const subjects_name_id = Object.fromEntries(
+                Object.entries(subjects_id_name).map(([key, value]) => [
+                    value,
+                    key,
+                ])
+            );
+
+            let position = "";
+
+            // Schedules Win
+            const schedules_win = document.getElementById("config-schedules");
+            schedules_win.style.display = "none";
+
+            const config_overlay = document.getElementById("config_overlay");
+
+            //#region Config Schedules Button
+            document
+                .getElementById("config-schedules-button")
+                .addEventListener("click", function () {
+                    config_overlay.style.display = "flex";
+                    schedules_win.style.display = "initial";
+                });
+            //#endregion
+
+            const config_schedule_table = document.getElementById(
+                "config-schedule-table"
+            );
+
+            const config_class_select = document.getElementById("select-class");
+
+            config_schedule_table.style.display = "none";
+
+            const cells = config_schedule_table.getElementsByTagName("td");
+
+            var config_edit_subject;
+
+            // Loop through each cell and add an event listener
+            for (let i = 0; i < cells.length; i++) {
+                if (cells[i].innerHTML == "") {
+                    cells[i].innerHTML = "<button>None</button>";
+                }
+            }
+
+            //#region Config Schedules Back Button
+            document
+                .getElementById("config-schedules-back-button")
+                .addEventListener("click", async function () {
+                    if (position == "") {
+                        config_overlay.style.display = "none";
+                        schedules_win.style.display = "none";
+                    } else {
+                        //#region Save Schedule
+
+                        // New Schedule
+                        let new_schedule = {};
+                        let day_idx = 1;
+                        let day = new Array();
+
+                        // Get Cells in Table
+                        const cells =
+                            config_schedule_table.getElementsByTagName("td");
+
+                        // Loop through each cell
+                        for (let i = 0; i < cells.length; i++) {
+                            let btn = cells[i].querySelector("button");
+                            if (btn !== null) {
+                                // Contains a Button
+                                day.push(
+                                    parseInt(subjects_name_id[btn.innerHTML])
+                                );
+
+                                if (day.length >= 6) {
+                                    new_schedule[day_idx] = day;
+                                    day_idx++;
+                                    day = new Array();
+                                }
+                            }
+                        }
+
+                        await setDoc(
+                            doc(db, "schedules", position),
+                            new_schedule
+                        );
+
+                        //#endregion
+                        position = "";
+                        config_schedule_table.style.display = "none";
+                        config_class_select.style.display = "flex";
+                    }
+                });
+            //#endregion
+
+            //#region Config Class Select Function
+            const config_class_elements =
+                document.querySelectorAll(".config-class");
+
+            // Iterate over each element
+            config_class_elements.forEach((element) => {
+                // Add an event listener to each element
+                element.addEventListener("click", (event) => {
+                    config_class_select.style.display = "none";
+                    config_schedule_table.style.display = "block";
+                    position = event.target.id;
+
+                    load_config_schedule(event.target.id);
+                });
+            });
+            //#endregion
+
+            //#region Load Schedule
+            const EMPTY_CONFIG_SCHEDULE = config_schedule_table.innerHTML;
+
+            async function load_config_schedule(class_name) {
+                config_schedule_table.innerHTML = EMPTY_CONFIG_SCHEDULE;
+
+                const docRef = doc(db, "schedules", class_name);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    for (let day in data) {
+                        for (let hour in data[day]) {
+                            // Offset the Hours (Columns) to match the table
+                            let new_hour = parseInt(hour);
+                            new_hour +=
+                                1 +
+                                (new_hour >= 2 ? (new_hour >= 4 ? 2 : 1) : 0);
+
+                            // Offset the Days (Rows) to match the table
+                            const new_day = parseInt(day);
+
+                            // Get the Cell Button
+                            const btn =
+                                config_schedule_table.rows[new_day].cells[
+                                    new_hour
+                                ].getElementsByTagName("button")[0];
+
+                            // Assign the Button's Onclick
+                            btn.addEventListener("click", function (event) {
+                                edit_subject.style.display = "block";
+                                config_edit_subject = event.target;
+                            });
+
+                            // Assign the Class Name to the Cell
+                            const subject_id = data[day][hour];
+                            let result = (
+                                Array.isArray(subject_id)
+                                    ? subject_id
+                                    : [subject_id]
+                            ) // Convert to array if it's a single number
+                                .map(
+                                    (num) =>
+                                        Array.from(num.toString()) // Convert each number to a string and split into characters
+                                            .map(
+                                                (digit) =>
+                                                    subjects_id_name[digit]
+                                            ) // Map digits to their corresponding dictionary values
+                                            .join(" / ") // Join the values with ' / ' delimiter
+                                )
+                                .join(" / "); // Join multiple results with ' / ' delimiter
+
+                            btn.innerHTML = result;
+                        }
+                    }
+                } else {
+                    console.log("Error! No Schedule Data");
+                }
+            }
+            //#endregion
+
+            //#region Table Cells Click Function Edit
+            // Window
+            const edit_subject = document.getElementById("edit-subject");
+            edit_subject.style.display = "none";
+
+            const config_subject_select =
+                edit_subject.querySelector("#subject");
+
+            // Close Button
+            document.getElementById("close-edit-subject").onclick = function (
+                event
+            ) {
+                if (config_subject_select.value != "") {
+                    config_edit_subject.innerHTML =
+                        subjects_id_name[config_subject_select.value];
+
+                    config_edit_subject = null;
+                    edit_subject.style.display = "none";
+                }
+            };
+
+            //#endregion
+
+            //#endregion
+
+            //#region Reservations Data Check
+            ["ipads", "laptops"].forEach(async (device) => {
+                let i = String(window.reserve_params[device]["last_check"]);
+                let itoday = new Date();
+                itoday.setHours(0, 0, 0, 0);
+                let idate = new Date(
+                    parseInt(
+                        String(itoday.getFullYear()).substring(0, 2) +
+                            i.substring(4, 6)
+                    ),
+                    parseInt(i.substring(2, 4)) - 1,
+                    parseInt(i.substring(0, 2))
+                );
+                if (idate < itoday) {
+                    await getDocs(collection(db, device)).then((query) => {
+                        query.forEach((doc) => {
+                            if (!isNaN(doc.id)) {
+                                let split = doc.id.match(/.{1,2}/g);
+                                let day = parseInt(split[0]);
+                                let month = parseInt(split[1]) - 1; // Months are 0-based in JavaScript
+                                let year = parseInt(split[2]);
+
+                                // Adjust the year to be in the correct century
+                                let currentYear = today.getFullYear();
+                                let century =
+                                    Math.floor(currentYear / 100) * 100;
+                                year += century;
+
+                                let iidate = new Date(
+                                    Date.UTC(year, month, day, 0, 0, 0, 0)
+                                );
+
+                                if (iidate < thisMonday) {
+                                    deleteDoc(doc.ref);
+                                }
+                            }
+                        });
+                    });
+                    await setDoc(
+                        doc(db, device, "params"),
+                        {
+                            last_check: to_ddmmyy(itoday),
+                        },
+                        { merge: true }
+                    );
+                }
+            });
+
+            //#endregion
+
+            //#region Home Gauges
+            const computer_gauge = document.getElementById("computer-gauge");
+            const ipad_gauge = document.getElementById("ipad-gauge");
+
+            async function home_update_gauges() {
+                let ddmmyy = to_ddmmyy(window.currentMonday);
+                let time = getCurrentScheduleTime();
+                let dayhour = time["day"] * 10 + time["hour"]; // to make DAY+HOUR integer
+
+                //#region Laptops
+                const laptops = await getDoc(doc(db, "laptops", ddmmyy));
+                let count = 0;
+                if (laptops.exists() == true) {
+                    const data = laptops.data();
+                    if (data[dayhour] != undefined) {
+                        data[dayhour].split("/").forEach((element) => {
+                            count += parseInt(element.split("-")[0]);
+                        });
+                    }
+                }
+                window.updateGauge(
+                    computer_gauge,
+                    window.reserve_params["laptops"]["num"] - count,
+                    count
+                );
+                //#endregion
+
+                //#region iPads
+                const ipads = await getDoc(doc(db, "ipads", ddmmyy));
+                count = 0;
+                if (ipads.exists() == true) {
+                    const data = ipads.data();
+                    if (data[dayhour] != undefined) {
+                        data[dayhour].split("/").forEach((element) => {
+                            count += parseInt(element.split("-")[0]);
+                        });
+                    }
+                }
+                window.updateGauge(
+                    ipad_gauge,
+                    window.reserve_params["ipads"]["num"] - count,
+                    count
+                );
+                //#endregion
+            }
+            window.home_update_gauges = home_update_gauges;
+
+            // it runs on the auth completed under the login part
+            //#endregion
+
+            //#region View Screens
+            Object.keys(window.reserve_params["laptops"]).forEach(
+                async (element) => {
+                    if (
+                        element == "last_check" ||
+                        element == "num" ||
+                        element == "password"
+                    ) {
+                        return;
+                    }
+
+                    let option = document.createElement("option");
+                    option.value = element;
+                    option.text = element;
+                    screen_select.appendChild(option);
+                }
+            );
+            //#endregion
+        }
 
         //#region Login - AUTH - Listen for auth state changes
         auth.onAuthStateChanged((user) => {
@@ -2418,7 +2454,7 @@
 
                 account_email = user.email;
                 account_text.innerText = account_email;
-
+                load_module();
                 window.home_update_gauges();
             } else {
                 // No user is signed in, show the login screen
