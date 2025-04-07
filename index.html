@@ -2420,6 +2420,7 @@
                 //#endregion
             }
             window.home_update_gauges = home_update_gauges;
+            update_gauges();
 
             // it runs on the auth completed under the login part
             //#endregion
@@ -2455,7 +2456,6 @@
                 account_email = user.email;
                 account_text.innerText = account_email;
                 load_module();
-                window.home_update_gauges();
             } else {
                 // No user is signed in, show the login screen
                 login_win.style.display = "initial";
