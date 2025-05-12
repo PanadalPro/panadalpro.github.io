@@ -153,7 +153,7 @@
                             y="55"
                             font-size="10"
                             text-anchor="middle"
-                            fill="black"
+                            fill="white"
                             font-family="Arial"
                         ></text>
                     </svg>
@@ -229,7 +229,7 @@
                             y="55"
                             font-size="10"
                             text-anchor="middle"
-                            fill="black"
+                            fill="white"
                             font-family="Arial"
                         ></text>
                     </svg>
@@ -596,7 +596,7 @@
             font-family: "Poppins", sans-serif;
 
             --accent-color: #b57f1f;
-            --bg-color: rgba(255, 255, 255, 0.92);
+            --bg-color: rgba(255, 255, 255, 0.9);
         }
 
         /* #region Body */
@@ -624,9 +624,9 @@
             width: 100%;
             min-height: inherit;
             height: 80%;
-            background: var(--bg-color);
             opacity: 1;
             transition: opacity 0.5s ease-in-out;
+            backdrop-filter: blur(15px);
         }
 
         .app.fade-out {
@@ -748,6 +748,7 @@
 
         .app .home h2 {
             margin-top: 35px;
+            color: white;
         }
 
         /* #region Gauge */
@@ -761,6 +762,7 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 20px;
+            color: white;
         }
 
         .app .home .legend {
@@ -828,12 +830,12 @@
         .app .reservations label {
             font-size: 15px;
             font-weight: bold;
+            color: white;
         }
 
         /* #endregion */
 
         /* #region Time Select */
-
         .app .reservations .time-select {
             display: flex;
             flex-direction: row;
@@ -844,6 +846,7 @@
         .app .reservations .time-select p {
             font-size: 17px;
             top: 5px;
+            color: white;
         }
 
         .app .reservations .time-select button {
@@ -870,15 +873,16 @@
         .app .reservations table {
             margin: 5px auto 0px auto;
             border-collapse: collapse;
-            border: 2px solid black;
+            border: 2px solid white;
             font-family: sans-serif;
             font-size: 0.8rem;
             letter-spacing: 1px;
             width: 630px;
+            color: white;
         }
 
         .app .reservations table td {
-            border: 1px solid black;
+            border: 1px solid white;
             padding: 8px 10px;
             min-width: 80px;
             height: 60px;
@@ -890,7 +894,6 @@
             );
             background-size: 0% 100%;
             background-repeat: no-repeat;
-            border: 1px solid black;
             transition: background-size 0.3s ease; /* Smooth transition for the gradient */
         }
 
@@ -899,6 +902,7 @@
             border: 1px solid black;
             position: relative;
             height: 40px;
+            background-color: var(--bg-color);
         }
 
         .app .reservations table .reservation-cell-btn:hover {
@@ -1824,7 +1828,7 @@
                     if (today > weekDay) {
                         const row = schedule_table.rows[parseInt(day)];
                         if (row) {
-                            row.style.backgroundColor = "gray";
+                            row.style.backgroundColor = "#000";
                         }
                         continue;
                     }
@@ -1840,7 +1844,7 @@
                             const cell =
                                 schedule_table.rows[day].cells[new_hour];
                             if (cell) {
-                                cell.style.backgroundColor = "gray";
+                                cell.style.backgroundColor = "#424242";
                             }
                             continue;
                         }
