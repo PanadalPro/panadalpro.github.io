@@ -57,14 +57,10 @@
         </div>
         <!-- #endregion -->
 
-        <div class="reserve_overlay" id="reserve_overlay"></div>
-        <div class="config_overlay" id="config_overlay"></div>
-        <div class="account_overlay" id="account_overlay"></div>
-        <div class="service_overlay" id="service_overlay"></div>
-
         <!-- #region App -->
         <div class="app fade-out" id="app">
             <!-- #region Account -->
+            <div class="account_overlay" id="account_overlay"></div>
             <button class="account">
                 <i class="bx bxs-user"></i>
                 <p id="account-text"></p>
@@ -396,6 +392,8 @@
                     </tr>
                 </table>
 
+                <div class="reserve_overlay" id="reserve_overlay"></div>
+
                 <div class="reserve" id="reserve">
                     <div class="content">
                         <h2 class="reserve-text" id="reserve-text"></h2>
@@ -451,6 +449,8 @@
                 <h2>Configuració</h2>
 
                 <!-- #region Schedules -->
+                <div class="config_overlay" id="config_overlay"></div>
+
                 <button class="element" id="config-schedules-button">
                     Horaris
                 </button>
@@ -642,13 +642,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-            z-index: 990; /* Below the account menu */
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 900; /* Below the account menu */
             display: none; /* Hidden by default */
         }
 
-        /* Default state: hide email and make the div smaller */
         .app .account {
+            z-index: 1000;
             position: fixed;
             top: 10px;
             right: 10px;
@@ -662,7 +662,6 @@
             width: 50px; /* Smaller width by default */
             overflow: hidden; /* Hide overflow content */
             transition: width 0.5s ease-in-out; /* Smooth transition for width */
-            z-index: 991;
         }
 
         .app .account i {
@@ -695,6 +694,7 @@
         }
 
         .app .account-menu {
+            z-index: 1000;
             display: none;
             position: fixed;
             top: 40px;
@@ -702,7 +702,6 @@
             padding: 10px;
             transform: translateX(100%); /* Start off-screen */
             transition: transform 0.5s ease-in-out;
-            z-index: 999;
         }
 
         .app .account-menu.show {
@@ -970,7 +969,7 @@
             background-color: #fff;
             border-radius: 10px;
             border: 2px solid black;
-            z-index: 1000;
+            z-index: 900;
             text-align: center;
             display: none;
             flex-direction: column;
@@ -1038,7 +1037,7 @@
             background: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
-            z-index: 999;
+            z-index: 900;
             display: none;
         }
 
@@ -1115,11 +1114,12 @@
             margin-right: 20px;
             padding: 10px;
             border-radius: 10px;
-            border: 1px solid black;
+            border: 1px solid white;
         }
 
         .app .screens .screen-select h2 {
             margin-right: 20px;
+            color: white;
         }
 
         .app .screens .screen-select select {
@@ -1165,7 +1165,7 @@
             background: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
-            z-index: 999;
+            z-index: 900;
             display: none;
         }
 
@@ -1283,6 +1283,7 @@
 
         .app .config .valueprompt h3 {
             margin: auto 10px;
+            color: white;
         }
 
         .app .config .valueprompt input {
@@ -1547,7 +1548,7 @@
                     account_menu.style.display = "block";
                     account.classList.add("menu-open");
                     account.style.backgroundColor = "var(--accent-color)";
-                    account_overlay.style.display = "block"; // Show overlay
+                    account_overlay.style.display = "inherit"; // Show overlay
                     setTimeout(() => {
                         account_menu.classList.add("show");
                     }, 10); // Small delay to ensure the display change is applied
