@@ -754,6 +754,7 @@
         .app .home svg circle {
             transition: stroke-dasharray 0.8s ease-in-out,
                 stroke-dashoffset 0.8s ease-in-out;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         }
 
         .app .home .gauge-container {
@@ -873,8 +874,10 @@
             margin: 5px auto 0px auto;
             border-collapse: collapse;
             border: 2px solid white;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
             font-family: sans-serif;
-            font-size: 0.8rem;
+            font-size: 1rem;
+            font-weight: 600;
             letter-spacing: 1px;
             width: 630px;
             color: white;
@@ -1539,7 +1542,7 @@
                 if (account_menu.classList.contains("show")) {
                     account_menu.classList.remove("show");
                     account.classList.remove("menu-open");
-                    account.style.backgroundColor = "inherit";
+                    account.style.backgroundColor = "var(--bg-color)";
                     account_overlay.style.display = "none"; // Hide overlay
                     setTimeout(() => {
                         account_menu.style.display = "none";
