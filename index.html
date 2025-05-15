@@ -1,3 +1,6 @@
+<!-- TODO -->
+<!-- Screens edit list remove computers -->
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -70,6 +73,18 @@
                     <i class="bx bx-log-out"></i>
                     Tanca la Sessió
                 </button>
+            </div>
+            <!-- #endregion -->
+
+            <!-- #region Guide -->
+            <div class="app-guide" id="app-guide">
+                <button class="close" onclick="app_guide_close()">X</button>
+                <h4>No estàs segur de com utilitzar aquest programa?</h4>
+                <button class="open-guide">Obrir guia</button>
+            </div>
+
+            <div class="popup-guide">
+                <h2>Guia d'ús</h2>
             </div>
             <!-- #endregion -->
 
@@ -440,7 +455,6 @@
                         </option>
                     </select>
                 </div>
-                <img id="screen" width="800" />
             </div>
             <!-- #endregion -->
 
@@ -737,6 +751,78 @@
         }
         /* #endregion */
 
+        /* #region App - Guide */
+        .app-guide {
+            position: fixed;
+            bottom: 70px;
+            /* right: 10px; */
+            right: -300px;
+            width: 270px;
+            color: white;
+            border: 2px solid white;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            opacity: 0.3;
+            transition: opacity 0.3s ease, right 1s ease;
+        }
+
+        .app-guide:hover {
+            opacity: 1;
+        }
+
+        .app-guide .close {
+            border: 1px solid white;
+            width: 25px;
+            height: 25px;
+            border-radius: 40%;
+            color: white;
+            background-color: transparent;
+            padding: 5px;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .app-guide .close:hover {
+            background-color: var(--accent-color);
+        }
+
+        .app-guide h4 {
+            margin-left: 9px;
+        }
+
+        .app-guide .open-guide {
+            background-color: var(--accent-color);
+            color: white;
+            border: 1px solid black;
+            border-radius: 10px;
+            margin-top: 10px;
+            padding: 8px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .popup-guide {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 300px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            border: 2px solid white;
+            z-index: 900;
+            text-align: center;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            transform: translate(-50%, -50%);
+            color: white;
+        }
+        /* #endregion */
+
         /* #region App - Home */
         .app .home {
             text-align: center;
@@ -754,7 +840,6 @@
         .app .home svg circle {
             transition: stroke-dasharray 0.8s ease-in-out,
                 stroke-dashoffset 0.8s ease-in-out;
-            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         }
 
         .app .home .gauge-container {
@@ -2714,6 +2799,18 @@
 
             screen_select.selectedIndex = 0;
         });
+        //#endregion
+
+        //#region Show Guide
+        const guide_div = document.getElementById("app-guide");
+
+        setTimeout(() => {
+            guide_div.style.right = "10px";
+        }, 2000);
+
+        function app_guide_close() {
+            guide_div.style.right = "-300px";
+        }
         //#endregion
     </script>
 </html>
