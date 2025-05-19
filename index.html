@@ -1450,7 +1450,7 @@
         .menubar {
             width: 100%; /* Adjust to full width */
             max-width: 360px; /* Maximum width */
-            height: 60px;
+            height: 80px;
             background: #edd3a6;
             display: flex;
             flex-direction: row;
@@ -1463,6 +1463,13 @@
             bottom: 0;
             border-radius: 20px;
             padding: 0 10px; /* Add some padding */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+            transition: all 0.3s ease; /* Add a transition effect */
+        }
+
+        .menubar:hover {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); /* Increase the shadow on hover */
+            transform: translateX(-50%) scale(1.05); /* Add a subtle scale effect on hover */
         }
 
         .menubar .element {
@@ -1471,16 +1478,61 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            height: 90%;
+            width: 80px; /* Adjust the width of each element */
+            margin: 0 1px; /* Add some margin between elements */
+            transition: all 0.3s ease; /* Add a transition effect */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+            display: inline-block;
+        }
+
+        .menubar .element.active {
+            border-bottom: 3px solid var(--accent-color);
+            transform: translateY(-3px); /* Move the active tab up slightly */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a subtle shadow to the active tab */
+            transition: all 0.3s ease; /* Animate the changes */
+        }
+
+        .menubar .element.active i {
+            color: #333; /* Change the icon color to a darker shade */
+            margin-top: 2px;
+        }
+
+        .menubar .element.active p {
+            color: #333; /* Change the text color to a darker shade */
+        }
+
+        .menubar .element:active {
+            transform: translateY(
+                -2px
+            ); /* Move the active tab up slightly on click */
+            transition: all 0.1s ease; /* Animate the changes on click */
+        }
+
+        .menubar .element:hover {
+            transform: scale(1.1); /* Add a subtle scale effect on hover */
+            background-color: var(--accent-color);
+            border-radius: 10px;
         }
 
         .menubar .element i {
             font-size: 30px;
+            margin-top: 8px;
             margin-bottom: 5px; /* Add some space between icon and text */
+            color: #333; /* Change the icon color to a darker shade */
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
+            transition: margin-top 0.3s ease; /* Animate the margin change */
         }
 
         .menubar .element p {
             cursor: default;
             margin: 0; /* Remove default margin */
+            font-size: 14px; /* Adjust the font size */
+            color: #666; /* Change the text color to a darker shade */
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
         }
 
         /* #endregion */
@@ -2772,11 +2824,6 @@
             screens_win.style.display = "none";
             config_win.style.display = "none";
 
-            home_element.style.color = accent_color;
-            reservations_element.style.color = "black";
-            screens_element.style.color = "black";
-            config_element.style.color = "black";
-
             if (window.home_update_gauges != undefined) {
                 window.home_update_gauges();
             }
@@ -2787,11 +2834,6 @@
             reservations_win.style.display = "initial";
             screens_win.style.display = "none";
             config_win.style.display = "none";
-
-            home_element.style.color = "black";
-            reservations_element.style.color = accent_color;
-            screens_element.style.color = "black";
-            config_element.style.color = "black";
         }
 
         function screens() {
@@ -2799,11 +2841,6 @@
             screens_win.style.display = "initial";
             config_win.style.display = "none";
             reservations_win.style.display = "none";
-
-            home_element.style.color = "black";
-            screens_element.style.color = accent_color;
-            config_element.style.color = "black";
-            reservations_element.style.color = "black";
         }
 
         function config() {
@@ -2811,17 +2848,20 @@
             config_win.style.display = "initial";
             reservations_win.style.display = "none";
             screens_win.style.display = "none";
-
-            home_element.style.color = "black";
-            config_element.style.color = accent_color;
-            reservations_element.style.color = "black";
-            screens_element.style.color = "black";
         }
 
         home();
-        // reservations();
-        //config();
-        //screens();
+        setTimeout(() => {
+            home_element.classList.add("active");
+        }, 1000);
+
+        const tabs = document.querySelectorAll(".menubar .element");
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", () => {
+                tabs.forEach((t) => t.classList.remove("active"));
+                tab.classList.add("active");
+            });
+        });
 
         //#endregion
 
