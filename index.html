@@ -2813,12 +2813,17 @@
         const screens_element = document.getElementById("screens-element");
         const config_element = document.getElementById("config-element");
 
+        const tabs = document.querySelectorAll(".menubar .element");
+
         // Get Accent Color from CSS Variable
         const accent_color = window
             .getComputedStyle(document.querySelector(".menubar"))
             .getPropertyValue("--accent-color");
 
         function home() {
+            tabs.forEach((t) => t.classList.remove("active"));
+            home_element.classList.add("active");
+
             home_win.style.display = "initial";
             reservations_win.style.display = "none";
             screens_win.style.display = "none";
@@ -2830,6 +2835,9 @@
         }
 
         function reservations() {
+            tabs.forEach((t) => t.classList.remove("active"));
+            reservations_element.classList.add("active");
+
             home_win.style.display = "none";
             reservations_win.style.display = "initial";
             screens_win.style.display = "none";
@@ -2837,6 +2845,9 @@
         }
 
         function screens() {
+            tabs.forEach((t) => t.classList.remove("active"));
+            screens_element.classList.add("active");
+
             home_win.style.display = "none";
             screens_win.style.display = "initial";
             config_win.style.display = "none";
@@ -2844,24 +2855,18 @@
         }
 
         function config() {
+            tabs.forEach((t) => t.classList.remove("active"));
+            config_element.classList.add("active");
+
             home_win.style.display = "none";
             config_win.style.display = "initial";
             reservations_win.style.display = "none";
             screens_win.style.display = "none";
         }
 
-        home();
         setTimeout(() => {
-            home_element.classList.add("active");
+            home();
         }, 1000);
-
-        const tabs = document.querySelectorAll(".menubar .element");
-        tabs.forEach((tab) => {
-            tab.addEventListener("click", () => {
-                tabs.forEach((t) => t.classList.remove("active"));
-                tab.classList.add("active");
-            });
-        });
 
         //#endregion
 
