@@ -80,11 +80,18 @@
             <div class="app-guide" id="app-guide">
                 <button class="close" onclick="app_guide_close()">X</button>
                 <h4>No estàs segur de com utilitzar aquest programa?</h4>
-                <button class="open-guide">Obrir guia</button>
+                <button class="open-guide" onclick="popup_guide_open()">
+                    Obrir guia
+                </button>
             </div>
 
-            <div class="popup-guide">
+            <div class="popup-guide" id="popup-guide">
+                <button class="close" onclick="popup_guide_close()">X</button>
                 <h2>Guia d'ús</h2>
+                <button class="guide-option">Inici</button>
+                <button class="guide-option">Reserves</button>
+                <button class="guide-option">Veure Pantalles</button>
+                <button class="guide-option">Configuració</button>
             </div>
             <!-- #endregion -->
 
@@ -820,6 +827,42 @@
             padding: 20px;
             transform: translate(-50%, -50%);
             color: white;
+            transition: opacity 0.7s ease;
+            opacity: 0;
+        }
+
+        .popup-guide .guide-option {
+            border-radius: 10px;
+            border: 2px solid var(--accent-color);
+            background-color: var(--bg-color);
+            width: 90%;
+            height: 40px;
+            margin-top: 10px;
+            margin-bottom: 2px;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .popup-guide .guide-option:hover {
+            background-color: var(--accent-color);
+        }
+
+        .popup-guide .close {
+            border: 1px solid white;
+            width: 25px;
+            height: 25px;
+            border-radius: 40%;
+            color: white;
+            background-color: transparent;
+            padding: 5px;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .popup-guide .close:hover {
+            background-color: var(--accent-color);
         }
         /* #endregion */
 
@@ -2803,6 +2846,7 @@
 
         //#region Show Guide
         const guide_div = document.getElementById("app-guide");
+        const guide_popup = document.getElementById("popup-guide");
 
         setTimeout(() => {
             guide_div.style.right = "10px";
@@ -2810,6 +2854,12 @@
 
         function app_guide_close() {
             guide_div.style.right = "-300px";
+        }
+        function popup_guide_open() {
+            guide_popup.style.opacity = "1";
+        }
+        function popup_guide_close() {
+            guide_popup.style.opacity = "0";
         }
         //#endregion
     </script>
