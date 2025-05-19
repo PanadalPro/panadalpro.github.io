@@ -462,6 +462,20 @@
                         </option>
                     </select>
                 </div>
+
+                <div class="delete-items">
+                    <button class="close">X</button>
+                    <h2>Esborrar ordinadors...</h2>
+                    <h5>
+                        (si l'ordinador es torna a encendre tornarà a la llista)
+                    </h5>
+                    <select id="screen-select-select-delete">
+                        <option disabled selected value="">
+                            Selecciona...
+                        </option>
+                    </select>
+                    <button>Esborrar</button>
+                </div>
             </div>
             <!-- #endregion -->
 
@@ -617,6 +631,7 @@
             font-family: "Poppins", sans-serif;
 
             --accent-color: #b57f1f;
+            --low-accent-color: #edd3a6;
             --bg-color: rgba(255, 255, 255, 0.9);
         }
 
@@ -683,6 +698,7 @@
             width: 50px; /* Smaller width by default */
             overflow: hidden; /* Hide overflow content */
             transition: width 0.5s ease-in-out; /* Smooth transition for width */
+            background-color: var(--low-accent-color);
         }
 
         .app .account i {
@@ -749,6 +765,7 @@
             border: 1px solid black;
             border-radius: 10px;
             padding: 8px;
+            background-color: var(--low-accent-color);
         }
 
         .app .account-menu button i {
@@ -761,7 +778,7 @@
         /* #region App - Guide */
         .app-guide {
             position: fixed;
-            bottom: 70px;
+            bottom: 90px;
             /* right: 10px; */
             right: -300px;
             width: 270px;
@@ -1258,6 +1275,39 @@
             padding: 7px;
             border: 1px solid black;
         }
+
+        .app .screens .delete-items {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 350px;
+            height: 200px;
+            transform: translate(-50%, -50%);
+            border: 2px solid black;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .app .screens .delete-items h2 {
+            margin-top: 20px;
+        }
+
+        .app .screens .delete-items select {
+            border-radius: 10px;
+            padding: 7px;
+            margin: 10px;
+            border: 1px solid black;
+        }
+
+        .app .screens .delete-items button {
+            border-radius: 10px;
+            border: 1px solid black;
+            padding: 10px 5px;
+            background-color: var(--accent-color);
+            color: white;
+            margin-top: 20px;
+        }
         /* #endregion */
 
         /* #region App - Config */
@@ -1451,7 +1501,7 @@
             width: 100%; /* Adjust to full width */
             max-width: 360px; /* Maximum width */
             height: 80px;
-            background: #edd3a6;
+            background: var(--low-accent-color);
             display: flex;
             flex-direction: row;
             justify-content: space-between; /* Distribute space evenly */
@@ -1530,6 +1580,7 @@
         .menubar .element p {
             cursor: default;
             margin: 0; /* Remove default margin */
+            margin-top: -7px;
             font-size: 14px; /* Adjust the font size */
             color: #666; /* Change the text color to a darker shade */
             box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
@@ -1722,7 +1773,7 @@
                 if (account_menu.classList.contains("show")) {
                     account_menu.classList.remove("show");
                     account.classList.remove("menu-open");
-                    account.style.backgroundColor = "var(--bg-color)";
+                    account.style.backgroundColor = "var(--low-accent-color)";
                     account_overlay.style.display = "none"; // Hide overlay
                     setTimeout(() => {
                         account_menu.style.display = "none";
@@ -2629,6 +2680,10 @@
                     screen_select.appendChild(option);
                 }
             );
+            let option = document.createElement("option");
+            option.value = "<delete>";
+            option.text = "Esborrar...";
+            screen_select.appendChild(option);
             //#endregion
         }
 
@@ -2832,6 +2887,7 @@
             if (window.home_update_gauges != undefined) {
                 window.home_update_gauges();
             }
+            app_guide_close();
         }
 
         function reservations() {
@@ -2842,6 +2898,8 @@
             reservations_win.style.display = "initial";
             screens_win.style.display = "none";
             config_win.style.display = "none";
+
+            app_guide_close();
         }
 
         function screens() {
@@ -2852,6 +2910,8 @@
             screens_win.style.display = "initial";
             config_win.style.display = "none";
             reservations_win.style.display = "none";
+
+            app_guide_close();
         }
 
         function config() {
@@ -2862,6 +2922,8 @@
             config_win.style.display = "initial";
             reservations_win.style.display = "none";
             screens_win.style.display = "none";
+
+            app_guide_close();
         }
 
         setTimeout(() => {
@@ -2877,8 +2939,9 @@
             // Get the selected value
             const selected = event.target.value;
 
-            // Perform an action based on the selected value
-            console.log("Selected value:", selected);
+            if (selected == "<delete>") {
+                return;
+            }
 
             window.open(
                 `http://${window.reserve_params["laptops"][selected]}`,
