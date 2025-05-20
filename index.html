@@ -476,7 +476,9 @@
                             Selecciona...
                         </option>
                     </select>
-                    <button class="delete">Esborrar</button>
+                    <button class="delete" id="screen-delete-btn">
+                        Esborrar
+                    </button>
                 </div>
             </div>
             <!-- #endregion -->
@@ -1725,8 +1727,6 @@
             browserSessionPersistence,
             inMemoryPersistence,
             browserLocalPersistence,
-            updateDoc,
-            deleteField,
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         import {
@@ -1737,6 +1737,8 @@
             getDocs,
             setDoc,
             deleteDoc,
+            updateDoc,
+            deleteField,
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
@@ -2718,12 +2720,14 @@
             option.text = "Esborrar...";
             screen_select.appendChild(option);
 
-            screen_select_delete.addEventListener("change", async (event) => {
-                const selected = event.target.value;
-                await updateDoc(doc(db, "laptops", "params"), {
-                    selected: deleteField(),
+            document
+                .getElementById("screen-delete-btn")
+                .addEventListener("change", async (event) => {
+                    const selected = event.target.value;
+                    await updateDoc(doc(db, "laptops", "params"), {
+                        selected: deleteField(),
+                    });
                 });
-            });
             //#endregion
         }
 
