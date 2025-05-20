@@ -463,8 +463,10 @@
                     </select>
                 </div>
 
-                <div class="delete-items">
-                    <button class="close">X</button>
+                <div class="delete-items" id="screen-delete-items">
+                    <button class="close" onclick="screen_delete_close()">
+                        X
+                    </button>
                     <h2>Esborrar ordinadors...</h2>
                     <h5>
                         (si l'ordinador es torna a encendre tornarà a la llista)
@@ -474,7 +476,7 @@
                             Selecciona...
                         </option>
                     </select>
-                    <button>Esborrar</button>
+                    <button class="delete">Esborrar</button>
                 </div>
             </div>
             <!-- #endregion -->
@@ -1263,6 +1265,7 @@
             padding: 10px;
             border-radius: 10px;
             border: 1px solid white;
+            width: 97%;
         }
 
         .app .screens .screen-select h2 {
@@ -1277,16 +1280,37 @@
         }
 
         .app .screens .delete-items {
-            position: absolute;
+            display: none;
+            position: fixed;
             top: 50%;
             left: 50%;
             width: 350px;
             height: 200px;
-            transform: translate(-50%, -50%);
             border: 2px solid black;
             border-radius: 10px;
             background-color: rgba(0, 0, 0, 0.3);
             color: white;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        .app .screens .delete-items .close {
+            border: 1px solid white;
+            width: 25px;
+            height: 25px;
+            border-radius: 40%;
+            color: white;
+            background-color: transparent;
+            padding: 5px;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+        }
+
+        .app .screens .delete-items .close:hover {
+            background-color: var(--accent-color);
         }
 
         .app .screens .delete-items h2 {
@@ -1300,13 +1324,15 @@
             border: 1px solid black;
         }
 
-        .app .screens .delete-items button {
+        .app .screens .delete-items .delete {
             border-radius: 10px;
             border: 1px solid black;
             padding: 10px 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .app .screens .delete-items .delete:hover {
             background-color: var(--accent-color);
-            color: white;
-            margin-top: 20px;
         }
         /* #endregion */
 
@@ -1510,7 +1536,7 @@
             left: 50%;
             transform: translateX(-50%);
             position: fixed;
-            bottom: 0;
+            bottom: 10px;
             border-radius: 20px;
             padding: 0 10px; /* Add some padding */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
@@ -1699,6 +1725,8 @@
             browserSessionPersistence,
             inMemoryPersistence,
             browserLocalPersistence,
+            updateDoc,
+            deleteField,
         } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         import {
@@ -2664,6 +2692,10 @@
             //#endregion
 
             //#region View Screens
+            const screen_select_delete = document.getElementById(
+                "screen-select-select-delete"
+            );
+
             Object.keys(window.reserve_params["laptops"]).forEach(
                 async (element) => {
                     if (
@@ -2678,12 +2710,20 @@
                     option.value = element;
                     option.text = element;
                     screen_select.appendChild(option);
+                    screen_select_delete.appendChild(option);
                 }
             );
             let option = document.createElement("option");
             option.value = "<delete>";
             option.text = "Esborrar...";
             screen_select.appendChild(option);
+
+            screen_select_delete.addEventListener("change", async (event) => {
+                const selected = event.target.value;
+                await updateDoc(doc(db, "laptops", "params"), {
+                    selected: deleteField(),
+                });
+            });
             //#endregion
         }
 
@@ -2907,7 +2947,7 @@
             screens_element.classList.add("active");
 
             home_win.style.display = "none";
-            screens_win.style.display = "initial";
+            screens_win.style.display = "flex";
             config_win.style.display = "none";
             reservations_win.style.display = "none";
 
@@ -2934,12 +2974,15 @@
 
         //#region View Screens
         const screen_select = document.getElementById("screen-select-select");
+        const screen_delete = document.getElementById("screen-delete-items");
 
         screen_select.addEventListener("change", (event) => {
             // Get the selected value
             const selected = event.target.value;
 
             if (selected == "<delete>") {
+                screen_delete.style.display = "block";
+                screen_select.selectedIndex = 0;
                 return;
             }
 
@@ -2950,6 +2993,10 @@
 
             screen_select.selectedIndex = 0;
         });
+
+        function screen_delete_close() {
+            screen_delete.style.display = "none";
+        }
         //#endregion
 
         //#region Show Guide
