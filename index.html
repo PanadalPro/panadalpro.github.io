@@ -1282,7 +1282,7 @@
         }
 
         .app .screens .delete-items {
-            display: none;
+            opacity: 0;
             position: fixed;
             top: 50%;
             left: 50%;
@@ -1294,6 +1294,7 @@
             color: white;
             transform: translate(-50%, -50%);
             z-index: 1000;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .app .screens .delete-items .close {
@@ -2722,12 +2723,13 @@
 
             document
                 .getElementById("screen-delete-btn")
-                .addEventListener("onclick", async (event) => {
-                    const selected = event.target.value;
+                .addEventListener("click", async (event) => {
+                    const selected = screen_select_delete.value;
                     await updateDoc(doc(db, "laptops", "params"), {
-                        selected: deleteField(),
+                        [selected]: deleteField(),
                     });
                 });
+
             //#endregion
         }
 
@@ -2985,7 +2987,7 @@
             const selected = event.target.value;
 
             if (selected == "<delete>") {
-                screen_delete.style.display = "block";
+                screen_delete.style.opacity = "1";
                 screen_select.selectedIndex = 0;
                 return;
             }
@@ -2999,7 +3001,7 @@
         });
 
         function screen_delete_close() {
-            screen_delete.style.display = "none";
+            screen_delete.style.opacity = "0";
         }
         //#endregion
 
