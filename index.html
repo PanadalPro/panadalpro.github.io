@@ -1891,6 +1891,28 @@
             }
             //#endregion
 
+            //#region Function - load_reservation_params
+            async function load_reservation_params() {
+                let paramsLaptops = await getDoc(doc(db, "laptops", "params"));
+                let paramsiPads = await getDoc(doc(db, "ipads", "params"));
+
+                if (paramsLaptops.exists() && paramsiPads.exists()) {
+                    window.reserve_params = {
+                        laptops: paramsLaptops.data(),
+                        ipads: paramsiPads.data(),
+                    };
+
+                    // Laptop & iPad Num Settings
+                    laptop_num_setting.value =
+                        window.reserve_params["laptops"]["num"];
+                    ipad_num_setting.value =
+                        window.reserve_params["ipads"]["num"];
+                } else {
+                    console.log("Unable to fetch Reservations Params File!");
+                }
+            }
+            //#endregion
+
             //#region Reservations - Schedules
             // Init Database
             const db = getFirestore(app);
@@ -1901,7 +1923,6 @@
             const subject_select = document.getElementById("subject");
             const device_select = document.getElementById("device");
 
-            //#region Get Params / Settings File
             const laptop_num_setting = document.getElementById(
                 "config-laptopnum-num"
             );
@@ -1913,22 +1934,8 @@
             const ipad_num_setting_btn =
                 document.getElementById("config-ipadnum-btn");
 
-            let paramsLaptops = await getDoc(doc(db, "laptops", "params"));
-            let paramsiPads = await getDoc(doc(db, "ipads", "params"));
-
-            if (paramsLaptops.exists() && paramsiPads.exists()) {
-                window.reserve_params = {
-                    laptops: paramsLaptops.data(),
-                    ipads: paramsiPads.data(),
-                };
-
-                // Laptop & iPad Num Settings
-                laptop_num_setting.value =
-                    window.reserve_params["laptops"]["num"];
-                ipad_num_setting.value = window.reserve_params["ipads"]["num"];
-            } else {
-                console.log("Unable to fetch Reservations Params File!");
-            }
+            //#region Get Params / Settings File
+            load_reservation_params();
 
             // Laptop Num Setting
             laptop_num_setting_btn.addEventListener("click", async () => {
@@ -1977,6 +1984,7 @@
             var schedules_ddmmyy;
             var schedules_device = "";
 
+            //#region Load when class, subject & device are selected / changed
             async function class_subject() {
                 let class_val = class_select.value;
                 let subject_val = subject_select.value;
@@ -2041,17 +2049,20 @@
                     reload_schedule();
                 }
             }
+            //#endregion
 
             class_select.addEventListener("change", class_subject);
             subject_select.addEventListener("change", class_subject);
             device_select.addEventListener("change", class_subject);
 
+            //#region Reload DDMMYY
             function reload_ddmmyy() {
                 schedules_ddmmyy = to_ddmmyy(window.currentMonday);
 
                 reload_schedule();
             }
             window.reload_ddmmyy = reload_ddmmyy; // attach the function to the window object to call it from the other script tag
+            //#endregion
 
             async function reload_schedule() {
                 if (schedules_device == "") {
@@ -2094,7 +2105,12 @@
                     if (today > weekDay) {
                         const row = schedule_table.rows[parseInt(day)];
                         if (row) {
-                            row.style.backgroundColor = "white";
+                            row.cells[1].style.backgroundColor = "white";
+                            row.cells[2].style.backgroundColor = "white";
+                            row.cells[4].style.backgroundColor = "white";
+                            row.cells[5].style.backgroundColor = "white";
+                            row.cells[7].style.backgroundColor = "white";
+                            row.cells[8].style.backgroundColor = "white";
                         }
                         continue;
                     }
@@ -2699,8 +2715,8 @@
                 "screen-select-select-delete"
             );
 
-            EMPTY_SCREEN_SELECT = screen_select.innerHTML;
-            EMPTY_SCREEN_SELECT_DELETE = screen_select_delete.innerHTML;
+            const EMPTY_SCREEN_SELECT = screen_select.innerHTML;
+            const EMPTY_SCREEN_SELECT_DELETE = screen_select_delete.innerHTML;
 
             async function screen_load_items() {
                 screen_select.innerHTML = EMPTY_SCREEN_SELECT;
@@ -2740,6 +2756,7 @@
                         [selected]: deleteField(),
                     });
                     screen_delete_close();
+                    load_reservation_params();
                     screen_load_items();
                 });
 
