@@ -2699,27 +2699,38 @@
                 "screen-select-select-delete"
             );
 
-            Object.keys(window.reserve_params["laptops"]).forEach(
-                async (element) => {
-                    if (
-                        element == "last_check" ||
-                        element == "num" ||
-                        element == "password"
-                    ) {
-                        return;
-                    }
+            EMPTY_SCREEN_SELECT = screen_select.innerHTML;
+            EMPTY_SCREEN_SELECT_DELETE = screen_select_delete.innerHTML;
 
-                    let option = document.createElement("option");
-                    option.value = element;
-                    option.text = element;
-                    screen_select.appendChild(option);
-                    screen_select_delete.appendChild(option.cloneNode(true));
-                }
-            );
-            let option = document.createElement("option");
-            option.value = "<delete>";
-            option.text = "Esborrar...";
-            screen_select.appendChild(option);
+            async function screen_load_items() {
+                screen_select.innerHTML = EMPTY_SCREEN_SELECT;
+                screen_select_delete.innerHTML = EMPTY_SCREEN_SELECT_DELETE;
+
+                Object.keys(window.reserve_params["laptops"]).forEach(
+                    (element) => {
+                        if (
+                            element == "last_check" ||
+                            element == "num" ||
+                            element == "password"
+                        ) {
+                            return;
+                        }
+
+                        let option = document.createElement("option");
+                        option.value = element;
+                        option.text = element;
+                        screen_select.appendChild(option);
+                        screen_select_delete.appendChild(
+                            option.cloneNode(true)
+                        );
+                    }
+                );
+                let option = document.createElement("option");
+                option.value = "<delete>";
+                option.text = "Esborrar...";
+                screen_select.appendChild(option);
+            }
+            screen_load_items();
 
             document
                 .getElementById("screen-delete-btn")
@@ -2728,6 +2739,8 @@
                     await updateDoc(doc(db, "laptops", "params"), {
                         [selected]: deleteField(),
                     });
+                    screen_delete_close();
+                    screen_load_items();
                 });
 
             //#endregion
