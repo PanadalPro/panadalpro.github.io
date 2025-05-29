@@ -923,6 +923,7 @@
             padding: 20px;
             transition: opacity 0.7s ease;
             color: white;
+            display: none;
             opacity: 0;
         }
 
@@ -3120,6 +3121,7 @@
         const video_guide_popup = document.getElementById("guide-video-popup");
 
         function video_guide_open(video = "") {
+            video_guide_popup.style.display = "inherit";
             video_guide_popup.style.opacity = "1";
 
             if (video != "")
@@ -3130,6 +3132,7 @@
         }
         function video_guide_close() {
             video_guide_popup.style.opacity = "0";
+            video_guide_popup.style.display = "none";
         }
         //#endregion
     </script>
