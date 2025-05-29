@@ -1802,6 +1802,9 @@
         //#endregion
 
         async function load_module() {
+            // Init Database
+            const db = getFirestore(app);
+
             //#region App - Account
             const account = document.querySelector(".app .account");
             const account_menu = document.querySelector(".app .account-menu");
@@ -1922,9 +1925,6 @@
             //#endregion
 
             //#region Reservations - Schedules
-            // Init Database
-            const db = getFirestore(app);
-
             // Get Elements
             const schedule_table = document.getElementById("schedule");
             const class_select = document.getElementById("class");
