@@ -1918,6 +1918,7 @@
                     console.log("Unable to fetch Reservations Params File!");
                 }
             }
+            await load_reservation_params();
             //#endregion
 
             //#region Reservations - Schedules
@@ -1942,7 +1943,6 @@
                 document.getElementById("config-ipadnum-btn");
 
             //#region Get Params / Settings File
-            load_reservation_params();
 
             // Laptop Num Setting
             laptop_num_setting_btn.addEventListener("click", async () => {
