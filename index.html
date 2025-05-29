@@ -1902,6 +1902,17 @@
             //#endregion
 
             //#region Function - load_reservation_params
+            const laptop_num_setting = document.getElementById(
+                "config-laptopnum-num"
+            );
+            const laptop_num_setting_btn = document.getElementById(
+                "config-laptopnum-btn"
+            );
+            const ipad_num_setting =
+                document.getElementById("config-ipadnum-num");
+            const ipad_num_setting_btn =
+                document.getElementById("config-ipadnum-btn");
+
             async function load_reservation_params() {
                 let paramsLaptops = await getDoc(doc(db, "laptops", "params"));
                 let paramsiPads = await getDoc(doc(db, "ipads", "params"));
@@ -1930,17 +1941,6 @@
             const class_select = document.getElementById("class");
             const subject_select = document.getElementById("subject");
             const device_select = document.getElementById("device");
-
-            const laptop_num_setting = document.getElementById(
-                "config-laptopnum-num"
-            );
-            const laptop_num_setting_btn = document.getElementById(
-                "config-laptopnum-btn"
-            );
-            const ipad_num_setting =
-                document.getElementById("config-ipadnum-num");
-            const ipad_num_setting_btn =
-                document.getElementById("config-ipadnum-btn");
 
             //#region Get Params / Settings File
 
