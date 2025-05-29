@@ -96,10 +96,17 @@
             <div class="popup-guide" id="popup-guide">
                 <button class="close" onclick="popup_guide_close()">X</button>
                 <h2>Guia d'ús</h2>
-                <button class="guide-option">Inici</button>
-                <button class="guide-option">Reserves</button>
-                <button class="guide-option">Veure Pantalles</button>
-                <button class="guide-option">Configuració</button>
+                <button class="guide-option" onclick=`video_guide_open("videos/home.mp4")`>Inici</button>
+                <button class="guide-option" onclick=`video_guide_open("videos/reserve.mp4")`>Reserves</button>
+                <button class="guide-option" onclick=`video_guide_open("videos/screens.mp4")`>Veure Pantalles</button>
+            </div>
+
+            <div class="guide-video-popup" id="guide-video-popup">
+                <button class="close" onclick="video_guide_close()">X</button>
+                <div
+                    class="guide-video-container"
+                    id="guide-video-container"
+                ></div>
             </div>
             <!-- #endregion -->
 
@@ -788,6 +795,7 @@
         /* #endregion */
 
         /* #region App - Guide */
+        /* #region Inital Slide Guide Suggestion */
         .app-guide {
             position: fixed;
             bottom: 90px;
@@ -840,13 +848,15 @@
             width: 100%;
             cursor: pointer;
         }
+        /* #endregion */
 
+        /* #region Guide video selector */
         .popup-guide {
             position: fixed;
             top: 50%;
             left: 50%;
             width: 400px;
-            height: 300px;
+            height: 250px;
             background-color: rgba(0, 0, 0, 0.8);
             border-radius: 10px;
             border: 2px solid white;
@@ -894,6 +904,47 @@
         .popup-guide .close:hover {
             background-color: var(--accent-color);
         }
+        /* #endregion */
+
+        /* #region Guide Video */
+        .guide-video-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            border: 2px solid white;
+            z-index: 1000;
+            text-align: center;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            transition: opacity 0.7s ease;
+            color: white;
+            opacity: 0;
+        }
+
+        .guide-video-popup .close {
+            border: 1px solid white;
+            width: 25px;
+            height: 25px;
+            border-radius: 40%;
+            color: white;
+            background-color: transparent;
+            padding: 5px;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .guide-video-popup .close:hover {
+            background-color: var(--accent-color);
+        }
+        /* #endregion */
+
         /* #endregion */
 
         /* #region App - Home */
@@ -2791,6 +2842,7 @@
         });
         //#endregion
     </script>
+
     <script>
         //#region Login
         const password_field = document.getElementById("password");
@@ -3044,7 +3096,7 @@
         }
         //#endregion
 
-        //#region Show Guide
+        //#region Guide
         const guide_div = document.getElementById("app-guide");
         const guide_popup = document.getElementById("popup-guide");
 
@@ -3060,6 +3112,24 @@
         }
         function popup_guide_close() {
             guide_popup.style.opacity = "0";
+        }
+
+        const video_guide_container = document.getElementById(
+            "guide-video-container"
+        );
+        const video_guide_popup = document.getElementById("guide-video-popup");
+
+        function video_guide_open(video = "") {
+            video_guide_popup.style.opacity = "1";
+
+            if (video != "")
+                video_guide_container.innerHTML = `<video controls autoplay>
+                    <source src="${video}" type="video/mp4">
+                    El teu navegador no és compatible amb els videos. Si us plau, prova amb un altre navegador.
+                </video>`;
+        }
+        function video_guide_close() {
+            video_guide_popup.style.opacity = "0";
         }
         //#endregion
     </script>
