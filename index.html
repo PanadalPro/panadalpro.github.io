@@ -96,9 +96,24 @@
             <div class="popup-guide" id="popup-guide">
                 <button class="close" onclick="popup_guide_close()">X</button>
                 <h2>Guia d'ús</h2>
-                <button class="guide-option" onclick="video_guide_open('videos/home.mp4')">Inici</button>
-                <button class="guide-option" onclick="video_guide_open('videos/reserve.mp4')">Reserves</button>
-                <button class="guide-option" onclick="video_guide_open('videos/screens.mp4')">Veure Pantalles</button>
+                <button
+                    class="guide-option"
+                    onclick="video_guide_open('videos/home.mp4')"
+                >
+                    Inici
+                </button>
+                <button
+                    class="guide-option"
+                    onclick="video_guide_open('videos/reserve.mp4')"
+                >
+                    Reserves
+                </button>
+                <button
+                    class="guide-option"
+                    onclick="video_guide_open('videos/screens.mp4')"
+                >
+                    Veure Pantalles
+                </button>
             </div>
 
             <div class="guide-video-popup" id="guide-video-popup">
@@ -3125,7 +3140,7 @@
             video_guide_popup.style.opacity = "1";
 
             if (video != "")
-                video_guide_container.innerHTML = `<video controls autoplay>
+                video_guide_container.innerHTML = `<video controls autoplay width="95%" height="95%">
                     <source src="${video}" type="video/mp4">
                     El teu navegador no és compatible amb els videos. Si us plau, prova amb un altre navegador.
                 </video>`;
