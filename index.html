@@ -1,5 +1,5 @@
 <!-- TODO -->
-<!-- Screens edit list remove computers -->
+<!-- home gauges set gauge to 0 and update not working -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -683,10 +683,13 @@
         /* #endregion */
 
         /* #region App */
+        .home,
         .reservations,
         .screens,
         .config {
             display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .app {
@@ -884,6 +887,7 @@
             color: white;
             transition: opacity 0.7s ease;
             opacity: 0;
+            display: none;
         }
 
         .popup-guide .guide-option {
@@ -1012,7 +1016,6 @@
         /* #endregion */
 
         /* #region App - Reservations */
-
         .app .reservations {
             text-align: center;
             justify-content: center;
@@ -1645,6 +1648,7 @@
 
         .menubar .element.active {
             border-bottom: 3px solid var(--accent-color);
+            border-radius: 4px;
             transform: translateY(-3px); /* Move the active tab up slightly */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a subtle shadow to the active tab */
             transition: all 0.3s ease; /* Animate the changes */
@@ -2740,50 +2744,63 @@
             const ipad_gauge = document.getElementById("ipad-gauge");
 
             async function home_update_gauges() {
-                let ddmmyy = to_ddmmyy(window.currentMonday);
-                let time = getCurrentScheduleTime();
-                let dayhour = time["day"] * 10 + time["hour"]; // to make DAY+HOUR integer
+                let animation_computer = computer_gauge.style.transition;
+                let animation_ipad = ipad_gauge.style.transition;
+                computer_gauge.style.transition = "none";
+                ipad_gauge.style.transition = "none";
+                computer_gauge.style.strokeDasharray = "0 0";
+                ipad_gauge.style.strokeDasharray = "0 0";
 
-                //#region Laptops
-                const laptops = await getDoc(doc(db, "laptops", ddmmyy));
-                let count = 0;
-                if (laptops.exists() == true) {
-                    const data = laptops.data();
-                    if (data[dayhour] != undefined) {
-                        data[dayhour].split("/").forEach((element) => {
-                            count += parseInt(element.split("-")[0]);
-                        });
-                    }
-                }
-                window.updateGauge(
-                    computer_gauge,
-                    window.reserve_params["laptops"]["num"] - count,
-                    count
-                );
-                //#endregion
+                setTimeout(async () => {
+                    computer_gauge.style.transition = animation_computer;
+                    ipad_gauge.style.transition = animation_ipad;
 
-                //#region iPads
-                const ipads = await getDoc(doc(db, "ipads", ddmmyy));
-                count = 0;
-                if (ipads.exists() == true) {
-                    const data = ipads.data();
-                    if (data[dayhour] != undefined) {
-                        data[dayhour].split("/").forEach((element) => {
-                            count += parseInt(element.split("-")[0]);
-                        });
+                    let ddmmyy = to_ddmmyy(window.currentMonday);
+                    let time = getCurrentScheduleTime();
+                    let dayhour = time["day"] * 10 + time["hour"]; // to make DAY+HOUR integer
+
+                    //#region Laptops
+                    const laptops = await getDoc(doc(db, "laptops", ddmmyy));
+                    let count = 0;
+                    if (laptops.exists() == true) {
+                        const data = laptops.data();
+                        if (data[dayhour] != undefined) {
+                            data[dayhour].split("/").forEach((element) => {
+                                count += parseInt(element.split("-")[0]);
+                            });
+                        }
                     }
-                }
-                window.updateGauge(
-                    ipad_gauge,
-                    window.reserve_params["ipads"]["num"] - count,
-                    count
-                );
-                //#endregion
+                    window.updateGauge(
+                        computer_gauge,
+                        window.reserve_params["laptops"]["num"] - count,
+                        count
+                    );
+                    //#endregion
+
+                    //#region iPads
+                    const ipads = await getDoc(doc(db, "ipads", ddmmyy));
+                    count = 0;
+                    if (ipads.exists() == true) {
+                        const data = ipads.data();
+                        if (data[dayhour] != undefined) {
+                            data[dayhour].split("/").forEach((element) => {
+                                count += parseInt(element.split("-")[0]);
+                            });
+                        }
+                    }
+                    window.updateGauge(
+                        ipad_gauge,
+                        window.reserve_params["ipads"]["num"] - count,
+                        count
+                    );
+                    //#endregion
+                }, 100);
             }
             window.home_update_gauges = home_update_gauges;
-            home_update_gauges();
 
-            // it runs on the auth completed under the login part
+            setTimeout(() => {
+                home_update_gauges();
+            }, 1000);
             //#endregion
 
             //#region View Screens
@@ -3032,14 +3049,25 @@
             tabs.forEach((t) => t.classList.remove("active"));
             home_element.classList.add("active");
 
-            home_win.style.display = "initial";
-            reservations_win.style.display = "none";
-            screens_win.style.display = "none";
-            config_win.style.display = "none";
+            home_win.style.opacity = "0";
+            config_win.style.opacity = "0";
+            reservations_win.style.opacity = "0";
+            screens_win.style.opacity = "0";
 
-            if (window.home_update_gauges != undefined) {
-                window.home_update_gauges();
-            }
+            setTimeout(() => {
+                home_win.style.display = "initial";
+                reservations_win.style.display = "none";
+                screens_win.style.display = "none";
+                config_win.style.display = "none";
+            }, 500);
+
+            setTimeout(() => {
+                home_win.style.opacity = "1";
+                if (window.home_update_gauges != undefined) {
+                    window.home_update_gauges();
+                }
+            }, 1000);
+
             app_guide_close();
         }
 
@@ -3047,10 +3075,21 @@
             tabs.forEach((t) => t.classList.remove("active"));
             reservations_element.classList.add("active");
 
-            home_win.style.display = "none";
-            reservations_win.style.display = "initial";
-            screens_win.style.display = "none";
-            config_win.style.display = "none";
+            home_win.style.opacity = "0";
+            config_win.style.opacity = "0";
+            reservations_win.style.opacity = "0";
+            screens_win.style.opacity = "0";
+
+            setTimeout(() => {
+                home_win.style.display = "none";
+                reservations_win.style.display = "initial";
+                screens_win.style.display = "none";
+                config_win.style.display = "none";
+            }, 500);
+
+            setTimeout(() => {
+                reservations_win.style.opacity = "1";
+            }, 1000);
 
             app_guide_close();
         }
@@ -3059,10 +3098,21 @@
             tabs.forEach((t) => t.classList.remove("active"));
             screens_element.classList.add("active");
 
-            home_win.style.display = "none";
-            screens_win.style.display = "flex";
-            config_win.style.display = "none";
-            reservations_win.style.display = "none";
+            home_win.style.opacity = "0";
+            config_win.style.opacity = "0";
+            reservations_win.style.opacity = "0";
+            screens_win.style.opacity = "0";
+
+            setTimeout(() => {
+                home_win.style.display = "none";
+                reservations_win.style.display = "none";
+                screens_win.style.display = "flex";
+                config_win.style.display = "none";
+            }, 500);
+
+            setTimeout(() => {
+                screens_win.style.opacity = "1";
+            }, 1000);
 
             app_guide_close();
         }
@@ -3071,17 +3121,26 @@
             tabs.forEach((t) => t.classList.remove("active"));
             config_element.classList.add("active");
 
-            home_win.style.display = "none";
-            config_win.style.display = "initial";
-            reservations_win.style.display = "none";
-            screens_win.style.display = "none";
+            home_win.style.opacity = "0";
+            config_win.style.opacity = "0";
+            reservations_win.style.opacity = "0";
+            screens_win.style.opacity = "0";
+
+            setTimeout(() => {
+                home_win.style.display = "none";
+                reservations_win.style.display = "none";
+                screens_win.style.display = "none";
+                config_win.style.display = "initial";
+            }, 500);
+
+            setTimeout(() => {
+                config_win.style.opacity = "1";
+            }, 1000);
 
             app_guide_close();
         }
 
-        setTimeout(() => {
-            home();
-        }, 1000);
+        home();
 
         //#endregion
 
@@ -3124,10 +3183,16 @@
             guide_div.style.right = "-300px";
         }
         function popup_guide_open() {
-            guide_popup.style.opacity = "1";
+            guide_popup.style.display = "inherit";
+            setTimeout(() => {
+                guide_popup.style.opacity = "1";
+            }, 100);
         }
         function popup_guide_close() {
             guide_popup.style.opacity = "0";
+            setTimeout(() => {
+                guide_popup.style.display = "none";
+            }, 500);
         }
 
         const video_guide_container = document.getElementById(
