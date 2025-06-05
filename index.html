@@ -1,6 +1,3 @@
-<!-- TODO -->
-<!-- home gauges set gauge to 0 and update not working -->
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -2743,58 +2740,52 @@
             const computer_gauge = document.getElementById("computer-gauge");
             const ipad_gauge = document.getElementById("ipad-gauge");
 
+            const INITIAL_COMPUTER_GAUGE = computer_gauge.innerHTML;
+            const INITIAL_IPAD_GAUGE = ipad_gauge.innerHTML;
+
             async function home_update_gauges() {
-                let animation_computer = computer_gauge.style.transition;
-                let animation_ipad = ipad_gauge.style.transition;
-                computer_gauge.style.transition = "none";
-                ipad_gauge.style.transition = "none";
-                computer_gauge.style.strokeDasharray = "0 0";
-                ipad_gauge.style.strokeDasharray = "0 0";
+                computer_gauge.innerHTML = INITIAL_COMPUTER_GAUGE;
+                ipad_gauge.innerHTML = INITIAL_IPAD_GAUGE;
 
-                setTimeout(async () => {
-                    computer_gauge.style.transition = animation_computer;
-                    ipad_gauge.style.transition = animation_ipad;
+                let ddmmyy = to_ddmmyy(window.currentMonday);
+                let time = getCurrentScheduleTime();
+                let dayhour = time["day"] * 10 + time["hour"]; // to make DAY+HOUR integer
 
-                    let ddmmyy = to_ddmmyy(window.currentMonday);
-                    let time = getCurrentScheduleTime();
-                    let dayhour = time["day"] * 10 + time["hour"]; // to make DAY+HOUR integer
-
-                    //#region Laptops
-                    const laptops = await getDoc(doc(db, "laptops", ddmmyy));
-                    let count = 0;
-                    if (laptops.exists() == true) {
-                        const data = laptops.data();
-                        if (data[dayhour] != undefined) {
-                            data[dayhour].split("/").forEach((element) => {
-                                count += parseInt(element.split("-")[0]);
-                            });
-                        }
+                //#region Laptops
+                const laptops = await getDoc(doc(db, "laptops", ddmmyy));
+                let count = 0;
+                if (laptops.exists() == true) {
+                    const data = laptops.data();
+                    if (data[dayhour] != undefined) {
+                        data[dayhour].split("/").forEach((element) => {
+                            count += parseInt(element.split("-")[0]);
+                        });
                     }
-                    window.updateGauge(
-                        computer_gauge,
-                        window.reserve_params["laptops"]["num"] - count,
-                        count
-                    );
-                    //#endregion
+                }
+                window.updateGauge(
+                    computer_gauge,
+                    window.reserve_params["laptops"]["num"] - count,
+                    count
+                );
+                //#endregion
 
-                    //#region iPads
-                    const ipads = await getDoc(doc(db, "ipads", ddmmyy));
-                    count = 0;
-                    if (ipads.exists() == true) {
-                        const data = ipads.data();
-                        if (data[dayhour] != undefined) {
-                            data[dayhour].split("/").forEach((element) => {
-                                count += parseInt(element.split("-")[0]);
-                            });
-                        }
+                //#region iPads
+                const ipads = await getDoc(doc(db, "ipads", ddmmyy));
+                count = 0;
+                if (ipads.exists() == true) {
+                    const data = ipads.data();
+                    if (data[dayhour] != undefined) {
+                        data[dayhour].split("/").forEach((element) => {
+                            count += parseInt(element.split("-")[0]);
+                        });
                     }
-                    window.updateGauge(
-                        ipad_gauge,
-                        window.reserve_params["ipads"]["num"] - count,
-                        count
-                    );
-                    //#endregion
-                }, 100);
+                }
+                window.updateGauge(
+                    ipad_gauge,
+                    window.reserve_params["ipads"]["num"] - count,
+                    count
+                );
+                //#endregion
             }
             window.home_update_gauges = home_update_gauges;
 
@@ -2877,9 +2868,54 @@
     </script>
 
     <script>
-        //#region Login
+        /* General */
+        // Get Accent Color from CSS Variable
+        const accent_color = window
+            .getComputedStyle(document.querySelector(".menubar"))
+            .getPropertyValue("--accent-color");
+
+        //#region VAR - Login
         const password_field = document.getElementById("password");
         const show_check = document.getElementById("show-check");
+        //#endregion
+
+        //#region VAR - Reservations
+        const time_text = document.getElementById("time-text");
+
+        const reserve_win = document.getElementById("reserve");
+        const reserve_overlay = document.getElementById("reserve_overlay");
+
+        //#endregion
+
+        //#region VAR - Menubar
+        //- Windows
+        const home_win = document.getElementById("home");
+        const reservations_win = document.getElementById("reservations");
+        const screens_win = document.getElementById("screens");
+        const config_win = document.getElementById("config");
+
+        //- Elements
+        const home_element = document.getElementById("home-element");
+        const reservations_element = document.getElementById(
+            "reservations-element"
+        );
+        const screens_element = document.getElementById("screens-element");
+        const config_element = document.getElementById("config-element");
+
+        const tabs = document.querySelectorAll(".menubar .element");
+        //#endregion
+
+        //#region VAR - Screens
+        const screen_select = document.getElementById("screen-select-select");
+        const screen_delete = document.getElementById("screen-delete-items");
+        //#endregions
+
+        //#region VAR - Guide
+        const guide_div = document.getElementById("app-guide");
+        const guide_popup = document.getElementById("popup-guide");
+        //#endregion
+
+        //#region Login
         function togglePassword() {
             password_field.type = show_check.checked ? "text" : "password";
         }
@@ -2907,8 +2943,6 @@
         //#region Reservations
 
         //#region Time Selects
-        const time_text = document.getElementById("time-text");
-
         var minMonday;
 
         function getCurrentWeek() {
@@ -2970,9 +3004,6 @@
         //#endregion
 
         //#region Schedule Cell Click - Reserve
-        const reserve_win = document.getElementById("reserve");
-        const reserve_overlay = document.getElementById("reserve_overlay");
-
         function reserve_open_win(day, hour, total, modifiable, edit, i) {
             reserve_win.style.display = "flex";
             reserve_overlay.style.display = "flex";
@@ -3024,27 +3055,6 @@
         //#endregion
 
         //#region Menubar
-        // Windows
-        const home_win = document.getElementById("home");
-        const reservations_win = document.getElementById("reservations");
-        const screens_win = document.getElementById("screens");
-        const config_win = document.getElementById("config");
-
-        // Elements
-        const home_element = document.getElementById("home-element");
-        const reservations_element = document.getElementById(
-            "reservations-element"
-        );
-        const screens_element = document.getElementById("screens-element");
-        const config_element = document.getElementById("config-element");
-
-        const tabs = document.querySelectorAll(".menubar .element");
-
-        // Get Accent Color from CSS Variable
-        const accent_color = window
-            .getComputedStyle(document.querySelector(".menubar"))
-            .getPropertyValue("--accent-color");
-
         function home() {
             tabs.forEach((t) => t.classList.remove("active"));
             home_element.classList.add("active");
@@ -3145,9 +3155,6 @@
         //#endregion
 
         //#region View Screens
-        const screen_select = document.getElementById("screen-select-select");
-        const screen_delete = document.getElementById("screen-delete-items");
-
         screen_select.addEventListener("change", (event) => {
             // Get the selected value
             const selected = event.target.value;
@@ -3172,9 +3179,6 @@
         //#endregion
 
         //#region Guide
-        const guide_div = document.getElementById("app-guide");
-        const guide_popup = document.getElementById("popup-guide");
-
         setTimeout(() => {
             guide_div.style.right = "10px";
         }, 2000);
