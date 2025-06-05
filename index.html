@@ -8,7 +8,7 @@
             href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
             rel="stylesheet"
         />
-        <!-- Load Favicon from the Thau Website, modify if needed -->
+        <!-- Load Favicon (website icon) from the Thau Website, modify if needed -->
         <link
             rel="icon"
             href="https://thausantcugat.org/wp-content/uploads/2023/07/cropped-favicon-32x32.png"
@@ -2788,10 +2788,6 @@
                 //#endregion
             }
             window.home_update_gauges = home_update_gauges;
-
-            setTimeout(() => {
-                home_update_gauges();
-            }, 1000);
             //#endregion
 
             //#region View Screens
@@ -3150,7 +3146,9 @@
             app_guide_close();
         }
 
-        home();
+        setTimeout(() => {
+            home();
+        }, 1000);
 
         //#endregion
 
